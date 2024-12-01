@@ -70,11 +70,6 @@ header {
   margin-bottom: 5px;
 }
 
-.names i {
-  font-size: 14px;
-  color: #17a2b8;
-}
-
 .skill-item {
   display: inline-block;
   background-color: #f1f1f1;
