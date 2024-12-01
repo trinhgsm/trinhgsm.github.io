@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Menu</title>
+</head>
+<body>
+    <h1>Menu</h1>
+    <ul id="menu"></ul>
+
+    <script>
+        // Lấy extension_id từ query string
+        const urlParams = new URLSearchParams(window.location.search);
+        const extensionID = urlParams.get('extension_id');
+
+        // Lấy file JSON từ GitHub
+        fetch('https://raw.githubusercontent.com/trinhgsm/manager/master/menu.json')
+            .then(response => response.json())
+            .then(data => {
+                // Kiểm tra extension_id
+                if (extensionID === data.allowedExtensionID) {
+                    // Hiển thị menu nếu extension_id hợp lệ
+                    const menu = data.menu_user;
+                    const menuElement = document.getElementById('menu');
+                    menu.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `${item.value} - ${item.label}`;
+                        menuElement.appendChild(li);
+                    });
+                } else {
+                    // Hiển thị menu cho khách nếu extension_id không hợp lệ
+                    const menu = data.menu_guest;
+                    const menuElement = document.getElementById('menu');
+                    menu.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = `${item.value} - ${item.label}`;
+                        menuElement.appendChild(li);
+                    });
+                    alert('Invalid extension ID! Showing guest menu.');
+                }
+            })
+            .catch(error => console.error('Error loading JSON:', error));
+    </script>
+</body>
+</html>
