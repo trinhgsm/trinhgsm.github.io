@@ -1,46 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Menu</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nguyễn Thế Lợi</title>
+  <link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
+
 <body>
-    <h1>Menu</h1>
-    <ul id="menu"></ul>
+  <div id="root">
+    <div id="main">
+      <div class="container">
+        <header>
+          <div id="cover-image" style="background-image: url('./background.gif');"></div>
+          <div id="profile-header">
+            <div id="avatar-image" style="background-image: url('./24223038.png');"></div>
+            <div id="name">
+              <p id="first-name" class="names">Nguyễn Thế Lợi <i style="color:rgb(17, 143, 249)" title="Đã xác minh" class="far fa-check-circle"></i></p>
+              <p id="nickname" class="nicknames"></p>
+              <div id="skills">
+                <div class="skill-item" style="color:#ff758f;">Developer</div>
+                <div class="skill-item" style="color:#85D18A;">Youtuber</div>
+              </div>
+            </div>
+          </div>
+          <div class="bio-story">
+            <div class="bio-story-thumb" style="background-image: url('./favicon.png');"></div>
+            <div class="bio-story-content" style="margin-top: 0px;">
+              <p>Cuộc sống không phải là phim ảnh, không có nhiều đến thế… những lần không hẹn mà gặp.</p>
+            </div>
+          </div>
+        </header>
 
-    <script>
-        // Lấy extension_id từ query string
-        const urlParams = new URLSearchParams(window.location.search);
-        const extensionID = urlParams.get('extension_id');
+        <div id="content-body">
+          <p class="drop-title">Liên kết cá nhân</p>
+          <div id="link-box">
+            <!-- Facebook Link -->
+            <div class="link-item">
+              <div class="bio-story-thumb" style="background-image: url('https://graph.facebook.com/100005942927037/picture?type=large&amp;width=500&amp;height=500&amp;access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662');"></div>
+              <div class="link-content">
+                <p>Lợi Nguyễn</p>
+                <span onclick="window.open('https://facebook.com/100005942927037/', '_blank')">Facebook</span>
+              </div>
+              <div class="link-btn">
+                <div class="link-btn-chill light-orange" onclick="window.open('https://www.facebook.com/100005942927037/', '_blank')">OPEN</div>
+              </div>
+            </div>
+            <!-- Zalo Link -->
+            <div class="link-item">
+              <div class="bio-story-thumb" style="background-image: url('./zalo.jpg');"></div>
+              <div class="link-content">
+                <p>Lợi Nguyễn</p>
+                <span onclick="window.open('https://zalo.me/lowji194', '_blank')">Zalo</span>
+              </div>
+              <div class="link-btn">
+                <div class="link-btn-chill light-orange" onclick="window.open('https://zalo.me/0963159294', '_blank')">OPEN</div>
+              </div>
+            </div>
+            <!-- YouTube Link -->
+            <div class="link-item">
+              <div class="bio-story-thumb" style="background-image: url('./youtube.png');"></div>
+              <div class="link-content">
+                <p>@Lowji194</p>
+                <span onclick="window.open('https://www.youtube.com/Lowji194/', '_blank')">Youtube</span>
+              </div>
+              <div class="link-btn">
+                <div class="link-btn-chill light-orange" onclick="window.open('https://www.youtube.com/Lowji194/', '_blank')">OPEN</div>
+              </div>
+            </div>
+            <!-- Payment Link -->
+            <div class="link-item">
+              <div class="bio-story-thumb" style="background-image: url('./Logo-VietinBank-CTG-Ori.webp');"></div>
+              <div class="link-content">
+                <p>Thanh Toán</p>
+                <span onclick="window.open('https://lowji194.github.io/pay', '_blank')"></span>
+              </div>
+              <div class="link-btn">
+                <div class="link-btn-chill light-orange" onclick="window.open('https://lowji194.github.io/pay', '_blank')">OPEN</div>
+              </div>
+            </div>
+            <!-- Live Link -->
+            <div class="link-item">
+              <div class="bio-story-thumb" style="background-image: url('./live.png');"></div>
+              <div class="link-content">
+                <p>Check Live UID</p>
+              </div>
+              <div class="link-btn">
+                <a style="text-decoration: none" class="link-btn-chill light-orange" href="./live">OPEN</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        // Lấy file JSON từ GitHub
-        fetch('https://raw.githubusercontent.com/trinhgsm/manager/master/menu.json')
-            .then(response => response.json())
-            .then(data => {
-                // Kiểm tra extension_id
-                if (extensionID === data.allowedExtensionID) {
-                    // Hiển thị menu nếu extension_id hợp lệ
-                    const menu = data.menu_user;
-                    const menuElement = document.getElementById('menu');
-                    menu.forEach(item => {
-                        const li = document.createElement('li');
-                        li.textContent = `${item.value} - ${item.label}`;
-                        menuElement.appendChild(li);
-                    });
-                } else {
-                    // Hiển thị menu cho khách nếu extension_id không hợp lệ
-                    const menu = data.menu_guest;
-                    const menuElement = document.getElementById('menu');
-                    menu.forEach(item => {
-                        const li = document.createElement('li');
-                        li.textContent = `${item.value} - ${item.label}`;
-                        menuElement.appendChild(li);
-                    });
-                    alert('Invalid extension ID! Showing guest menu.');
-                }
-            })
-            .catch(error => console.error('Error loading JSON:', error));
-    </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" crossorigin="anonymous"></script>
+
+  <span class="glasp-extension" style="display: block; width: 320px; margin: unset; padding: unset; border: unset; border-radius: unset; outline: unset; background-color: unset; box-shadow: unset; position: fixed; top: 40px; right: 24px; z-index: 9999;"></span>
+  <div class="glasp-extension" style="display: block; width: unset; margin: unset; padding: unset; border: unset; border-radius: unset; outline: unset; background-color: unset; box-shadow: unset; position: fixed; bottom: 16px; right: 16px; z-index: 9999;"></div>
 </body>
+
+<chatgpt-sidebar data-gpts-theme="light"></chatgpt-sidebar>
+<chatgpt-sidebar-popups data-gpts-theme="light"></chatgpt-sidebar-popups>
+
 </html>
