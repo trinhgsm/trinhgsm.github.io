@@ -1,0 +1,10 @@
+@media (max-width: 768px) {
+  #link-box {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .link-item {
+    width: 100%;
+  }
+}
