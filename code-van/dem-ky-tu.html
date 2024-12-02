@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đếm Ký Tự</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .counter {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Nhập văn bản:</h2>
+    <textarea id="textInput" rows="5" cols="40" placeholder="Nhập nội dung ở đây..."></textarea>
+    <div class="counter">
+        <p>Số ký tự: <span id="charCount">0</span></p>
+    </div>
+
+    <script>
+        // Lấy đối tượng textarea và span hiển thị số ký tự
+        const textInput = document.getElementById('textInput');
+        const charCount = document.getElementById('charCount');
+
+        // Thêm sự kiện 'input' để đếm ký tự mỗi khi người dùng nhập
+        textInput.addEventListener('input', function() {
+            charCount.textContent = textInput.value.length;
+        });
+    </script>
+</body>
+</html>
