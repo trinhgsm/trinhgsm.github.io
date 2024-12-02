@@ -1,0 +1,761 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html b:css='false' b:defaultwidgetversion='2' b:layoutsVersion='3' b:responsive='true' b:templateVersion='1.0.1' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+  <head>
+    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+    <link href='https://proxymmo.net/public/assets/images/logo-32.png' rel='icon' type='image/png'/>
+    <meta expr:content='data:view.description.escaped' name='description'/>
+    <meta expr:content='data:blog.title.escaped' property='og:title'/>
+    <title>From hỗ trợ</title>
+    <b:skin><![CDATA[]]></b:skin>
+  </head>
+  <body>
+  <b:section class='main-content' id='main-content'>
+    <b:widget id='HTML1' locked='false' title='' type='HTML' visible='true'>
+      <b:widget-settings>
+        <b:widget-setting name='content'><![CDATA[<!doctype html>
+
+
+    
+    
+    Form nạp tiền
+    <link rel="icon" href="https://proxymmo.net/public/assets/images/logo-16.png" type="image/png" />
+    <style>
+        /* Nền động với màu nhẹ */
+        body {
+            background: linear-gradient(45deg, #f3ec78, #af4261);
+            background-size: 200% 200%;
+            animation: gradientBackground 10s ease infinite;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        @keyframes gradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Menu phía trên */
+        .navbar {
+            overflow: hidden;
+            background-color: #333;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 17px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        /* Cột quảng cáo bên trái và phải */
+        .ad-column {
+            position: fixed;
+            top: 0;
+            width: 160px;
+            height: 100%;
+            background-color: #f1f1f1;
+            padding: 10px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .ad-left {
+            left: 0;
+        }
+
+        .ad-right {
+            right: 0;
+        }
+
+        /* Style cho form */
+        #contact-form-wrapper {
+            display: none; /* Ẩn form trong 30 giây đầu */
+            max-width: 600px;
+            margin: 5em auto;
+            padding: 2em;
+            border: 1px solid #ccc;
+            border-radius: 1em;
+            background-color: #ffffffb0;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        #contact-form label {
+            margin-top: 1em;
+            display: block;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #contact-form input[type="text"],
+        #contact-form textarea {
+            width: 100%;
+            padding: 0.75em;
+            margin-top: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+        }
+
+        #contact-form textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        #contact-form input[type="file"] {
+            display: none;
+        }
+
+        #contact-form label[for="image"] {
+            display: inline-block;
+            padding: 0.75em 1.5em;
+            color: #fff;
+            background-color: #6c757d;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            margin-top: 1em;
+        }
+
+        #contact-form label[for="image"]:hover {
+            background-color: #5a6268;
+        }
+
+        #contact-form input[type="submit"] {
+            padding: 0.75em 1.5em;
+            color: #fff;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 1em;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            display: none;
+        }
+
+        #contact-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #form-messages {
+            margin-top: 1em;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin: 1em auto;
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Style cho popup đồng hồ đếm ngược */
+        #countdown-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffffb0;
+            width: 360px;  /* Chiều rộng của popup */
+            height: 360px; /* Chiều cao của popup */
+            padding: 1em;  /* Khoảng cách bên trong popup */
+            border-radius: 10px;
+            text-align: center;
+            z-index: 20;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Chữ và số đếm nằm ngang */
+        #countdown-text {
+            display: inline-block;
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        #countdown {
+            display: inline-block;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        /* Liên kết hữu ích ở phía dưới */
+        .useful-links-title {
+            text-align: center;
+            margin-top: 2em;
+        }
+
+        .useful-links {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .useful-links li {
+            margin: 5px 0;
+        }
+
+        .useful-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            border-radius: 5px;
+            font-size: 1.1em;
+            display: inline-block;
+        }
+
+        .useful-links a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Khoảng cách giữa form và liên kết hữu ích */
+        #contact-form-wrapper {
+            margin-bottom: 2em;
+        }
+/* update liên kết hữu ích */
+.useful-links {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Hiển thị 4 cột */
+    gap: 10px; /* Khoảng cách giữa các cột */
+    max-width: 1500px; /* Giới hạn chiều rộng */
+    margin: 0 auto; /* Căn giữa liên kết hữu ích */
+}
+
+.useful-links li {
+    margin: 5px 0;
+}
+
+.useful-links a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    border-radius: 5px;
+    font-size: 1.1em;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    text-align: center; /* Căn giữa nội dung liên kết */
+}
+
+.useful-links a:hover {
+    background-color: #0056b3;
+}
+
+/* Tương thích với màn hình nhỏ */
+@media only screen and (max-width: 768px) {
+    .useful-links {
+        grid-template-columns: repeat(2, 1fr); /* Giảm xuống còn 2 cột trên màn hình nhỏ */
+    }
+}
+        /* Ẩn cột quảng cáo trên màn hình nhỏ */
+        @media only screen and (max-width: 768px) {
+            .ad-column {
+                display: none;
+            }
+        }
+        /* CSS cho hiển thị RSS feed */
+.rss-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .rss-feed {
+            width: 28%;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        li {
+            width: 100%;
+            margin: 10px 0;
+            background-color: #f4f4f4;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        li:hover {
+            transform: scale(1.05);
+        }
+
+        li img {
+            width: 100%;
+            height: auto;
+            border-bottom: 2px solid #ddd;
+        }
+
+        li a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+            color: #007BFF;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .rss-feed {
+                width: 100%;
+            }
+
+            li {
+                margin: 10px auto;
+            }
+        }
+        /* CSS cho hiển thị RSS feed */
+</style>
+
+
+    <!-- Menu -->
+    <div class="navbar">
+        <a href="//proxymmo.net">Trang chủ</a>
+        <a href="//prôxy.vn">Tin tức</a>
+        <a href="//lienhe.proxymmo.net">Liên hệ</a>
+    </div>
+
+    <!-- Cột quảng cáo bên trái -->
+    <div class="ad-column ad-left">
+        <script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3127830568415018" crossorigin="anonymous" ></script>
+<!-- trang-bill -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3127830568415018"
+     data-ad-slot="6071840593"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+    </div>
+
+    <!-- Cột quảng cáo bên phải -->
+    <div class="ad-column ad-right">
+        <script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3127830568415018" crossorigin="anonymous" ></script>
+<!-- trang-bill -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3127830568415018"
+     data-ad-slot="6071840593"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+    </div>
+
+    <!-- Popup đồng hồ đếm ngược -->
+    <div id="countdown-popup">
+        <div id="countdown-text">Form sẽ xuất hiện sau:</div>
+        <div id="countdown">60</div>
+        <div class="adsense-container">
+            <!-- Chèn mã quảng cáo AdSense -->
+            <script async="async" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3127830568415018" crossorigin="anonymous" ></script>
+<!-- popup-bank -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-3127830568415018"
+     data-ad-slot="7757291504"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+        </div>
+    </div>
+
+    <!-- Form sẽ được hiển thị sau 30 giây -->
+    <div id="contact-form-wrapper">
+        <form id="contact-form">
+            <label for="name">Tài khoản hoặc key của bạn:</label>
+            <input id="name" name="name" type="text" placeholder="Bắt buộc" required />
+
+            <label for="email">Ảnh báo lỗi:</label>
+            <input id="email" name="email" type="text" readonly placeholder="Khi bạn upload tự động điền" />
+
+            <label for="message">Lỗi cụ thể :</label>
+            <textarea id="message" name="message" placeholder="ví dụ: 192.168.1.1:8000:adsfrh:rthdg sai nước, mất mạng,..."></textarea>
+
+            <!-- Trường ẩn để lưu trữ URL của trang gửi form -->
+            <input id="url" name="url" type="hidden" />
+
+            <!-- Captcha Section -->
+        <div id="captcha-section">
+    <label for="captcha">Hãy giải bài toán: 
+        <span id="captcha-equation"></span>
+    </label>
+    <input id="captcha" name="captcha" type="text" placeholder="Bước 1 nhập kết quả để hiện nút upload ảnh" />
+</div>
+
+        <!-- Nút upload ảnh sẽ bị ẩn cho đến khi giải captcha -->
+        <div id="upload-section" style="display: none;">
+            <label for="image" class="btn">Upload ảnh</label>
+            <input id="image" name="image" type="file" accept="image/*" style="display: none;" />
+        </div>
+
+        <!-- Nút gửi chỉ hiện sau khi đã tải ảnh -->
+        <input id="submit-button" type="submit" value="Gửi" style="display:none;" />
+    </form>
+
+    <div id="form-messages"></div>
+    <div class="loading-spinner" id="loading-spinner"></div>
+</div>
+<script>
+// Tạo hai số ngẫu nhiên cho bài toán captcha
+var num1 = Math.floor(Math.random() * 10) + 1;
+var num2 = Math.floor(Math.random() * 10) + 1;
+var correctAnswer = num1 + num2;
+
+// Hiển thị bài toán
+document.getElementById('captcha-equation').innerText = num1 + " + " + num2 + " = ?";
+
+// Xử lý khi người dùng nhập câu trả lời vào captcha
+document.getElementById('captcha').addEventListener('input', function() {
+    var userAnswer = document.getElementById('captcha').value;
+
+    if (parseInt(userAnswer) === correctAnswer) {
+        document.getElementById('upload-section').style.display = 'block'; // Hiển thị nút Upload bill
+    } else {
+        document.getElementById('upload-section').style.display = 'none'; // Ẩn nút Upload nếu sai captcha
+    }
+});
+
+// Hiển thị nút Gửi khi ảnh được chọn
+document.getElementById('image').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        document.getElementById('submit-button').style.display = 'block'; // Hiển thị nút Gửi
+    }
+});
+
+</script>
+<!-- Đoạn mã RSS Feed -->
+<div class="rss-container">
+        <div id="rss-feed-1" class="rss-feed"></div>
+        <div id="rss-feed-2" class="rss-feed"></div>
+    </div>
+
+    <script>
+        function fetchAndDisplayRss(url, containerId) {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const feedContainer = document.getElementById(containerId);
+                    let html = '<ul>';
+                    data.items.forEach(item => {
+                        let imageUrl = '';
+                        const regex = /<img.*?src="(.*?)"/;
+                        const match = regex.exec(item.content);
+                        if (match && match[1]) {
+                            imageUrl = match[1];
+                        }
+                        html += `<li>
+                                    <a href="${item.link}" target="_blank">
+                                        ${imageUrl ? `<img src="${imageUrl}" alt="${item.title}">` : ''}
+                                        ${item.title}
+                                    </a>
+                                 </li>`;
+                    });
+                    html += '</ul>';
+                    feedContainer.innerHTML = html;
+                })
+                .catch(error => console.log('Error fetching RSS feed:', error));
+        }
+
+        const rssFeeds = [
+            // Thêm nhiều URL RSS khác tại đây (cả WordPress và Blogger)
+            'https://rss2json.com/api.json?rss_url=https://car2024.xyz/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://aiinnovator.homes/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://greenhealthhub.autos/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://ecofashionista.homes/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://aapk.homes/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://soccerinsight.homes/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://cultureevent.homes/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://comedy.autos/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://careself.homes/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://universe79.homes/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://coremotion.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://vitalwellnessguide.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://sportpulse.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://health360hub.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://fithub.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://techonthego.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://dailywellnesshub.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://appadvisor.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://mobilemastery.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://fbpagebuilder.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://cosmicphenomena.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://xenforohub.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://spacemissionschronicles.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://marsandbeyond.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://masterxenforo1.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://bloggermastery.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://solarsystemexplorers.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://galacticodyssey.bond/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://đemamthuc.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://đitapthethao.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://đixaynha.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://đidulichmaohiem.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://đinhcaocongnghe.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://đitimcaythuoc.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://đabong.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://xsđb.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://haiphòng.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://giaydẹp.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://kitôhuu.vn/feeds/posts/default?alt=rss',
+'https://rss2json.com/api.json?rss_url=https://cook79.homes/feed/',
+'https://rss2json.com/api.json?rss_url=https://tips79.homes/feed/',
+'https://rss2json.com/api.json?rss_url=https://diet79.beauty/feed/',
+'https://rss2json.com/api.json?rss_url=https://tourism79.homes/feed/',
+'https://rss2json.com/api.json?rss_url=https://freewpplugins.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://masteringwp.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://solarsystemquest.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://probloggermastery.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://cosmicvoyagers.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://xenforoguidemaster.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://marsodyssey.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://wpexpertguide.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://spaceexplorationchronicles.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://xenforopromastery.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://stellarphenomena.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://fbpagepro.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://mobileproficiency.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://wppluginshub.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://appinsights.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://wellnessjourney.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://mobiletechpulse.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://fitnessnexus.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://totalwellnesshub.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://athleteedge.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://holistichealthguide.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://powermove.bond/feed/',
+'https://rss2json.com/api.json?rss_url=https://đacsan.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://đammecongnhe.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://đt.com.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://đtthegioi.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://đile.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://đitapthienyoga.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://đanhgiaphukien.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://điemcongnghe.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://đongvat.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://mmô.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://bọxphone.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://binhthuận.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://nẹws.vn/feed/',
+'https://rss2json.com/api.json?rss_url=https://prôxy.vn/feed/',
+
+            // Thêm nhiều URL RSS khác tại đây (cả WordPress và Blogger)
+        ];
+
+        // Chọn ngẫu nhiên hai RSS feed từ danh sách
+        const randomRssUrl1 = rssFeeds[Math.floor(Math.random() * rssFeeds.length)];
+        const randomRssUrl2 = rssFeeds[Math.floor(Math.random() * rssFeeds.length)];
+
+        // Hiển thị RSS feed ngẫu nhiên trong hai cột
+        fetchAndDisplayRss(randomRssUrl1, 'rss-feed-1');
+        fetchAndDisplayRss(randomRssUrl2, 'rss-feed-2');
+    </script>
+<!-- Đoạn mã RSS Feed -->
+    <h2 class="useful-links-title">Các liên kết hữu ích:</h2>
+    <ul class="useful-links">
+        <li><a href="https://proxymmo.net">Bảng điều khiển - Hệ thống cung cấp Proxy xoay chất lượng cao - Dải IP siêu sạch giao thức kết nối API/HTTP/HTTPS/SOCKS5</a></li>
+<li><a href="https://xn--acsan-4ya.vn">Home - Vietnam Delicacies</a></li>
+<li><a href="https://xn--ammecongnhe-zob.vn">Home - Cultural Journey</a></li>
+<li><a href="https://xn--t-kia.com.vn">Home - Football Panorama</a></li>
+<li><a href="https://xn--tthegioi-kcb.vn">Home - AI Nexus</a></li>
+<li><a href="https://xn--ile-uqa.vn">Home - Green Fashion</a></li>
+<li><a href="https://xn--emamthuc-kcb.vn">Vị Ngon Mỗi Ngày</a></li>
+<li><a href="https://xn--itapthethao-zob.vn">Đi tập thể thao</a></li>
+<li><a href="https://xn--ixaynha-f7a.vn">Chuyên Gia BĐS</a></li>
+<li><a href="https://xn--itapthienyoga-9wb.vn">Home - Confident Health</a></li>
+<li><a href="https://xn--idulichmaohiem-f1b.vn">Khám Phá Cùng Bạn</a></li>
+<li><a href="https://xn--anhgiaphukien-9wb.vn">Home - Tech Savvy</a></li>
+<li><a href="https://xn--iemcongnghe-zob.vn">Nature's Remedy Hub - Unlock the Healing Power of Nature</a></li>
+<li><a href="https://xn--ongvat-92a.vn">Nature's Wonders - Discover the Beauty of Flora and Fauna</a></li>
+<li><a href="https://xn--inhcaocongnghe-f1b.vn">Công Nghệ TM</a></li>
+<li><a href="https://xn--itimcaythuoc-4sb.vn">Xanh Mát Góc Nhỏ</a></li>
+<li><a href="https://xn--abong-4ya.vn">BallWorld</a></li>
+<li><a href="https://xn--xsb-wqa.vn">Đặc Sản Việt</a></li>
+<li><a href="https://xn--mm-9ja.vn">TheBallHub - Every Ball, Every Game</a></li>
+<li><a href="https://xn--bxphone-cx4c.vn">Boxphone</a></li>
+<li><a href="https://xn--haiphng-h0a.vn">Việt Nam Tươi Đẹp</a></li>
+<li><a href="https://xn--binhthun-w00d.vn">Beautiful Vietnam - Explore the Heritage, Embrace the Culture</a></li>
+<li><a href="https://xn--nws-jjz.vn">Faithful Journey - Walking with God Every Day</a></li>
+<li><a href="https://xn--giaydp-th8b.vn">Tự Tin Sống Khỏe</a></li>
+<li><a href="https://xn--kithuu-kxa.vn">Hành Trình Đức Tin</a></li>
+<li><a href="https://xn--prxy-wqa.vn">Trang chủ - Website bán tài nguyên - Proxy.vn</a></li>
+
+    </ul>
+
+    <script>
+        // Đếm ngược 30 giây
+        var countdown = 60;
+        var countdownInterval = setInterval(function() {
+            countdown--;
+            document.getElementById('countdown').innerText = countdown;
+            if (countdown === 0) {
+                clearInterval(countdownInterval);
+                document.getElementById('countdown-popup').style.display = 'none';
+                document.getElementById('contact-form-wrapper').style.display = 'block';
+            }
+        }, 1000);
+
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Hiển thị biểu tượng loading khi nhấn nút Gửi
+            document.getElementById("loading-spinner").style.display = "block";
+
+            if (!document.getElementById('image').files.length) {
+                alert("Bạn gửi rồi nếu bạn muốn gửi lại hãy tải lại trang này.");
+                document.getElementById("loading-spinner").style.display = "none"; // Ẩn biểu tượng loading nếu không có ảnh
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("name", document.getElementById('name').value);
+            formData.append("email", document.getElementById('email').value);
+            formData.append("message", document.getElementById('message').value);
+            formData.append("url", document.getElementById('url').value);
+            formData.append("image_url", document.getElementById('email').value);
+
+            // script
+            var scriptURL = atob('aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J3RjdTZ2s5UklDSzNKWldQS3lJZHVlT0VXamVLMnRyZFltcnZiSDNTV09yc05CSEFqWUNRMl9ZQnVkVWpnZl9TRHJVUS9leGVj');
+            fetch(scriptURL, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("form-messages").innerText = "Gửi thành công chúng tôi đã tiếp nhận và đưa vào xử lý, các ip xuất sai nước sẽ được chúng tôi thu hồi lại và hoàn tiền trên web cho bạn.";
+                document.getElementById('contact-form').reset();
+                document.getElementById("loading-spinner").style.display = "none";
+            })
+            .catch(error => {
+                document.getElementById("form-messages").innerText = "Đã xảy ra lỗi: " + error.message;
+                document.getElementById("loading-spinner").style.display = "none";
+            });
+        });
+
+        // Tự động điền URL của trang vào trường ẩn khi tải trang
+        document.getElementById('url').value = window.location.href;
+
+        document.getElementById('image').addEventListener('change', function() {
+            var imageFile = document.getElementById('image').files[0];
+            if (imageFile) {
+                // api
+                var apiKey = atob('NmVmYWVkNGE2OTk0MGI2ZWQ2N2UxMTIzYjRhYmYzNDc=');
+                // url
+                var apiURL = atob('aHR0cHM6Ly9hcGkuaW1nYmIuY29tLzEvdXBsb2FkP2tleQ==');
+
+                var formDataImgBB = new FormData();
+                formDataImgBB.append("image", imageFile);
+
+                document.getElementById("loading-spinner").style.display = "block";
+
+                fetch(apiURL + "=" + apiKey, {
+                    method: "POST",
+                    body: formDataImgBB
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        var imageShortUrl = data.data.url_viewer;
+
+                        var emailField = document.getElementById('email');
+                        emailField.value = imageShortUrl;
+
+                        document.querySelector('label[for="image"]').style.display = 'none';
+
+                        document.getElementById("loading-spinner").style.display = "none";
+                        document.getElementById("form-messages").innerText = "Ảnh đã tải lên thành công!";
+                        document.getElementById('submit-button').style.display = 'block';
+                    } else {
+                        throw new Error("Upload ảnh thất bại");
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("form-messages").innerText = "Đã xảy ra lỗi trong quá trình tải ảnh lên: " + error.message;
+                    document.getElementById("loading-spinner").style.display = "none";
+                });
+            } else {
+                alert("Vui lòng chọn một ảnh trước khi tải lên.");
+            }
+        });
+    </script>
+<script>
+document.querySelectorAll('.useful-links a').forEach(function(link) {
+    let words = link.textContent.split(' ');
+    if (words.length > 5) {
+        link.textContent = words.slice(0, 5).join(' ') + '...';
+    }
+});
+</script>
+
+</!doctype>]]></b:widget-setting>
+      </b:widget-settings>
+      <b:includable id='main'>
+  <b:include name='widget-title'/>
+  <div class='widget-content'>
+    <data:content/>
+  </div>
+</b:includable>
+    </b:widget>
+  </b:section>
+  </body>
+</html>
