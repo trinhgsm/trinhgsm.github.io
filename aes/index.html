@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mã hóa và Giải mã AES-GCM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+            margin-top: 15px;
+            display: block;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 1%;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .encrypt-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .decrypt-btn {
+            background-color: #007BFF;
+            color: white;
+        }
+        .output {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mã hóa và Giải mã AES-GCM</h1>
+    <div class="container">
+        <label for="password">Nhập mật khẩu:</label>
+        <input type="password" id="password" placeholder="Nhập mật khẩu (bắt buộc)">
+
+        <label for="data">Nhập dữ liệu:</label>
+        <textarea id="data" rows="5" placeholder="Nhập văn bản cần mã hóa/giải mã"></textarea>
+
+        <div style="text-align: center;">
+            <button class="encrypt-btn" id="encryptBtn">Mã hóa</button>
+            <button class="decrypt-btn" id="decryptBtn">Giải mã</button>
+        </div>
+
+        <h3>Kết quả:</h3>
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        async function deriveKey(password) {
+            const passwordBytes = new TextEncoder().encode(password);
+            const hash = await crypto.subtle.digest('SHA-256', passwordBytes);
+            return hash; // Trả về khóa SHA-256
+        }
+
+        async function encrypt(data, password) {
+            const iv = crypto.getRandomValues(new Uint8Array(12)); // Tạo IV
+            const hash = await deriveKey(password);
+            const cryptoKey = await crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, ['encrypt']);
+            const encryptedData = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, new TextEncoder().encode(data));
+
+            // Kết hợp IV và dữ liệu mã hóa thành chuỗi Base64
+            const ivBase64 = btoa(String.fromCharCode(...iv));
+            const encryptedBase64 = btoa(String.fromCharCode(...new Uint8Array(encryptedData)));
+            return `${ivBase64}.${encryptedBase64}`;
+        }
+
+        async function decrypt(encrypted, password) {
+            const [ivBase64, encryptedBase64] = encrypted.split('.');
+            if (!ivBase64 || !encryptedBase64) throw new Error('Dữ liệu mã hóa không hợp lệ.');
+
+            const iv = Uint8Array.from(atob(ivBase64), char => char.charCodeAt(0));
+            const encryptedData = Uint8Array.from(atob(encryptedBase64), char => char.charCodeAt(0));
+            const hash = await deriveKey(password);
+            const cryptoKey = await crypto.subtle.importKey('raw', hash, { name: 'AES-GCM' }, false, ['decrypt']);
+            const decryptedData = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, cryptoKey, encryptedData);
+            return new TextDecoder().decode(decryptedData);
+        }
+
+        document.getElementById('encryptBtn').addEventListener('click', async () => {
+            const password = document.getElementById('password').value.trim();
+            const data = document.getElementById('data').value.trim();
+            const output = document.getElementById('output');
+
+            if (!password || !data) {
+                output.textContent = 'Vui lòng nhập mật khẩu và dữ liệu.';
+                output.classList.add('error');
+                return;
+            }
+
+            try {
+                const encrypted = await encrypt(data, password);
+                output.textContent = `Dữ liệu đã mã hóa:\n${encrypted}`;
+                output.classList.remove('error');
+            } catch (error) {
+                console.error('Lỗi khi mã hóa:', error);
+                output.textContent = 'Có lỗi xảy ra khi mã hóa.';
+                output.classList.add('error');
+            }
+        });
+
+        document.getElementById('decryptBtn').addEventListener('click', async () => {
+            const password = document.getElementById('password').value.trim();
+            const data = document.getElementById('data').value.trim();
+            const output = document.getElementById('output');
+
+            if (!password || !data) {
+                output.textContent = 'Vui lòng nhập mật khẩu và dữ liệu.';
+                output.classList.add('error');
+                return;
+            }
+
+            try {
+                const decrypted = await decrypt(data, password);
+                output.textContent = `Dữ liệu đã giải mã:\n${decrypted}`;
+                output.classList.remove('error');
+            } catch (error) {
+                console.error('Lỗi khi giải mã:', error);
+                output.textContent = 'Có lỗi xảy ra khi giải mã. Dữ liệu hoặc mật khẩu không đúng.';
+                output.classList.add('error');
+            }
+        });
+    </script>
+</body>
+</html>
