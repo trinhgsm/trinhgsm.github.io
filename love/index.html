@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
+  <title>Trịnh Huệ</title>
+  <style>
+    #playBtn {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      border: none;
+      padding: 20px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 1000;
+      transition: opacity 0.3s ease;
+    }
+
+    #playBtn:hover {
+      opacity: 0.8;
+    }
+
+    #playBtn::after {
+      content: ' ✖'; /* Bạn có thể đổi ✖ thành chữ "Play" nếu muốn */
+    }
+  </style>
+</head>
+<body>
+  <div id="wrapper">
+    <h1>Sẽ mãi như vậy</h1>
+
+    <div id="clock-box">
+      <div id="clock">
+        <date>0 DAYS</date>
+        <time>00:00:00</time>
+      </div>
+    </div>
+
+    <div id="info">
+      <div class="one">
+        <img src="https://graph.facebook.com/100004215943294/picture?type=large&width=500&height=500&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662" class="avt">
+        <p>Hà Trịnh</p>
+      </div>
+      <div id="heart">
+        ❤<anni>...</anni>
+      </div>
+      <div class="two">
+        <img src="https://graph.facebook.com/100009164690729/picture?type=large&width=500&height=500&access_token=6628568379|c1e620fa708a1d5696fb991c1bde5662" class="avt">
+        <p>Phạm Huệ</p>
+      </div>
+    </div>
+
+    <div id="music">
+      <audio id="bgMusic" loop controls>Your browser does not support the audio element.</audio>
+    </div>
+
+    <footer>Cảm em ơn em đã luôn bên anh 💕</footer>
+  </div>
+
+  <!-- Nút bắt buộc người dùng click -->
+  <button id="playBtn">Bấm để nghe nhạc</button>
+
+  <script>
+    const musicList = ['ido', 'kiepsau', 'kiepsau1'];
+    const audio = document.getElementById('bgMusic');
+    audio.src = `music/${musicList[Math.floor(Math.random() * musicList.length)]}.mp3`;
+
+    document.getElementById('playBtn').addEventListener('click', function () {
+      audio.play().then(() => {
+        this.style.display = 'none'; // Ẩn nút sau khi đã phát
+      }).catch(err => {
+        alert('Trình duyệt không cho phép phát nhạc: ' + err);
+      });
+    });
+  </script>
+
+  <script src="app.js"></script>
+</body>
+</html>
