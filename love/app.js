@@ -1,6 +1,6 @@
 const yourDate = new Date("2007-08-20T00:00:00"),
 // var yourDate1 = new Date("2024-06-30T00:00:00"),
-music = ['ido', 'kiepsau1', 'kiepsau2'];
+music = ['ido', 'kiepsau', 'kiepsau1'];
 
 document.addEventListener('DOMContentLoaded', function(){
       var rootTime = document.querySelector("time");
