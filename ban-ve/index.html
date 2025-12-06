@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
   <title>Upload to Google Drive</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
     iframe { width: 100%; height: 600px; border: 1px solid #ccc; margin-top: 20px; }
   </style>
 </head>
 <body>
 
-<h2>Upload File to Google Drive</h2>
+<h2>Upload file lên Google Drive</h2>
 
 <input type="file" id="fileInput">
 <button onclick="upload()">Upload</button>
@@ -18,51 +19,53 @@
 <div id="viewer"></div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbza9m2gVu8QCkF5d0Rcrv17uvmmeqCLCsoMANt_TCvSeAwrR39KtzWBn5jj9bUh7twz/exec";
+// URL web app Apps Script (kết thúc bằng /exec)
+const API_URL = "DÁN_URL_WEB_APP_VÀO_ĐÂY";
 
 function upload() {
-  const file = document.getElementById("fileInput").files[0];
+  const input = document.getElementById("fileInput");
   const status = document.getElementById("status");
   const viewer = document.getElementById("viewer");
 
+  const file = input.files[0];
   if (!file) {
-    alert("Chọn file trước!");
+    alert("Chọn 1 file trước đã.");
     return;
   }
 
-  status.innerText = "Đang upload...";
+  status.textContent = "Đang upload...";
 
   const reader = new FileReader();
   reader.onload = function(e) {
     const base64 = e.target.result.split(',')[1];
 
-    fetch(API_URL, {
+    fetch(https://script.google.com/macros/s/AKfycbza9m2gVu8QCkF5d0Rcrv17uvmmeqCLCsoMANt_TCvSeAwrR39KtzWBn5jj9bUh7twz/exec, {
       method: "POST",
+      mode: "cors", // cho rõ ràng
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         fileName: file.name,
         mimeType: file.type || "application/octet-stream",
         base64: base64
-      }),
-      headers: { "Content-Type": "application/json" }
+      })
     })
     .then(res => res.json())
     .then(data => {
       if (!data.success) {
-        status.innerText = "Lỗi: " + data.error;
+        status.textContent = "Lỗi: " + data.error;
         return;
       }
 
-      status.innerHTML = `
-        Upload thành công!<br>
-        <a href="${data.url}" target="_blank">Mở trên Google Drive</a>
-      `;
+      status.innerHTML =
+        'Upload xong: <b>' + data.name + '</b><br>' +
+        '<a href="' + data.url + '" target="_blank">Mở trên Drive</a>';
 
-      // Hiển thị PDF hoặc DWG
-      const DRIVE_PREVIEW = `https://drive.google.com/file/d/${data.id}/preview`;
-
-      viewer.innerHTML = `
-        <iframe src="${DRIVE_PREVIEW}"></iframe>
-      `;
+      // Xem thử bằng Google Drive preview
+      const previewUrl = 'https://drive.google.com/file/d/' + data.id + '/preview';
+      viewer.innerHTML = '<iframe src="' + previewUrl + '"></iframe>';
+    })
+    .catch(err => {
+      status.textContent = "Lỗi fetch: " + err;
     });
   };
 
