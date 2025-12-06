@@ -214,20 +214,31 @@ async function apiPostForm(action, payloadObj) {
   return res.json();
 }
 
+// Gửi file dạng base64 trong payload (khớp với Apps Script mới)
 async function apiUploadFile(projectName, fileType, file) {
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('projectName', projectName);
-  fd.append('fileType', fileType);
-  fd.append('action', 'uploadFile');
+  // Đọc file thành ArrayBuffer
+  const arrayBuffer = await file.arrayBuffer();
+  const uint8 = new Uint8Array(arrayBuffer);
+  let binary = '';
+  for (let i = 0; i < uint8.length; i++) {
+    binary += String.fromCharCode(uint8[i]);
+  }
+  const dataBase64 = btoa(binary);
 
-  const res = await fetch(API_BASE, {
-    method: 'POST',
-    body: fd,
-  });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+  const payload = {
+    projectName,
+    fileType,
+    fileName: file.name,
+    mimeType: file.type || (fileType === 'pdf'
+      ? 'application/pdf'
+      : 'application/octet-stream'),
+    dataBase64,
+  };
+
+  // Dùng chung apiPostForm (x-www-form-urlencoded)
+  return apiPostForm('uploadFile', payload);
 }
+
 
 /**************************************************
  * PROJECTS
