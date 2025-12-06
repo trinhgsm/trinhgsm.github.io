@@ -79,6 +79,13 @@ function showStatus(msg) {
   uploadStatus.textContent = msg || '';
 }
 
+function setUploading(isUploading) {
+  pdfInput.disabled = isUploading;
+  dwgInput.disabled = isUploading;
+  btnStartDraw.disabled = isUploading || !pdfDoc;
+  mbBtnStartDraw.disabled = isUploading || !pdfDoc;
+}
+
 function polygonArea(points) {
   if (!points || points.length < 6) return 0;
   let area = 0;
@@ -303,7 +310,6 @@ function renderRoomsUI() {
       const nameSpan = document.createElement('span');
       nameSpan.textContent = r.name || '(Không tên)';
       nameSpan.style.cursor = 'pointer';
-
       nameSpan.onclick = () => highlightRoom(r);
 
       title.appendChild(dot);
@@ -599,8 +605,15 @@ async function renderPage(pageNum) {
 
   attachKonvaEvents();
   redrawRoomsOnCanvas();
+
+  // bật nút vẽ khi đã có PDF
+  btnStartDraw.disabled = false;
+  mbBtnStartDraw.disabled = false;
 }
 
+/**************************************************
+ * DRAWING MODE
+ **************************************************/
 function attachKonvaEvents() {
   if (!stage) return;
 
@@ -653,9 +666,6 @@ function redrawRoomsOnCanvas() {
   layer.draw();
 }
 
-/**************************************************
- * DRAWING MODE
- **************************************************/
 function startDrawMode() {
   if (!pdfDoc || !layer) return;
   isDrawing = true;
@@ -825,9 +835,11 @@ pdfInput.addEventListener('change', async (e) => {
     return;
   }
 
-  showStatus('Đang tải PDF cục bộ & upload lên Drive...');
   try {
-    // Hiển thị PDF từ file local ngay lập tức
+    setUploading(true);
+    showStatus('Đang đọc file PDF từ thiết bị (1/2)...');
+
+    // 1) Hiển thị PDF từ file local ngay lập tức
     const arrayBuffer = await file.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     pdfDoc = await loadingTask.promise;
@@ -836,16 +848,20 @@ pdfInput.addEventListener('change', async (e) => {
     renderPageSelect();
     await renderPage(currentPage);
 
-    // Upload lên Drive + cập nhật sheet
+    showStatus('Đang upload PDF lên Google Drive (2/2)...');
+
+    // 2) Upload lên Drive + cập nhật sheet
     const res = await apiUploadFile(currentProjectName, 'pdf', file);
     if (!res.success) throw new Error(res.error || 'Failed');
 
-    // Cập nhật projects (pdfLink)
+    // 3) Cập nhật danh sách dự án (để có link PDF trong sheet)
     await loadProjects();
-    showStatus('Đã upload PDF & cập nhật sheet.');
+    showStatus('✅ PDF đã được upload & lưu cấu hình.');
   } catch (err) {
     console.error(err);
-    showStatus('Lỗi khi xử lý PDF / upload Drive.');
+    showStatus('❌ Lỗi xử lý/ upload PDF: ' + err.message);
+  } finally {
+    setUploading(false);
   }
 });
 
@@ -857,15 +873,19 @@ dwgInput.addEventListener('change', async (e) => {
     alert('Chỉ nhận file DWG.');
     return;
   }
-  showStatus('Đang upload DWG lên Drive...');
+
   try {
+    setUploading(true);
+    showStatus('Đang upload DWG lên Google Drive...');
     const res = await apiUploadFile(currentProjectName, 'dwg', file);
     if (!res.success) throw new Error(res.error || 'Failed');
     await loadProjects();
-    showStatus('Đã upload DWG & cập nhật sheet.');
+    showStatus('✅ DWG đã được upload & lưu cấu hình.');
   } catch (err) {
     console.error(err);
-    showStatus('Lỗi upload DWG.');
+    showStatus('❌ Lỗi upload DWG: ' + err.message);
+  } finally {
+    setUploading(false);
   }
 });
 
