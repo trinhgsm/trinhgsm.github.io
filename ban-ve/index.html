@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quản lý bản vẽ kiến trúc</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js"></script>
+  <!-- konva.js -->
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+</head>
+<body>
+<div class="app-root">
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-icon">
+        <div class="brand-dot"></div>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">Architect Draw Manager</div>
+        <div class="brand-subtitle">Viewer bản vẽ & phân tích phòng</div>
+      </div>
+    </div>
+
+    <div class="project-bar">
+      <label for="projectSelect" class="label-inline">Dự án:</label>
+      <select id="projectSelect" class="select">
+        <option value="">Đang tải...</option>
+      </select>
+      <button id="btnReloadProjects" class="btn ghost">↻</button>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="app-body">
+    <!-- LEFT COLUMN -->
+    <div class="left-panel">
+      <!-- Project info & upload -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">Tệp dự án</h2>
+            <p class="card-subtitle">PDF dùng để vẽ, DWG lưu kho trên Drive</p>
+          </div>
+          <div class="project-meta" id="projectMeta"></div>
+        </div>
+
+        <div class="upload-grid">
+          <div class="upload-block">
+            <label class="field-label">Tải PDF mới</label>
+            <input type="file" id="pdfInput" accept=".pdf" class="input-file" />
+            <p class="field-hint">Dùng để hiển thị & vẽ vùng phòng</p>
+          </div>
+          <div class="upload-block">
+            <label class="field-label">Tải DWG mới</label>
+            <input type="file" id="dwgInput" accept=".dwg" class="input-file" />
+            <p class="field-hint">Lưu lên Drive, không xem trực tiếp</p>
+          </div>
+        </div>
+
+        <div class="file-links" id="fileLinks"></div>
+        <div class="status-line" id="uploadStatus"></div>
+      </section>
+
+      <!-- Page & draw controls -->
+      <section class="card">
+        <div class="toolbar">
+          <div class="toolbar-group">
+            <label for="pageSelect" class="field-label compact">Trang</label>
+            <select id="pageSelect" class="select compact"></select>
+          </div>
+          <div class="toolbar-group">
+            <button id="btnStartDraw" class="btn primary" disabled>Vẽ phòng</button>
+            <button id="btnUndoPoint" class="btn ghost" disabled>Hoàn tác điểm</button>
+            <button id="btnCancelDraw" class="btn ghost" disabled>Hủy vẽ</button>
+          </div>
+        </div>
+        <p class="field-hint">
+          Chạm từng góc phòng, double-tap / double-click để kết thúc polygon.
+        </p>
+
+        <div id="pdfWrapper">
+          <canvas id="pdfCanvas"></canvas>
+          <div id="konvaContainer"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="right-panel">
+      <!-- Search -->
+      <section class="card">
+        <h2 class="card-title">Tìm kiếm phòng</h2>
+        <p class="card-subtitle">
+          Ví dụ: <span class="pill">wc tầng 4</span>,
+          <span class="pill">phòng ngủ tầng 2</span>
+        </p>
+        <div class="search-row">
+          <input
+            type="text"
+            id="searchInput"
+            class="input"
+            placeholder="Nhập tên / loại phòng + tầng..."
+          />
+          <button id="btnSearch" class="btn ghost">Tìm</button>
+          <button id="btnClearSearch" class="btn ghost">Xóa</button>
+        </div>
+      </section>
+
+      <!-- Floor / type menu -->
+      <section class="card">
+        <h2 class="card-title">Tầng & loại phòng</h2>
+        <div id="menuContainer" class="menu-container"></div>
+      </section>
+
+      <!-- Rooms list -->
+      <section class="card">
+        <h2 class="card-title">Danh sách phòng</h2>
+        <p class="card-subtitle">Nhấn vào tên phòng để chọn, nhấn “Sửa” để chỉnh.</p>
+        <div id="roomsList" class="rooms-list"></div>
+      </section>
+
+      <!-- Stats -->
+      <section class="card">
+        <h2 class="card-title">Thống kê nhanh</h2>
+        <div id="statsBlock" class="stats-block">Chưa có dữ liệu.</div>
+      </section>
+    </div>
+  </div>
+
+  <!-- MOBILE DRAWING BAR -->
+  <div class="mobile-draw-bar" id="mobileDrawBar">
+    <button id="mbBtnStartDraw" class="btn primary">Vẽ</button>
+    <button id="mbBtnUndoPoint" class="btn ghost" disabled>Hoàn tác</button>
+    <button id="mbBtnCancelDraw" class="btn ghost" disabled>Hủy</button>
+    <span class="mobile-hint">Chế độ vẽ: trang được cố định, vuốt sẽ không cuộn.</span>
+  </div>
+</div>
+
+<!-- MODAL EDIT ROOM -->
+<div class="modal-backdrop" id="roomModalBackdrop">
+  <div class="modal" id="roomModal">
+    <div class="modal-header">
+      <div>
+        <h2 class="modal-title">Chỉnh sửa phòng</h2>
+        <p class="modal-subtitle">Cập nhật thông tin mà không cần vẽ lại.</p>
+      </div>
+      <button class="btn ghost modal-close-btn" id="roomModalClose">✕</button>
+    </div>
+
+    <form id="roomForm" class="modal-form">
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label">Tên phòng</label>
+          <input type="text" id="roomNameInput" class="input" placeholder="VD: Phòng ngủ master" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label">Loại phòng</label>
+          <input type="text" id="roomTypeInput" class="input" placeholder="VD: Phòng ngủ, WC, Khách..." />
+        </div>
+        <div class="form-field small">
+          <label class="field-label">Tầng</label>
+          <input type="number" id="roomFloorInput" class="input" />
+        </div>
+        <div class="form-field small">
+          <label class="field-label">Trang PDF</label>
+          <input type="number" id="roomPageInput" class="input" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label">Màu phòng</label>
+          <div class="color-row">
+            <input type="color" id="roomColorPicker" />
+            <input type="text" id="roomColorInput" class="input" placeholder="#22c55e" />
+          </div>
+          <p class="field-hint">Chọn màu hoặc nhập mã HEX.</p>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label">Diện tích (px²)</label>
+          <input type="text" id="roomAreaDisplay" class="input" disabled />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn ghost" id="roomModalCancel">Hủy</button>
+        <button type="submit" class="btn primary">Lưu thay đổi</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
