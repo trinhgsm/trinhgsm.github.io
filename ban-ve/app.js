@@ -31,6 +31,7 @@ let editingRoomId = null;
  * DOM
  **************************************************/
 const projectSelect = document.getElementById('projectSelect');
+const projectNameInput = document.getElementById('projectNameInput');
 const btnReloadProjects = document.getElementById('btnReloadProjects');
 const projectMeta = document.getElementById('projectMeta');
 const fileLinks = document.getElementById('fileLinks');
@@ -142,6 +143,52 @@ function filterRoomsByQuery(query) {
   });
 }
 
+/**
+ * Tạo tên dự án "slug" từ tên file
+ */
+function slugifyProjectNameFromFile(fileName) {
+  const base = fileName.replace(/\.[^.]+$/, '');
+  let s = base.trim().toLowerCase();
+  s = s.replace(/\s+/g, '-');
+  s = s.replace(/[^a-z0-9_-]+/g, '');
+  if (!s) s = 'du-an-' + Date.now();
+  return s;
+}
+
+/**
+ * Lấy projectName để dùng khi upload:
+ * 1. Nếu dropdown đang chọn dự án có sẵn -> dùng;
+ * 2. Nếu ô nhập tên dự án có text -> dùng text đó (slug nhẹ nhàng);
+ * 3. Nếu cả 2 đều trống -> lấy từ tên file.
+ */
+function resolveProjectNameForUpload(file) {
+  const selected = projectSelect.value && projectSelect.value.trim();
+  if (selected) return selected;
+
+  const typed = projectNameInput.value && projectNameInput.value.trim();
+  if (typed) {
+    // chuẩn hóa giống slug nhưng giữ dễ đọc
+    let s = typed.trim();
+    // bỏ khoảng trắng dư ở giữa
+    s = s.replace(/\s+/g, ' ');
+    return s;
+  }
+
+  if (file && file.name) {
+    return slugifyProjectNameFromFile(file.name);
+  }
+
+  return 'du-an-' + Date.now();
+}
+
+function validHexColor(c) {
+  if (!c) return null;
+  let s = c.trim();
+  if (!s.startsWith('#')) s = '#' + s;
+  if (/^#[0-9a-fA-F]{6}$/.test(s)) return s;
+  return null;
+}
+
 /**************************************************
  * API helpers
  **************************************************/
@@ -186,7 +233,7 @@ async function apiUploadFile(projectName, fileType, file) {
  * PROJECTS
  **************************************************/
 async function loadProjects() {
-  projectSelect.innerHTML = '<option value="">Đang tải...</option>';
+  projectSelect.innerHTML = '<option value="">(Tự tạo từ upload)</option>';
   try {
     const data = await apiGet({ action: 'projects' });
     if (!data.success) throw new Error(data.error || 'Failed');
@@ -199,12 +246,17 @@ async function loadProjects() {
 }
 
 function renderProjectSelect() {
-  projectSelect.innerHTML = '';
+  // giữ project đang chọn nếu có
+  const prev = currentProjectName;
+
+  // clear, thêm option mặc định
+  projectSelect.innerHTML = '<option value="">(Tự tạo từ upload)</option>';
+
   if (!projects.length) {
-    projectSelect.innerHTML = '<option value="">Chưa có dự án trong sheet</option>';
     currentProjectName = '';
     return;
   }
+
   projects.forEach((p) => {
     const opt = document.createElement('option');
     opt.value = p.projectName;
@@ -212,15 +264,18 @@ function renderProjectSelect() {
     projectSelect.appendChild(opt);
   });
 
-  if (!currentProjectName) {
+  if (prev && projects.some((p) => p.projectName === prev)) {
+    currentProjectName = prev;
+  } else if (!currentProjectName && projects[0]) {
     currentProjectName = projects[0].projectName;
   }
-  projectSelect.value = currentProjectName;
+
+  projectSelect.value = currentProjectName || '';
   onProjectChange();
 }
 
 async function onProjectChange() {
-  currentProjectName = projectSelect.value;
+  currentProjectName = projectSelect.value || '';
   highlightRoomId = null;
   filteredRooms = [];
   searchInput.value = '';
@@ -234,6 +289,8 @@ async function onProjectChange() {
     clearPdf();
     return;
   }
+
+  projectNameInput.value = currentProjectName;
 
   projectMeta.textContent = proj.folderUrl
     ? `Thư mục: ${proj.folderId}`
@@ -264,7 +321,12 @@ async function onProjectChange() {
  * ROOMS
  **************************************************/
 async function loadRoomsForCurrentProject() {
-  if (!currentProjectName) return;
+  if (!currentProjectName) {
+    rooms = [];
+    renderRoomsUI();
+    redrawRoomsOnCanvas();
+    return;
+  }
   try {
     const data = await apiGet({ action: 'rooms', projectName: currentProjectName });
     if (!data.success) throw new Error(data.error || 'Failed');
@@ -467,7 +529,6 @@ async function onDeleteRoom(room) {
 
 function highlightRoom(room) {
   if (!room) return;
-  // Nếu phòng ở trang khác, chuyển trang
   if (room.page !== currentPage) {
     currentPage = room.page;
     pageSelect.value = String(currentPage);
@@ -505,14 +566,6 @@ function openRoomModal(room) {
 function closeRoomModal() {
   editingRoomId = null;
   roomModalBackdrop.classList.remove('show');
-}
-
-function validHexColor(c) {
-  if (!c) return null;
-  let s = c.trim();
-  if (!s.startsWith('#')) s = '#' + s;
-  if (/^#[0-9a-fA-F]{6}$/.test(s)) return s;
-  return null;
 }
 
 /**************************************************
@@ -589,7 +642,6 @@ async function renderPage(pageNum) {
   const ctx = pdfCtx;
   await page.render({ canvasContext: ctx, viewport }).promise;
 
-  // Konva
   const container = document.getElementById('konvaContainer');
   container.style.width = viewport.width + 'px';
   container.style.height = viewport.height + 'px';
@@ -606,7 +658,6 @@ async function renderPage(pageNum) {
   attachKonvaEvents();
   redrawRoomsOnCanvas();
 
-  // bật nút vẽ khi đã có PDF
   btnStartDraw.disabled = false;
   mbBtnStartDraw.disabled = false;
 }
@@ -777,6 +828,10 @@ function finishPolygon() {
 
 async function saveRoomToServer({ name, type, floor, color, area, page, polygon }) {
   try {
+    // nếu chưa có projectName (vì chưa upload file nào) -> lấy từ ô nhập
+    if (!currentProjectName) {
+      currentProjectName = resolveProjectNameForUpload();
+    }
     const payload = {
       projectName: currentProjectName,
       name,
@@ -829,17 +884,20 @@ projectSelect.addEventListener('change', () => {
 pdfInput.addEventListener('change', async (e) => {
   const file = e.target.files?.[0];
   e.target.value = '';
-  if (!file || !currentProjectName) return;
+  if (!file) return;
   if (!file.name.toLowerCase().endsWith('.pdf')) {
     alert('Chỉ nhận file PDF.');
     return;
   }
 
   try {
+    // lấy projectName đúng ưu tiên: chọn / gõ / tên file
+    currentProjectName = resolveProjectNameForUpload(file);
+    projectNameInput.value = currentProjectName;
+
     setUploading(true);
     showStatus('Đang đọc file PDF từ thiết bị (1/2)...');
 
-    // 1) Hiển thị PDF từ file local ngay lập tức
     const arrayBuffer = await file.arrayBuffer();
     const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
     pdfDoc = await loadingTask.promise;
@@ -850,11 +908,9 @@ pdfInput.addEventListener('change', async (e) => {
 
     showStatus('Đang upload PDF lên Google Drive (2/2)...');
 
-    // 2) Upload lên Drive + cập nhật sheet
     const res = await apiUploadFile(currentProjectName, 'pdf', file);
     if (!res.success) throw new Error(res.error || 'Failed');
 
-    // 3) Cập nhật danh sách dự án (để có link PDF trong sheet)
     await loadProjects();
     showStatus('✅ PDF đã được upload & lưu cấu hình.');
   } catch (err) {
@@ -868,13 +924,16 @@ pdfInput.addEventListener('change', async (e) => {
 dwgInput.addEventListener('change', async (e) => {
   const file = e.target.files?.[0];
   e.target.value = '';
-  if (!file || !currentProjectName) return;
+  if (!file) return;
   if (!file.name.toLowerCase().endsWith('.dwg')) {
     alert('Chỉ nhận file DWG.');
     return;
   }
 
   try {
+    currentProjectName = resolveProjectNameForUpload(file);
+    projectNameInput.value = currentProjectName;
+
     setUploading(true);
     showStatus('Đang upload DWG lên Google Drive...');
     const res = await apiUploadFile(currentProjectName, 'dwg', file);
@@ -972,7 +1031,6 @@ roomForm.addEventListener('submit', async (e) => {
       floor,
       color,
       page,
-      // không sửa polygon/area ở form này
     };
     const data = await apiPostForm('updateRoom', payload);
     if (!data.success) throw new Error(data.error || 'Failed');
@@ -984,14 +1042,12 @@ roomForm.addEventListener('submit', async (e) => {
       polygon: Array.isArray(data.room.polygon) ? data.room.polygon : [],
     };
 
-    // cập nhật trong mảng rooms
     rooms = rooms.map((r) => (r.roomId === updated.roomId ? updated : r));
     filteredRooms = filteredRooms.map((r) =>
       r.roomId === updated.roomId ? updated : r
     );
     highlightRoomId = updated.roomId;
 
-    // nếu đổi trang, render lại trang mới
     if (updated.page !== currentPage) {
       currentPage = updated.page;
       pageSelect.value = String(currentPage);
