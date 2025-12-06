@@ -5,10 +5,10 @@
   <title>Quản lý bản vẽ kiến trúc</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="styles.css" />
-  <!-- pdf.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+  <!-- pdf.js v2 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script>
-    // Khai báo worker cho pdf.js
+    window.pdfjsLib = window['pdfjs-dist/build/pdf'];
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
   </script>
@@ -30,11 +30,21 @@
     </div>
 
     <div class="project-bar">
+      <!-- chọn dự án có sẵn -->
       <label for="projectSelect" class="label-inline">Dự án:</label>
       <select id="projectSelect" class="select">
-        <option value="">Đang tải...</option>
+        <option value="">(Tự tạo từ upload)</option>
       </select>
       <button id="btnReloadProjects" class="btn ghost">↻</button>
+
+      <!-- đặt tên dự án mới (tùy chọn) -->
+      <input
+        type="text"
+        id="projectNameInput"
+        class="input"
+        placeholder="Tên dự án (để trống thì lấy tên file)"
+        style="max-width: 220px; font-size: 11px;"
+      />
     </div>
   </header>
 
