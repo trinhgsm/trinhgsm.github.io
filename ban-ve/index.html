@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="styles.css" />
   <!-- pdf.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.min.js"></script>
+<script>
+  // BẮT BUỘC KHAI BÁO WORKER CHO pdf.js
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.8.69/pdf.worker.min.js';
+</script>
+
   <!-- konva.js -->
   <script src="https://unpkg.com/konva@9/konva.min.js"></script>
 </head>
