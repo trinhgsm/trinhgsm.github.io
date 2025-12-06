@@ -1,7 +1,7 @@
 /**************************************************
  * CẤU HÌNH API
  **************************************************/
-const API_BASE = 'https://script.google.com/macros/s/XXXX/exec'; // ĐỔI THÀNH URL CỦA BẠN
+const API_BASE = 'https://script.google.com/macros/s/AKfycbyuCvlOdD9As5qoEwezo4cVfLn-bibmIDMD_cBvCxBIGVk54iob4nfE8smDypyj3vde/exec'; // ĐỔI THÀNH URL CỦA BẠN
 
 /**************************************************
  * STATE
