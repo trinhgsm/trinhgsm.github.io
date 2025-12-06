@@ -1,7 +1,7 @@
 /**************************************************
  * CẤU HÌNH API
  **************************************************/
-const API_BASE = 'https://script.google.com/macros/s/AKfycbyO8TCqHoATKNdwcFOaZRyJU3ul7GJj8-u-DzV2Nqz7wKWzRTV0_7lWpndV0lqtc2sA/exec'; // ĐỔI XXXX thành URL Web App của bạn
+const API_BASE = 'https://script.google.com/macros/s/AKfycbyO8TCqHoATKNdwcFOaZRyJU3ul7GJj8-u-DzV2Nqz7wKWzRTV0_7lWpndV0lqtc2sA/exec'; // ĐỔI THÀNH URL CỦA BẠN
 
 /**************************************************
  * STATE
@@ -143,12 +143,14 @@ function filterRoomsByQuery(query) {
   });
 }
 
-// Tạo tên dự án “đẹp” từ tên file (bỏ đuôi, bỏ ký tự lạ)
+/**
+ * Tạo tên dự án "slug" từ tên file
+ */
 function slugifyProjectNameFromFile(fileName) {
   const base = fileName.replace(/\.[^.]+$/, '');
   let s = base.trim().toLowerCase();
-  s = s.replace(/\s+/g, '-');         // khoảng trắng -> -
-  s = s.replace(/[^a-z0-9_-]+/g, ''); // bỏ ký tự lạ
+  s = s.replace(/\s+/g, '-');
+  s = s.replace(/[^a-z0-9_-]+/g, '');
   if (!s) s = 'du-an-' + Date.now();
   return s;
 }
@@ -156,17 +158,25 @@ function slugifyProjectNameFromFile(fileName) {
 /**
  * Lấy projectName để dùng khi upload:
  * 1. Nếu dropdown đang chọn dự án có sẵn -> dùng;
- * 2. Nếu ô nhập tên dự án có text -> dùng text đó;
- * 3. Nếu cả 2 đều trống -> lấy theo tên file;
+ * 2. Nếu ô nhập tên dự án có text -> dùng text đó (slug nhẹ nhàng);
+ * 3. Nếu cả 2 đều trống -> lấy từ tên file.
  */
 function resolveProjectNameForUpload(file) {
   const selected = projectSelect.value && projectSelect.value.trim();
   if (selected) return selected;
 
   const typed = projectNameInput.value && projectNameInput.value.trim();
-  if (typed) return typed;
+  if (typed) {
+    // chuẩn hóa giống slug nhưng giữ dễ đọc
+    let s = typed.trim();
+    // bỏ khoảng trắng dư ở giữa
+    s = s.replace(/\s+/g, ' ');
+    return s;
+  }
 
-  if (file && file.name) return slugifyProjectNameFromFile(file.name);
+  if (file && file.name) {
+    return slugifyProjectNameFromFile(file.name);
+  }
 
   return 'du-an-' + Date.now();
 }
@@ -206,16 +216,7 @@ async function apiPostForm(action, payloadObj) {
 
 // Gửi file dạng base64 trong payload (khớp với Apps Script mới)
 async function apiUploadFile(projectName, fileType, file) {
-  // Nếu projectName rỗng thì tự lấy theo tên file
-  if (!projectName || !projectName.trim()) {
-    if (file && file.name) {
-      projectName = slugifyProjectNameFromFile(file.name);
-    } else {
-      projectName = 'du-an-' + Date.now();
-    }
-  }
-
-  // Đọc file thành ArrayBuffer -> base64
+  // Đọc file thành ArrayBuffer
   const arrayBuffer = await file.arrayBuffer();
   const uint8 = new Uint8Array(arrayBuffer);
   let binary = '';
@@ -228,14 +229,16 @@ async function apiUploadFile(projectName, fileType, file) {
     projectName,
     fileType,
     fileName: file.name,
-    mimeType:
-      file.type ||
-      (fileType === 'pdf' ? 'application/pdf' : 'application/octet-stream'),
+    mimeType: file.type || (fileType === 'pdf'
+      ? 'application/pdf'
+      : 'application/octet-stream'),
     dataBase64,
   };
 
+  // Dùng chung apiPostForm (x-www-form-urlencoded)
   return apiPostForm('uploadFile', payload);
 }
+
 
 /**************************************************
  * PROJECTS
@@ -254,7 +257,10 @@ async function loadProjects() {
 }
 
 function renderProjectSelect() {
+  // giữ project đang chọn nếu có
   const prev = currentProjectName;
+
+  // clear, thêm option mặc định
   projectSelect.innerHTML = '<option value="">(Tự tạo từ upload)</option>';
 
   if (!projects.length) {
@@ -354,6 +360,7 @@ async function loadRoomsForCurrentProject() {
 function renderRoomsUI() {
   const list = filteredRooms.length ? filteredRooms : rooms;
 
+  // rooms list
   roomsList.innerHTML = '';
   if (!list.length) {
     roomsList.innerHTML =
@@ -832,10 +839,9 @@ function finishPolygon() {
 
 async function saveRoomToServer({ name, type, floor, color, area, page, polygon }) {
   try {
-    // nếu chưa có projectName (vì chưa upload file nào) -> lấy từ ô nhập hoặc random
-    if (!currentProjectName || !currentProjectName.trim()) {
+    // nếu chưa có projectName (vì chưa upload file nào) -> lấy từ ô nhập
+    if (!currentProjectName) {
       currentProjectName = resolveProjectNameForUpload();
-      projectNameInput.value = currentProjectName;
     }
     const payload = {
       projectName: currentProjectName,
@@ -896,7 +902,7 @@ pdfInput.addEventListener('change', async (e) => {
   }
 
   try {
-    // Xác định projectName (dropdown / input / tên file)
+    // lấy projectName đúng ưu tiên: chọn / gõ / tên file
     currentProjectName = resolveProjectNameForUpload(file);
     projectNameInput.value = currentProjectName;
 
