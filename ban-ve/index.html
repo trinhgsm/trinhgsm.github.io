@@ -19,29 +19,41 @@
 <div id="viewer"></div>
 
 <script>
-// URL web app Apps Script (kết thúc bằng /exec)
-const API_URL = "DÁN_URL_WEB_APP_VÀO_ĐÂY";
+// ==== BẮT ĐẦU CẤU HÌNH ====
+const API_URL = "https://script.google.com/macros/s/AKfycbza9m2gVu8QCkF5d0Rcrv17uvmmeqCLCsoMANt_TCvSeAwrR39KtzWBn5jj9bUh7twz/exec";
+// ==== HẾT CẤU HÌNH ====
 
+
+// ====== HÀM UPLOAD (KHÔNG LỖI CÚ PHÁP) ======
 function upload() {
+  console.log("Upload function START");  // DEBUG 1
+
   const input = document.getElementById("fileInput");
   const status = document.getElementById("status");
   const viewer = document.getElementById("viewer");
 
   const file = input.files[0];
+
   if (!file) {
-    alert("Chọn 1 file trước đã.");
+    alert("Chọn file trước!");
     return;
   }
+
+  console.log("Selected file:", file);  // DEBUG 2
 
   status.textContent = "Đang upload...";
 
   const reader = new FileReader();
+
   reader.onload = function(e) {
+    console.log("FileReader DONE");  // DEBUG 3
     const base64 = e.target.result.split(',')[1];
 
-    fetch(https://script.google.com/macros/s/AKfycbza9m2gVu8QCkF5d0Rcrv17uvmmeqCLCsoMANt_TCvSeAwrR39KtzWBn5jj9bUh7twz/exec, {
+    console.log("Base64 length:", base64.length);  // DEBUG 4
+
+    fetch(API_URL, {
       method: "POST",
-      mode: "cors", // cho rõ ràng
+      mode: "cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         fileName: file.name,
@@ -49,8 +61,13 @@ function upload() {
         base64: base64
       })
     })
-    .then(res => res.json())
+    .then(res => {
+      console.log("Fetch response:", res);  // DEBUG 5
+      return res.json();
+    })
     .then(data => {
+      console.log("Response JSON:", data);  // DEBUG 6
+
       if (!data.success) {
         status.textContent = "Lỗi: " + data.error;
         return;
@@ -60,11 +77,12 @@ function upload() {
         'Upload xong: <b>' + data.name + '</b><br>' +
         '<a href="' + data.url + '" target="_blank">Mở trên Drive</a>';
 
-      // Xem thử bằng Google Drive preview
-      const previewUrl = 'https://drive.google.com/file/d/' + data.id + '/preview';
-      viewer.innerHTML = '<iframe src="' + previewUrl + '"></iframe>';
+      const previewUrl = `https://drive.google.com/file/d/${data.id}/preview`;
+
+      viewer.innerHTML = `<iframe src="${previewUrl}"></iframe>`;
     })
     .catch(err => {
+      console.error("Fetch ERROR:", err);  // DEBUG 7
       status.textContent = "Lỗi fetch: " + err;
     });
   };
