@@ -526,14 +526,20 @@
       fetch(API_URL + "?mode=files&pass=" + encodeURIComponent(PASSWORD))
         .then((res) => res.json())
         .then((data) => {
-          if (data && data.error === "wrong_password") {
-            passwordError.textContent = "Sai mật khẩu.";
-            setStatus("Sai mật khẩu", "err");
+          if (data && data.error) {
+            if (data.error === "wrong_password") {
+              passwordError.textContent = "Sai mật khẩu.";
+              setStatus("Sai mật khẩu", "err");
+            } else {
+              passwordError.textContent = data.message || "Lỗi API (files).";
+              setStatus("Lỗi: " + data.error, "err");
+            }
             return;
           }
+
           if (!Array.isArray(data)) {
-            setStatus("Lỗi dữ liệu trả về từ API files", "err");
-            passwordError.textContent = "API trả về dữ liệu không hợp lệ.";
+            passwordError.textContent = "API files trả về dữ liệu không hợp lệ.";
+            setStatus("Lỗi dữ liệu API files", "err");
             return;
           }
 
@@ -549,6 +555,7 @@
         })
         .catch((err) => {
           console.error(err);
+          alert("Lỗi gọi API (files): " + err);
           passwordError.textContent = "Không gọi được API (files).";
           setStatus("Không gọi được API files", "err");
         });
@@ -621,8 +628,14 @@
       )
         .then((res) => res.json())
         .then((data) => {
+          if (data && data.error) {
+            setStatus("Lỗi sheets: " + data.error, "err");
+            currentSheetTitle.textContent = data.message || "Lỗi tải sheet.";
+            return;
+          }
+
           if (!Array.isArray(data)) {
-            setStatus("Lỗi dữ liệu trả về từ API sheets", "err");
+            setStatus("Lỗi dữ liệu API sheets", "err");
             currentSheetTitle.textContent = "Lỗi tải sheet.";
             return;
           }
@@ -693,6 +706,10 @@
       )
         .then((res) => res.json())
         .then((data) => {
+          if (data && data.error) {
+            setStatus("Lỗi embed: " + data.error, "err");
+            return;
+          }
           if (!data || !data.url) {
             setStatus("Lỗi API embed.", "err");
             return;
