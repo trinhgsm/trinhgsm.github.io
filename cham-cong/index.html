@@ -581,20 +581,23 @@
       files.forEach((f) => {
         const item = document.createElement("div");
         item.className = "file-item";
-        item.dataset.fileId = f.fileId;
+        item.dataset.fileId = f.fileId || "";
 
         const title = document.createElement("div");
         title.className = "file-item-title";
-        title.textContent = f.label;
+        title.textContent = f.label || "(không có tên)";
 
         const sub = document.createElement("div");
         sub.className = "file-item-sub";
-        sub.textContent = f.fileId.substring(0, 10) + "…";
+        const shortId = (f.fileId || "").substring(0, 10);
+        sub.textContent = shortId ? shortId + "…" : "ID trống";
 
         item.appendChild(title);
         item.appendChild(sub);
 
-        item.addEventListener("click", () => selectFile(f.fileId));
+        item.addEventListener("click", () => {
+          if (f.fileId) selectFile(f.fileId);
+        });
 
         fileListEl.appendChild(item);
       });
@@ -616,7 +619,12 @@
       sheets = [];
       sheetTabsEl.innerHTML = "";
       currentSheetTitle.textContent = "Đang tải danh sách sheet…";
-      currentFileTitle.textContent = "File: " + fileId.substring(0, 8) + "…";
+
+      const shortFileId = (fileId || "").substring(0, 8);
+      currentFileTitle.textContent = shortFileId
+        ? "File: " + shortFileId + "…"
+        : "File: (không có ID)";
+
       setStatus("Đang tải sheets…", null);
 
       fetch(
