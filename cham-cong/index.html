@@ -160,7 +160,7 @@
       color: #022c22;
       display: none;
     }
-    #zoomBtn {
+    #openTabBtn {
       background: #38bdf8;
       border-color: #38bdf8;
       color: #02131c;
@@ -182,16 +182,6 @@
       height: 100%;
       border: none;
       background: #020617;
-    }
-
-    /* FULLSCREEN */
-    body.fullscreen-mode header { display: none; }
-    body.fullscreen-mode main   { padding: 0; }
-    body.fullscreen-mode .viewer {
-      position: fixed;
-      inset: 0;
-      border-radius: 0;
-      z-index: 9990;
     }
 
     @media (min-width: 768px) {
@@ -233,7 +223,7 @@
     <select id="fileMenu"></select>
     <select id="sheetMenu"></select>
     <button id="editBtn" class="small-btn">Chỉnh sửa</button>
-    <button id="zoomBtn" class="small-btn">Phóng to</button>
+    <button id="openTabBtn" class="small-btn">Mở tab mới</button>
   </div>
 </header>
 
@@ -253,7 +243,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrT
 const VIEW_PASSWORD = "123";
 const EDIT_PASSWORD = "321";
 
-// Kiểu nhúng: B = dùng edit#gid (không cần publish)
+// Dùng luôn edit#gid (không cần publish)
 const EMBED_MODE = "B";
 
 /* ===== DOM ===== */
@@ -262,15 +252,14 @@ const passwordInput = document.getElementById("passwordInput");
 const passwordError = document.getElementById("passwordError");
 const unlockBtn     = document.getElementById("unlockBtn");
 
-const topBar    = document.getElementById("topBar");
-const fileMenu  = document.getElementById("fileMenu");
-const sheetMenu = document.getElementById("sheetMenu");
-const editBtn   = document.getElementById("editBtn");
-const zoomBtn   = document.getElementById("zoomBtn");
-const frame     = document.getElementById("sheetFrame");
+const topBar     = document.getElementById("topBar");
+const fileMenu   = document.getElementById("fileMenu");
+const sheetMenu  = document.getElementById("sheetMenu");
+const editBtn    = document.getElementById("editBtn");
+const openTabBtn = document.getElementById("openTabBtn");
+const frame      = document.getElementById("sheetFrame");
 
 let userMode = "view";
-let zoomed   = false;
 
 /* ===== PASSWORD ===== */
 unlockBtn.onclick = handleUnlock;
@@ -367,56 +356,37 @@ async function loadSheetsForCurrentFile() {
   }
 }
 
-/* ===== BUILD IFRAME URL (MODE B) ===== */
-function buildEmbedUrl() {
+/* ===== BUILD URL EDIT#GID ===== */
+function buildEditUrl() {
   const fileUrl = fileMenu.value;
   if (!fileUrl) return "";
 
   const id  = extractSheetId(fileUrl);
   const gid = sheetMenu.value || "";
-
   if (!id) return fileUrl;
 
-  // EMBED_MODE = "B" → dùng edit#gid (không cần publish web)
-  // nếu sau này bạn muốn quay về A thì chỉ đổi const EMBED_MODE ở trên
-  if (EMBED_MODE === "B") {
-    return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
-  } else {
-    // dự phòng cho mode A (pubhtml)
-    return `https://docs.google.com/spreadsheets/d/${id}/pubhtml?gid=${gid}&single=true&widget=true&headers=false`;
-  }
+  return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
 }
 
-/* ===== UPDATE IFRAME ===== */
+/* ===== UPDATE IFRAME (XEM) ===== */
 function updateFrame() {
-  const url = buildEmbedUrl();
+  const url = buildEditUrl();
   if (url) frame.src = url;
 }
 
 fileMenu.onchange  = () => { loadSheetsForCurrentFile(); };
 sheetMenu.onchange = updateFrame;
 
-/* ===== EDIT MODE ===== */
+/* ===== NÚT CHỈNH SỬA (MODE 321) ===== */
 editBtn.onclick = () => {
-  const fileUrl = fileMenu.value;
-  const id  = extractSheetId(fileUrl);
-  const gid = sheetMenu.value || "";
-  if (!id) return;
-
-  const editUrl = `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
-  window.open(editUrl, "_blank");
+  const url = buildEditUrl();
+  if (url) window.open(url, "_blank");
 };
 
-/* ===== ZOOM / FULLSCREEN ===== */
-zoomBtn.onclick = () => {
-  zoomed = !zoomed;
-  if (zoomed) {
-    document.body.classList.add("fullscreen-mode");
-    zoomBtn.textContent = "Thu nhỏ";
-  } else {
-    document.body.classList.remove("fullscreen-mode");
-    zoomBtn.textContent = "Phóng to";
-  }
+/* ===== NÚT MỞ TAB MỚI (CẢ VIEW & EDIT) ===== */
+openTabBtn.onclick = () => {
+  const url = buildEditUrl();
+  if (url) window.open(url, "_blank");
 };
 </script>
 
