@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
-
-  <!-- TẮT PINCH ZOOM -->
+  <!-- TẮT PINCH ZOOM, CHỈ DÙNG ZOOM NÚT + / - -->
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+  <!-- Favicon DK -->
+  <link rel="icon" type="image/png"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
 
   <style>
     :root {
@@ -19,42 +22,77 @@
 
     body {
       margin: 0;
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: var(--bg-main);
       color: #e5e7eb;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overflow-x: hidden; /* Không cho kéo ngang cả trang */
     }
 
-    /* ===== LOADING MÀN HÌNH ===== */
-    #loadingScreen {
+    /* ---------- LAYER LOGO ĐANG TẢI DUKICO ---------- */
+    #loadingOverlay {
       position: fixed;
       inset: 0;
       background: rgba(2,6,23,0.92);
-      z-index: 9998;
+      display: none; /* bật/tắt bằng JS */
+      align-items: center;
+      justify-content: center;
+      z-index: 9000;
+    }
+    .loading-box {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 10px;
+    }
+    .loading-logo {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      gap: 16px;
-      font-size: 1rem;
-      letter-spacing: 0.08em;
     }
-    #loadingSpinner {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 5px solid rgba(255,255,255,0.2);
+    .loading-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      border: 3px solid rgba(148,163,184,0.4);
       border-top-color: #38bdf8;
-      animation: spin 0.9s linear infinite;
+      border-right-color: #22c55e;
+      animation: loading-spin 0.9s linear infinite;
     }
-    @keyframes spin {
+    .loading-core {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .loading-core span {
+      transform: translateX(0.05em);
+    }
+    .loading-text {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      opacity: 0.9;
+    }
+    @keyframes loading-spin {
       to { transform: rotate(360deg); }
     }
 
-    /* ===== LAYER MẬT KHẨU ===== */
+    /* ---------- LOCK LAYER ---------- */
     #lockScreen {
       position: fixed;
       inset: 0;
@@ -74,13 +112,27 @@
       border: 1px solid rgba(148,163,184,0.5);
       text-align: center;
     }
+    #lockBox h2 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    #lockBox p {
+      margin: 0 0 12px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
     #passwordInput {
       width: 100%;
       padding: 9px 11px;
       border-radius: 10px;
       border: 1px solid #475569;
+      outline: none;
       background: #020617;
       color: #fff;
+      font-size: 0.9rem;
     }
     #passwordError {
       min-height: 18px;
@@ -90,18 +142,19 @@
       text-align: left;
     }
     #unlockBtn {
-      margin-top: 8px;
       width: 100%;
+      margin-top: 8px;
       padding: 9px;
       border-radius: 10px;
+      border: none;
       background: var(--accent);
       color: #020617;
-      border: none;
       font-weight: 600;
+      font-size: 0.86rem;
       cursor: pointer;
     }
 
-    /* ===== HEADER ===== */
+    /* ---------- HEADER ---------- */
     header {
       padding: 8px 10px 6px;
       background: rgba(15,23,42,0.98);
@@ -110,15 +163,14 @@
       flex-direction: column;
       gap: 6px;
     }
-
     .brand {
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .brand-mark {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 8px;
       background: conic-gradient(#38bdf8,#22c55e,#f97316,#eab308,#38bdf8);
       padding: 2px;
@@ -130,25 +182,35 @@
     .brand-inner {
       width: 100%;
       height: 100%;
-      background: #020617;
       border-radius: 6px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: #38bdf8;
+      background: #020617;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.6rem;
+      color: #38bdf8;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+    .brand span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    /* ===== TOOLBAR ===== */
+    /* ===== TOOLBAR – THU NHỎ CHO VÀO 1 HÀNG ===== */
     .toolbar {
       display: flex;
       gap: 4px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      flex-wrap: nowrap;          /* Không cho xuống dòng */
+      overflow-x: auto;           /* Vuốt ngang nếu chật */
       padding-bottom: 4px;
     }
-    select, button.small-btn {
+
+    select,
+    button.small-btn {
       border-radius: 8px;
       border: 1px solid var(--border-soft);
       background: #020617;
@@ -156,43 +218,56 @@
       font-size: 0.75rem;
       padding: 5px 6px;
     }
+
     select {
       flex: 1 1 auto;
       min-width: 90px;
     }
+
     button.small-btn {
       flex: 0 0 auto;
+      cursor: pointer;
       white-space: nowrap;
+      padding: 5px 8px;
     }
+
+    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
     #editBtn {
       background: #22c55e;
       border-color: #22c55e;
       color: #022c22;
+      display: inline-block;
     }
     @media (min-width: 768px) {
       #editBtn { display: none; }
     }
 
-    /* ===== VIEWER ===== */
-    main { flex: 1; padding: 6px; display: flex; }
+    main {
+      flex: 1;
+      padding: 6px;
+      display: flex;
+      min-height: 0;
+    }
     .viewer {
       width: 100%;
       border-radius: 14px;
-      background: #020617;
       overflow: hidden;
+      background: #020617;
       display: flex;
       flex-direction: column;
     }
 
+    /* KHUNG CHO PHÉP KÉO NGANG + DỌC */
     .iframe-wrap {
       width: 100%;
       height: 100%;
       overflow-y: auto;
-      overflow-x: hidden;  /* chỉ bật khi zoom > 1 */
+      overflow-x: auto;              /* cho kéo ngang khung sheet */
+      -webkit-overflow-scrolling: touch;
     }
     .iframe-scale {
       transform-origin: top left;
-      width: 1200px;
+      width: 1200px;  /* chiều rộng gốc của sheet */
       min-height: 600px;
     }
     iframe {
@@ -201,27 +276,48 @@
       border: none;
       background: #020617;
     }
+
+    @media (min-width: 768px) {
+      header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+      }
+      .toolbar {
+        overflow-x: visible;
+      }
+      main { padding: 10px; }
+    }
   </style>
 </head>
 <body>
 
-<!-- ===== LOADING SCREEN ===== -->
-<div id="loadingScreen">
-  <div id="loadingSpinner"></div>
-  ĐANG TẢI...
+<!-- LAYER LOGO ĐANG TẢI DUKICO -->
+<div id="loadingOverlay">
+  <div class="loading-box">
+    <div class="loading-logo">
+      <div class="loading-ring"></div>
+      <div class="loading-core">
+        <span>DUKICO</span>
+      </div>
+    </div>
+    <div class="loading-text">ĐANG TẢI...</div>
+  </div>
 </div>
 
-<!-- ===== MẬT KHẨU ===== -->
+<!-- LAYER MẬT KHẨU -->
 <div id="lockScreen">
   <div id="lockBox">
-    <h3>Nhập mật khẩu</h3>
+    <h2>Mật khẩu</h2>
+    <p>Nhập mật khẩu để mở viewer.</p>
     <input id="passwordInput" type="password" placeholder="Mật khẩu..." />
     <div id="passwordError"></div>
     <button id="unlockBtn">MỞ</button>
   </div>
 </div>
 
-<!-- ===== HEADER ===== -->
+<!-- HEADER CHÍNH -->
 <header id="topBar" style="display:none;">
   <div class="brand">
     <div class="brand-mark"><div class="brand-inner">DK</div></div>
@@ -238,10 +334,9 @@
   </div>
 </header>
 
-<!-- ===== VIEWER ===== -->
 <main>
   <div class="viewer">
-    <div class="iframe-wrap" id="iframeWrap">
+    <div class="iframe-wrap">
       <div class="iframe-scale" id="iframeScale">
         <iframe id="sheetFrame"></iframe>
       </div>
@@ -256,132 +351,282 @@ const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
 const BASE_WIDTH = 1200;
 
-/* DOM */
+/* ===== DOM ===== */
 const lockScreen    = document.getElementById("lockScreen");
-const loadingScreen = document.getElementById("loadingScreen");
 const passwordInput = document.getElementById("passwordInput");
 const passwordError = document.getElementById("passwordError");
 const unlockBtn     = document.getElementById("unlockBtn");
-const topBar        = document.getElementById("topBar");
-const fileMenu      = document.getElementById("fileMenu");
-const sheetMenu     = document.getElementById("sheetMenu");
-const editBtn       = document.getElementById("editBtn");
-const driveBtn      = document.getElementById("driveBtn");
-const zoomOutBtn    = document.getElementById("zoomOutBtn");
-const zoomInBtn     = document.getElementById("zoomInBtn");
-const frame         = document.getElementById("sheetFrame");
+
+const loadingOverlay = document.getElementById("loadingOverlay");
+
+const topBar    = document.getElementById("topBar");
+const fileMenu  = document.getElementById("fileMenu");
+const sheetMenu = document.getElementById("sheetMenu");
+const editBtn   = document.getElementById("editBtn");
+const driveBtn  = document.getElementById("driveBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+const zoomInBtn  = document.getElementById("zoomInBtn");
+const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
-const iframeWrap     = document.getElementById("iframeWrap");
 
-/* ZOOM STATE */
-let baseScale = 1;
-let zoomMultiplier = 1;
+/* ===== ZOOM STATE ===== */
+let baseScale = 1;       // scale theo màn hình
+let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
 
-/* AUTO LOGIN */
-window.addEventListener("load", () => {
-  const auth = localStorage.getItem(AUTH_KEY);
-  if (auth === "ok") startApp();
+/* ===== LOADING HELPERS ===== */
+function showLoading() {
+  loadingOverlay.style.display = "flex";
+}
+function hideLoading() {
+  loadingOverlay.style.display = "none";
+}
+
+/* Khi iframe load xong thì tắt logo tải */
+frame.addEventListener("load", () => {
+  if (frame.src && frame.src !== "about:blank") {
+    hideLoading();
+  }
 });
 
-/* PASSWORD */
+/* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
+window.addEventListener("load", () => {
+  try {
+    const auth = localStorage.getItem(AUTH_KEY);
+    if (auth === "ok") {
+      startApp();
+      return;
+    }
+  } catch (e) {}
+});
+
+/* ===== PASSWORD ===== */
 unlockBtn.onclick = handleUnlock;
-passwordInput.onkeydown = e => e.key === "Enter" && handleUnlock();
+passwordInput.onkeydown = (e) => { if (e.key === "Enter") handleUnlock(); };
 
 function handleUnlock() {
-  if (passwordInput.value.trim() === PASSWORD) {
-    localStorage.setItem(AUTH_KEY, "ok");
+  const pass = passwordInput.value.trim();
+  if (pass === PASSWORD) {
+    try {
+      localStorage.setItem(AUTH_KEY, "ok");
+    } catch (e) {}
     startApp();
-  } else passwordError.textContent = "Sai mật khẩu!";
+  } else {
+    passwordError.textContent = "Sai mật khẩu!";
+  }
 }
 
 function startApp() {
+  passwordError.textContent = "";
   lockScreen.style.display = "none";
   topBar.style.display = "flex";
-  loadingScreen.style.display = "flex";
-
-  loadFiles().then(() => {
-    setTimeout(() => loadingScreen.style.display = "none", 300);
-  });
-
+  showLoading();
+  loadFiles();
   autoScaleIframe();
 }
 
-/* SCALE */
+/* ===== APPLY SCALE ===== */
 function applyScale() {
+  if (!iframeScaleDiv) return;
   const scale = baseScale * zoomMultiplier;
   iframeScaleDiv.style.transform = "scale(" + scale + ")";
-
-  iframeWrap.style.overflowX = zoomMultiplier > 1 ? "auto" : "hidden";
 }
 
+/* ===== AUTO SCALE THEO MÀN HÌNH ===== */
 function autoScaleIframe() {
-  const screenW = window.innerWidth;
-  baseScale = Math.min(1, screenW / BASE_WIDTH);
+  if (!iframeScaleDiv) return;
+  const screenW = window.innerWidth || document.documentElement.clientWidth;
+  baseScale = Math.min(1, screenW / BASE_WIDTH); // PC không phóng to quá 1
   applyScale();
 }
+
 window.addEventListener("resize", autoScaleIframe);
 
-/* ZOOM BTN */
-zoomOutBtn.onclick = () => { zoomMultiplier = Math.max(0.5, zoomMultiplier - 0.1); applyScale(); };
-zoomInBtn.onclick  = () => { zoomMultiplier = Math.min(2, zoomMultiplier + 0.1); applyScale(); };
+/* ===== NÚT ZOOM +/- ===== */
+function changeZoom(delta) {
+  zoomMultiplier += delta;
+  if (zoomMultiplier < 0.5) zoomMultiplier = 0.5;
+  if (zoomMultiplier > 2)   zoomMultiplier = 2;
+  applyScale();
+}
 
-/* LOAD FILES */
+zoomOutBtn.onclick = () => changeZoom(-0.1);
+zoomInBtn.onclick  = () => changeZoom(+0.1);
+
+/* ===== UTIL ===== */
+function extractSheetId(url) {
+  if (!url) return null;
+  const m = String(url).match(/\/d\/([a-zA-Z0-9\-_]+)/);
+  return m ? m[1] : null;
+}
+
+function isCurrentMonthValue(val, curM, curY) {
+  if (!val) return false;
+
+  if (val instanceof Date) {
+    return (val.getMonth() + 1 === curM) && (val.getFullYear() === curY);
+  }
+
+  const s = String(val).trim();
+
+  let m = s.match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  m = s.match(/^(\d{4})\s*[\/\-]\s*(\d{1,2})$/);
+  if (m) {
+    const year  = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  m = s.match(/Tháng\s*(\d{1,2})\s*[\/\-]?\s*(\d{4})?/i);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = m[2] ? parseInt(m[2], 10) : curY;
+    return month === curM && year === curY;
+  }
+
+  return false;
+}
+
+/* ===== LOAD FILES ===== */
 async function loadFiles() {
-  const res  = await fetch(API_URL + "?action=files");
-  const list = await res.json();
+  showLoading();
+  try {
+    const res  = await fetch(API_URL + "?action=files");
+    const json = await res.json();
+    const list = Array.isArray(json) ? json : (json.files || []);
 
-  fileMenu.innerHTML = "";
-  list.forEach(item => {
-    const op = document.createElement("option");
-    op.value = item.url;
-    op.textContent = item.name;
-    fileMenu.appendChild(op);
-  });
+    fileMenu.innerHTML = "";
 
-  await loadSheetsForCurrentFile();
+    const now  = new Date();
+    const curM = now.getMonth() + 1;
+    const curY = now.getFullYear();
+    let defaultIndex = 0;
+
+    list.forEach((item, idx) => {
+      const name = item.name || item.label || ("Dòng " + (item.rowIndex || ""));
+      const url  = item.url;
+      if (!url) return;
+
+      const op = document.createElement("option");
+      op.value = url;
+      op.textContent = name;
+      fileMenu.appendChild(op);
+
+      const monthVal = item.month || item.thang || item.A || null;
+      if (monthVal && isCurrentMonthValue(monthVal, curM, curY)) {
+        defaultIndex = idx;
+      }
+    });
+
+    if (fileMenu.options.length > 0) {
+      fileMenu.selectedIndex = defaultIndex;
+      await loadSheetsForCurrentFile();
+    } else {
+      hideLoading();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi tải danh sách file từ API.");
+    hideLoading();
+  }
 }
 
+/* ===== LOAD SHEETS ===== */
 async function loadSheetsForCurrentFile() {
-  const id = extractId(fileMenu.value);
-  const res = await fetch(API_URL + "?action=sheets&fileId=" + id);
-  const tabs = await res.json();
+  const fileUrl = fileMenu.value;
+  if (!fileUrl) {
+    hideLoading();
+    return;
+  }
 
-  sheetMenu.innerHTML = "";
-  tabs.forEach(t => {
-    const op = document.createElement("option");
-    op.value = t.gid;
-    op.textContent = t.name;
-    sheetMenu.appendChild(op);
-  });
+  const id = extractSheetId(fileUrl);
+  if (!id) {
+    sheetMenu.innerHTML = "";
+    hideLoading();
+    return;
+  }
 
-  updateFrame();
+  showLoading();
+  try {
+    const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
+    const tabs = await res.json();
+
+    sheetMenu.innerHTML = "";
+
+    const today = new Date();
+    const day   = today.getDate();
+    const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
+    let preferredGid = null;
+
+    tabs.forEach(t => {
+      const op = document.createElement("option");
+      op.value = t.gid;
+      op.textContent = t.name;
+      sheetMenu.appendChild(op);
+
+      if (!preferredGid && t.name === preferredName) {
+        preferredGid = t.gid;
+      }
+    });
+
+    if (sheetMenu.options.length > 0) {
+      if (preferredGid) {
+        sheetMenu.value = preferredGid;
+      } else {
+        sheetMenu.selectedIndex = 0;
+      }
+      updateFrame();
+    } else {
+      hideLoading();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi tải danh sách sheet/tabs.");
+    hideLoading();
+  }
 }
 
-function extractId(url) {
-  const m = url.match(/\/d\/([^\/]+)/);
-  return m ? m[1] : "";
+/* ===== BUILD URL EDIT#GID ===== */
+function buildEditUrl() {
+  const fileUrl = fileMenu.value;
+  if (!fileUrl) return "";
+
+  const id  = extractSheetId(fileUrl);
+  const gid = sheetMenu.value || "";
+  if (!id) return fileUrl;
+
+  return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
 }
 
+/* ===== UPDATE IFRAME ===== */
 function updateFrame() {
-  loadingScreen.style.display = "flex";
-  const id  = extractId(fileMenu.value);
-  const gid = sheetMenu.value;
-  frame.src = `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
-  setTimeout(() => loadingScreen.style.display = "none", 700);
+  const url = buildEditUrl();
+  if (url) {
+    showLoading();
+    frame.src = url;
+    setTimeout(autoScaleIframe, 300);
+  }
 }
 
-/* CLICK EVENTS */
-fileMenu.onchange = loadSheetsForCurrentFile;
+fileMenu.onchange  = () => { loadSheetsForCurrentFile(); };
 sheetMenu.onchange = updateFrame;
 
-editBtn.onclick = () => window.open(
-  frame.src.replace("/edit", "/edit"),
-  "_blank"
-);
+/* ===== NÚT SỬA (MOBILE) ===== */
+editBtn.onclick = () => {
+  const url = buildEditUrl();
+  if (url) window.open(url, "_blank");
+};
 
-driveBtn.onclick = () =>
+/* ===== NÚT THƯ MỤC DRIVE ===== */
+driveBtn.onclick = () => {
   window.open("https://drive.google.com/drive/folders/1o3n5GABxec53ANpnS_OaDU1w0M3cGeAX?usp=sharing", "_blank");
-
+};
 </script>
+
 </body>
 </html>
