@@ -139,34 +139,32 @@
       white-space: nowrap;
     }
 
-    /* TOOLBAR: 2 menu + 2 nút cùng 1 hàng, menu tự co lại */
     .toolbar {
       display: flex;
-      gap: 4px;
-      flex-wrap: nowrap;    /* luôn 1 hàng */
+      gap: 6px;
+      flex-wrap: wrap; /* cho phép xuống dòng nếu chật */
     }
+
     select,
     button.small-btn {
       border-radius: 10px;
       border: 1px solid var(--border-soft);
       background: #020617;
       color: #e5e7eb;
-      font-size: 0.75rem;
-      padding: 5px 6px;
+      font-size: 0.8rem;
+      padding: 6px 8px;
     }
-    /* 2 menu tự chia đều, thu ngắn khi chật */
     select {
-      flex: 1 1 0;
+      flex: 1 1 120px;
       min-width: 0;
     }
-    /* 2 nút giữ kích thước tối thiểu */
     button.small-btn {
       flex: 0 0 auto;
       cursor: pointer;
       white-space: nowrap;
     }
 
-    /* Nút SỬA – chỉ hiện trên mobile */
+    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
     #editBtn {
       background: #22c55e;
       border-color: #22c55e;
@@ -203,7 +201,7 @@
     }
     .iframe-scale {
       transform-origin: top left;
-      width: 1200px;
+      width: 1200px;  /* chiều rộng gốc của sheet */
       min-height: 600px;
     }
     iframe {
@@ -253,6 +251,8 @@
     <select id="sheetMenu"></select>
     <button id="editBtn" class="small-btn">Sửa</button>
     <button id="driveBtn" class="small-btn">Thư mục Drive</button>
+    <button id="zoomOutBtn" class="small-btn">−</button>
+    <button id="zoomInBtn" class="small-btn">+</button>
   </div>
 </header>
 
@@ -284,8 +284,14 @@ const fileMenu  = document.getElementById("fileMenu");
 const sheetMenu = document.getElementById("sheetMenu");
 const editBtn   = document.getElementById("editBtn");
 const driveBtn  = document.getElementById("driveBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+const zoomInBtn  = document.getElementById("zoomInBtn");
 const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
+
+/* ===== ZOOM STATE ===== */
+let baseScale = 1;       // scale theo màn hình
+let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -322,15 +328,33 @@ function startApp() {
   autoScaleIframe();
 }
 
+/* ===== APPLY SCALE ===== */
+function applyScale() {
+  if (!iframeScaleDiv) return;
+  const scale = baseScale * zoomMultiplier;
+  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+}
+
 /* ===== AUTO SCALE THEO MÀN HÌNH ===== */
 function autoScaleIframe() {
   if (!iframeScaleDiv) return;
   const screenW = window.innerWidth || document.documentElement.clientWidth;
-  const scale = Math.min(1, screenW / BASE_WIDTH);
-  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+  baseScale = Math.min(1, screenW / BASE_WIDTH); // PC không phóng to quá 1
+  applyScale();
 }
 
 window.addEventListener("resize", autoScaleIframe);
+
+/* ===== NÚT ZOOM +/- ===== */
+function changeZoom(delta) {
+  zoomMultiplier += delta;
+  if (zoomMultiplier < 0.5) zoomMultiplier = 0.5;
+  if (zoomMultiplier > 2)   zoomMultiplier = 2;
+  applyScale();
+}
+
+zoomOutBtn.onclick = () => changeZoom(-0.1);
+zoomInBtn.onclick  = () => changeZoom(+0.1);
 
 /* ===== UTIL ===== */
 function extractSheetId(url) {
