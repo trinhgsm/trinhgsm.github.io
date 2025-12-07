@@ -154,15 +154,18 @@
       cursor: pointer;
       white-space: nowrap;
     }
+
+    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
     #editBtn {
       background: #22c55e;
       border-color: #22c55e;
       color: #022c22;
+      display: inline-block;
     }
-    #openTabBtn {
-      background: #38bdf8;
-      border-color: #38bdf8;
-      color: #02131c;
+    @media (min-width: 768px) {
+      #editBtn {
+        display: none; /* PC: ẩn nút Sửa */
+      }
     }
 
     main {
@@ -221,8 +224,7 @@
   <div class="toolbar">
     <select id="fileMenu"></select>
     <select id="sheetMenu"></select>
-    <button id="editBtn" class="small-btn">Chỉnh sửa</button>
-    <button id="openTabBtn" class="small-btn">Mở tab mới</button>
+    <button id="editBtn" class="small-btn">Sửa</button>
   </div>
 </header>
 
@@ -250,12 +252,11 @@ const passwordInput = document.getElementById("passwordInput");
 const passwordError = document.getElementById("passwordError");
 const unlockBtn     = document.getElementById("unlockBtn");
 
-const topBar     = document.getElementById("topBar");
-const fileMenu   = document.getElementById("fileMenu");
-const sheetMenu  = document.getElementById("sheetMenu");
-const editBtn    = document.getElementById("editBtn");
-const openTabBtn = document.getElementById("openTabBtn");
-const frame      = document.getElementById("sheetFrame");
+const topBar    = document.getElementById("topBar");
+const fileMenu  = document.getElementById("fileMenu");
+const sheetMenu = document.getElementById("sheetMenu");
+const editBtn   = document.getElementById("editBtn");
+const frame     = document.getElementById("sheetFrame");
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -379,13 +380,8 @@ function updateFrame() {
 fileMenu.onchange  = () => { loadSheetsForCurrentFile(); };
 sheetMenu.onchange = updateFrame;
 
-/* ===== NÚT CHỈNH SỬA & MỞ TAB MỚI ===== */
+/* ===== NÚT SỬA (MOBILE) – MỞ TAB MỚI CHO SHEET HIỆN TẠI ===== */
 editBtn.onclick = () => {
-  const url = buildEditUrl();
-  if (url) window.open(url, "_blank");
-};
-
-openTabBtn.onclick = () => {
   const url = buildEditUrl();
   if (url) window.open(url, "_blank");
 };
