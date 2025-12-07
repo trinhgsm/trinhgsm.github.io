@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Dukico – Viewer</title>
+  <title>DUKICO – SHEETS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <style>
@@ -24,7 +24,7 @@
       flex-direction: column;
     }
 
-    /* ---------- LOCK ---------- */
+    /* ---------- LOCK LAYER ---------- */
     #lockScreen {
       position: fixed;
       inset: 0;
@@ -120,7 +120,7 @@
       align-items: center;
       justify-content: center;
       font-size: 0.6rem;
-      color: var(--accent);
+      color: #38bdf8;
       font-weight: 700;
       letter-spacing: 0.12em;
     }
@@ -226,7 +226,7 @@
 <header id="topBar" style="display:none;">
   <div class="brand">
     <div class="brand-mark"><div class="brand-inner">DK</div></div>
-    <span>Dukico – Sheets</span>
+    <span>DUKICO – SHEETS</span>
   </div>
 
   <div class="toolbar">
@@ -246,15 +246,15 @@
 <script>
 /* ===== CONFIG ===== */
 
-// Web app của bạn
+// Web app (Viewer) của bạn
 const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec";
 
 // 2 lớp pass
 const VIEW_PASSWORD = "123";
 const EDIT_PASSWORD = "321";
 
-// Kiểu nhúng: A = ẩn tab, dùng pubhtml; B = Google Sheet đầy đủ
-const EMBED_MODE = "A";
+// Kiểu nhúng: B = dùng edit#gid (không cần publish)
+const EMBED_MODE = "B";
 
 /* ===== DOM ===== */
 const lockScreen    = document.getElementById("lockScreen");
@@ -342,7 +342,6 @@ async function loadSheetsForCurrentFile() {
 
   const id = extractSheetId(fileUrl);
   if (!id) {
-    // nếu không parse được ID thì thôi, không load tabs
     sheetMenu.innerHTML = "";
     return;
   }
@@ -368,22 +367,23 @@ async function loadSheetsForCurrentFile() {
   }
 }
 
-/* ===== BUILD IFRAME URL ===== */
+/* ===== BUILD IFRAME URL (MODE B) ===== */
 function buildEmbedUrl() {
   const fileUrl = fileMenu.value;
   if (!fileUrl) return "";
 
-  const id = extractSheetId(fileUrl);
-  if (!id) return fileUrl;
-
+  const id  = extractSheetId(fileUrl);
   const gid = sheetMenu.value || "";
 
-  if (EMBED_MODE === "A") {
-    // Ẩn tab, dùng pubhtml
-    return `https://docs.google.com/spreadsheets/d/${id}/pubhtml?gid=${gid}&single=true&widget=true&headers=false`;
-  } else {
-    // Google Sheet đầy đủ
+  if (!id) return fileUrl;
+
+  // EMBED_MODE = "B" → dùng edit#gid (không cần publish web)
+  // nếu sau này bạn muốn quay về A thì chỉ đổi const EMBED_MODE ở trên
+  if (EMBED_MODE === "B") {
     return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
+  } else {
+    // dự phòng cho mode A (pubhtml)
+    return `https://docs.google.com/spreadsheets/d/${id}/pubhtml?gid=${gid}&single=true&widget=true&headers=false`;
   }
 }
 
@@ -399,9 +399,10 @@ sheetMenu.onchange = updateFrame;
 /* ===== EDIT MODE ===== */
 editBtn.onclick = () => {
   const fileUrl = fileMenu.value;
-  const id = extractSheetId(fileUrl);
-  if (!id) return;
+  const id  = extractSheetId(fileUrl);
   const gid = sheetMenu.value || "";
+  if (!id) return;
+
   const editUrl = `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
   window.open(editUrl, "_blank");
 };
