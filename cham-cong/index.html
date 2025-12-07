@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>DUKICO – SHEETS</title>
+  <title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <style>
@@ -22,6 +22,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden; /* không cho kéo ngang cả trang */
     }
 
     /* ---------- LOCK LAYER ---------- */
@@ -187,7 +188,8 @@
     .iframe-wrap {
       width: 100%;
       height: 100%;
-      overflow: auto;
+      overflow-y: auto;      /* chỉ cuộn dọc */
+      overflow-x: hidden;    /* không cho tràn ngang */
       -webkit-overflow-scrolling: touch;
     }
     .iframe-scale {
