@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>DUKICO – SHEETS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- FAVICON DK – Base64 PNG -->
+  <link rel="icon" type="image/png"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABIElEQVR4Ae3WwUoDQRDG8d8SEuQHpBQbiIgFiIgFiIgFiIgFiIgFqIgFuAGRoYBiKpCgfFirtJdGztXvZndmbuZ3Tv7szMzs7s7Y5l8jqKp23L6ErZPLOlpFgT7Rf5ID9aUuCqkTnE6n+rYRI1eYCiZ0R8YF2i0KiyIbGg1yqjHGTYl7gMkfqg3gV7Vl1MDD8hXgAWkS2D2xiHTiHqIPmEmP+Je4XdQk2QbUaqcx8wtQiVYx7h5sJXiBCpAx+QEzpB7p4AvvE3xgTTnH8DIYfyRVvE23Uk2qaaaW0pRTQ1XNJ4xOuGOcn1JYntm3Mubm1vM5rss6P3n+GcVf7sQzT7mE9+oG4AAAAASUVORK5CYII=" />
+
+  <style>
+    :root {
+      --bg-main: #020617;
+      --bg-panel: #0f172a;
+      --accent: #38bdf8;
+      --border-soft: rgba(148,163,184,0.5);
+    }
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-main);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;   /* chặn kéo ngang cả trang */
+    }
+
+    /* ---------- LOCK LAYER ---------- */
+    #lockScreen {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+    #lockBox {
+      width: 100%;
+      max-width: 340px;
+      background: rgba(15,23,42,0.95);
+      padding: 22px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.5);
+      text-align: center;
+    }
+    #lockBox h2 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    #lockBox p {
+      margin: 0 0 12px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    #passwordInput {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid #475569;
+      outline: none;
+      background: #020617;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    #passwordError {
+      min-height: 18px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #f97373;
+      text-align: left;
+    }
+    #unlockBtn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 9px;
+      border-radius: 10px;
+      border: none;
+      background: var(--accent);
+      color: #020617;
+      font-weight: 600;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      padding: 8px 10px 6px;
+      background: rgba(15,23,42,0.98);
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: conic-gradient(#38bdf8,#22c55e,#f97316,#eab308,#38bdf8);
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #38bdf8;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+    .brand span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    select, button.small-btn {
+      border-radius: 10px;
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.8rem;
+      padding: 7px 9px;
+    }
+    select {
+      flex: 1;
+      min-width: 120px;
+    }
+    button.small-btn {
+      flex: 0 0 auto;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
+    #editBtn {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #022c22;
+      display: inline-block;
+    }
+    @media (min-width: 768px) {
+      #editBtn {
+        display: none; /* PC: ẩn nút Sửa */
+      }
+    }
+
+    main {
+      flex: 1;
+      padding: 6px;
+      display: flex;
+      min-height: 0;
+    }
+    .viewer {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #020617;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Khung auto zoom */
+    .iframe-wrap {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;      /* chỉ cuộn dọc */
+      overflow-x: hidden;    /* không cho tràn ngang */
+      -webkit-overflow-scrolling: touch;
+    }
+    .iframe-scale {
+      transform-origin: top left;
+      width: 1200px;           /* chiều rộng “gốc” giả định của sheet */
+      min-height: 600px;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;           /* đủ cao để hiển thị, có scroll trong iframe-wrap */
+      border: none;
+      background: #020617;
+    }
+
+    @media (min-width: 768px) {
+      header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+      }
+      .toolbar {
+        flex: 1;
+        justify-content: flex-end;
+      }
+      main { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LAYER MẬT KHẨU -->
+<div id="lockScreen">
+  <div id="lockBox">
+    <h2>Mật khẩu</h2>
+    <p>Nhập mật khẩu để mở viewer.</p>
+    <input id="passwordInput" type="password" placeholder="Mật khẩu..." />
+    <div id="passwordError"></div>
+    <button id="unlockBtn">MỞ</button>
+  </div>
+</div>
+
+<!-- HEADER CHÍNH -->
+<header id="topBar" style="display:none;">
+  <div class="brand">
+    <div class="brand-mark"><div class="brand-inner">DK</div></div>
+    <span>DUKICO – SHEETS</span>
+  </div>
+
+  <div class="toolbar">
+    <select id="fileMenu"></select>
+    <select id="sheetMenu"></select>
+    <button id="editBtn" class="small-btn">Sửa</button>
+  </div>
+</header>
+
+<main>
+  <div class="viewer">
+    <div class="iframe-wrap">
+      <div class="iframe-scale" id="iframeScale">
+        <iframe id="sheetFrame"></iframe>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+/* ===== CONFIG ===== */
+
+// Web app (Viewer) của bạn
+const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec";
+
+// 1 mật khẩu duy nhất
+const PASSWORD = "123";
+
+// key lưu vào localStorage
+const AUTH_KEY = "dukico_viewer_auth_v1";
+
+// chiều rộng gốc (px) của sheet để tính scale
+const BASE_WIDTH = 1200;
+
+/* ===== DOM ===== */
+const lockScreen    = document.getElementById("lockScreen");
+const passwordInput = document.getElementById("passwordInput");
+const passwordError = document.getElementById("passwordError");
+const unlockBtn     = document.getElementById("unlockBtn");
+
+const topBar    = document.getElementById("topBar");
+const fileMenu  = document.getElementById("fileMenu");
+const sheetMenu = document.getElementById("sheetMenu");
+const editBtn   = document.getElementById("editBtn");
+const frame     = document.getElementById("sheetFrame");
+const iframeScaleDiv = document.getElementById("iframeScale");
+
+/* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
+window.addEventListener("load", () => {
+  try {
+    const auth = localStorage.getItem(AUTH_KEY);
+    if (auth === "ok") {
+      startApp(); // vào thẳng, không hỏi mật khẩu
+      return;
+    }
+  } catch (e) {
+    // nếu trình duyệt chặn localStorage thì thôi, người dùng vẫn nhập pass bình thường
+  }
+});
+
+/* ===== PASSWORD ===== */
+unlockBtn.onclick = handleUnlock;
+passwordInput.onkeydown = (e) => { if (e.key === "Enter") handleUnlock(); };
+
+function handleUnlock() {
+  const pass = passwordInput.value.trim();
+  if (pass === PASSWORD) {
+    try {
+      localStorage.setItem(AUTH_KEY, "ok"); // lưu lần sau khỏi nhập
+    } catch (e) {}
+    startApp();
+  } else {
+    passwordError.textContent = "Sai mật khẩu!";
+  }
+}
+
+function startApp() {
+  passwordError.textContent = "";
+  lockScreen.style.display = "none";
+  topBar.style.display = "flex";
+  loadFiles();
+  autoScaleIframe();
+}
+
+/* ===== AUTO SCALE THEO MÀN HÌNH ===== */
+function autoScaleIframe() {
+  if (!iframeScaleDiv) return;
+  const screenW = window.innerWidth || document.documentElement.clientWidth;
+  // scale <= 1 để PC không bị phóng to
+  const scale = Math.min(1, screenW / BASE_WIDTH);
+  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+}
+
+window.addEventListener("resize", autoScaleIframe);
+
+/* ===== UTIL ===== */
+function extractSheetId(url) {
+  if (!url) return null;
+  const m = String(url).match(/\/d\/([a-zA-Z0-9\-_]+)/);
+  return m ? m[1] : null;
+}
+
+/**
+ * Kiểm tra 1 giá trị "tháng" (lấy từ cột A) có phải tháng hiện tại không
+ */
+function isCurrentMonthValue(val, curM, curY) {
+  if (!val) return false;
+
+  if (val instanceof Date) {
+    return (val.getMonth() + 1 === curM) && (val.getFullYear() === curY);
+  }
+
+  const s = String(val).trim();
+
+  // 12/2025 hoặc 12-2025
+  let m = s.match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  // 2025/12 hoặc 2025-12
+  m = s.match(/^(\d{4})\s*[\/\-]\s*(\d{1,2})$/);
+  if (m) {
+    const year  = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  // "Tháng 12-2025" hoặc "Tháng 12/2025"
+  m = s.match(/Tháng\s*(\d{1,2})\s*[\/\-]?\s*(\d{4})?/i);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = m[2] ? parseInt(m[2], 10) : curY;
+    return month === curM && year === curY;
+  }
+
+  return false;
+}
+
+/* ===== LOAD FILES (MENU CỘT B) – auto chọn tháng hiện tại ===== */
+async function loadFiles() {
+  try {
+    const res  = await fetch(API_URL + "?action=files");
+    const json = await res.json();
+    const list = Array.isArray(json) ? json : (json.files || []);
+
+    fileMenu.innerHTML = "";
+
+    const now  = new Date();
+    const curM = now.getMonth() + 1;
+    const curY = now.getFullYear();
+    let defaultIndex = 0; // nếu không tìm thấy, dùng dòng đầu tiên
+
+    list.forEach((item, idx) => {
+      const name = item.name || item.label || ("Dòng " + (item.rowIndex || ""));
+      const url  = item.url;
+      if (!url) return;
+
+      const op = document.createElement("option");
+      op.value = url;
+      op.textContent = name;
+      fileMenu.appendChild(op);
+
+      // lấy giá trị tháng từ phía server nếu có
+      const monthVal = item.month || item.thang || item.A || null;
+      if (monthVal && isCurrentMonthValue(monthVal, curM, curY)) {
+        defaultIndex = idx;
+      }
+    });
+
+    if (fileMenu.options.length > 0) {
+      fileMenu.selectedIndex = defaultIndex;
+      await loadSheetsForCurrentFile();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi tải danh sách file từ API.");
+  }
+}
+
+/* ===== LOAD SHEETS (TAB) CỦA 1 FILE – auto chọn Ngày 1–15 / 16–31 ===== */
+async function loadSheetsForCurrentFile() {
+  const fileUrl = fileMenu.value;
+  if (!fileUrl) return;
+
+  const id = extractSheetId(fileUrl);
+  if (!id) {
+    sheetMenu.innerHTML = "";
+    return;
+  }
+
+  try {
+    const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
+    const tabs = await res.json();
+
+    sheetMenu.innerHTML = "";
+
+    const today = new Date();
+    const day   = today.getDate();
+    const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
+    let preferredGid = null;
+
+    tabs.forEach(t => {
+      const op = document.createElement("option");
+      op.value = t.gid;
+      op.textContent = t.name;
+      sheetMenu.appendChild(op);
+
+      if (!preferredGid && t.name === preferredName) {
+        preferredGid = t.gid;
+      }
+    });
+
+    if (sheetMenu.options.length > 0) {
+      if (preferredGid) {
+        sheetMenu.value = preferredGid; // chọn đúng "Ngày 1–15" hoặc "Ngày 16–31"
+      } else {
+        sheetMenu.selectedIndex = 0;    // nếu không có sheet đó thì chọn sheet đầu tiên
+      }
+      updateFrame();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi tải danh sách sheet/tabs.");
+  }
+}
+
+/* ===== BUILD URL EDIT#GID ===== */
+function buildEditUrl() {
+  const fileUrl = fileMenu.value;
+  if (!fileUrl) return "";
+
+  const id  = extractSheetId(fileUrl);
+  const gid = sheetMenu.value || "";
+  if (!id) return fileUrl;
+
+  // dùng edit#gid để vẫn chỉnh sửa được khi mở tab mới
+  return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
+}
+
+/* ===== UPDATE IFRAME (XEM) ===== */
+function updateFrame() {
+  const url = buildEditUrl();
+  if (url) {
+    frame.src = url;
+    // scale lại một tí sau khi đổi sheet
+    setTimeout(autoScaleIframe, 300);
+  }
+}
+
+fileMenu.onchange  = () => { loadSheetsForCurrentFile(); };
+sheetMenu.onchange = updateFrame;
+
+/* ===== NÚT SỬA (MOBILE) – MỞ TAB MỚI CHO SHEET HIỆN TẠI ===== */
+editBtn.onclick = () => {
+  const url = buildEditUrl();
+  if (url) window.open(url, "_blank");
+};
+</script>
+
+</body>
+</html>
