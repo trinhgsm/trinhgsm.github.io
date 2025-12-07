@@ -158,7 +158,6 @@
       background: #22c55e;
       border-color: #22c55e;
       color: #022c22;
-      display: none;
     }
     #openTabBtn {
       background: #38bdf8;
@@ -204,8 +203,8 @@
 <!-- LAYER MẬT KHẨU -->
 <div id="lockScreen">
   <div id="lockBox">
-    <h2>Mở Viewer</h2>
-    <p>123: xem, 321: chỉnh sửa.</p>
+    <h2>Mật khẩu</h2>
+    <p>Nhập mật khẩu để mở viewer.</p>
     <input id="passwordInput" type="password" placeholder="Mật khẩu..." />
     <div id="passwordError"></div>
     <button id="unlockBtn">MỞ</button>
@@ -239,12 +238,11 @@
 // Web app (Viewer) của bạn
 const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec";
 
-// 2 lớp pass
-const VIEW_PASSWORD = "123";
-const EDIT_PASSWORD = "321";
+// 1 mật khẩu duy nhất
+const PASSWORD = "123";
 
-// Dùng luôn edit#gid (không cần publish)
-const EMBED_MODE = "B";
+// key lưu vào localStorage
+const AUTH_KEY = "dukico_viewer_auth_v1";
 
 /* ===== DOM ===== */
 const lockScreen    = document.getElementById("lockScreen");
@@ -259,7 +257,17 @@ const editBtn    = document.getElementById("editBtn");
 const openTabBtn = document.getElementById("openTabBtn");
 const frame      = document.getElementById("sheetFrame");
 
-let userMode = "view";
+/* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
+window.addEventListener("load", () => {
+  try {
+    const auth = localStorage.getItem(AUTH_KEY);
+    if (auth === "ok") {
+      startApp(); // vào thẳng, không hỏi mật khẩu
+    }
+  } catch (e) {
+    // nếu trình duyệt chặn localStorage thì thôi, người dùng vẫn nhập pass bình thường
+  }
+});
 
 /* ===== PASSWORD ===== */
 unlockBtn.onclick = handleUnlock;
@@ -267,11 +275,10 @@ passwordInput.onkeydown = (e) => { if (e.key === "Enter") handleUnlock(); };
 
 function handleUnlock() {
   const pass = passwordInput.value.trim();
-  if (pass === VIEW_PASSWORD) {
-    userMode = "view";
-    startApp();
-  } else if (pass === EDIT_PASSWORD) {
-    userMode = "edit";
+  if (pass === PASSWORD) {
+    try {
+      localStorage.setItem(AUTH_KEY, "ok"); // lưu lần sau khỏi nhập
+    } catch (e) {}
     startApp();
   } else {
     passwordError.textContent = "Sai mật khẩu!";
@@ -282,11 +289,6 @@ function startApp() {
   passwordError.textContent = "";
   lockScreen.style.display = "none";
   topBar.style.display = "flex";
-
-  if (userMode === "edit") {
-    editBtn.style.display = "inline-block";
-  }
-
   loadFiles();
 }
 
@@ -377,13 +379,12 @@ function updateFrame() {
 fileMenu.onchange  = () => { loadSheetsForCurrentFile(); };
 sheetMenu.onchange = updateFrame;
 
-/* ===== NÚT CHỈNH SỬA (MODE 321) ===== */
+/* ===== NÚT CHỈNH SỬA & MỞ TAB MỚI ===== */
 editBtn.onclick = () => {
   const url = buildEditUrl();
   if (url) window.open(url, "_blank");
 };
 
-/* ===== NÚT MỞ TAB MỚI (CẢ VIEW & EDIT) ===== */
 openTabBtn.onclick = () => {
   const url = buildEditUrl();
   if (url) window.open(url, "_blank");
