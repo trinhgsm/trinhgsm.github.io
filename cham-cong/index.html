@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- TẮT PINCH ZOOM, CHỈ DÙNG ZOOM NÚT + / - -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
   <!-- Favicon DK -->
-  <link rel="icon" type="image/png" sizes="32x32"
-        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
-  <link rel="shortcut icon" type="image/png" sizes="32x32"
+  <link rel="icon" type="image/png"
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
 
   <style>
@@ -28,7 +28,68 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overflow-x: hidden; /* Không cho kéo ngang cả trang */
+    }
+
+    /* ---------- LAYER LOGO ĐANG TẢI DUKICO ---------- */
+    #loadingOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.92);
+      display: none; /* bật/tắt bằng JS */
+      align-items: center;
+      justify-content: center;
+      z-index: 9000;
+    }
+    .loading-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .loading-logo {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .loading-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      border: 3px solid rgba(148,163,184,0.4);
+      border-top-color: #38bdf8;
+      border-right-color: #22c55e;
+      animation: loading-spin 0.9s linear infinite;
+    }
+    .loading-core {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 14px;
+      background: #020617;
+      border: 1px solid rgba(148,163,184,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .loading-core span {
+      transform: translateX(0.05em);
+    }
+    .loading-text {
+      font-size: 0.75rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      opacity: 0.9;
+    }
+    @keyframes loading-spin {
+      to { transform: rotate(360deg); }
     }
 
     /* ---------- LOCK LAYER ---------- */
@@ -139,34 +200,38 @@
       white-space: nowrap;
     }
 
-    /* TOOLBAR: 2 menu + 2 nút cùng 1 hàng, menu tự co lại */
+    /* ===== TOOLBAR – THU NHỎ CHO VÀO 1 HÀNG ===== */
     .toolbar {
       display: flex;
       gap: 4px;
-      flex-wrap: nowrap;    /* luôn 1 hàng */
+      flex-wrap: nowrap;          /* Không cho xuống dòng */
+      overflow-x: auto;           /* Vuốt ngang nếu chật */
+      padding-bottom: 4px;
     }
+
     select,
     button.small-btn {
-      border-radius: 10px;
+      border-radius: 8px;
       border: 1px solid var(--border-soft);
       background: #020617;
       color: #e5e7eb;
       font-size: 0.75rem;
       padding: 5px 6px;
     }
-    /* 2 menu tự chia đều, thu ngắn khi chật */
+
     select {
-      flex: 1 1 0;
-      min-width: 0;
+      flex: 1 1 auto;
+      min-width: 90px;
     }
-    /* 2 nút giữ kích thước tối thiểu */
+
     button.small-btn {
       flex: 0 0 auto;
       cursor: pointer;
       white-space: nowrap;
+      padding: 5px 8px;
     }
 
-    /* Nút SỬA – chỉ hiện trên mobile */
+    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
     #editBtn {
       background: #22c55e;
       border-color: #22c55e;
@@ -174,9 +239,7 @@
       display: inline-block;
     }
     @media (min-width: 768px) {
-      #editBtn {
-        display: none;
-      }
+      #editBtn { display: none; }
     }
 
     main {
@@ -194,16 +257,17 @@
       flex-direction: column;
     }
 
+    /* KHUNG CHO PHÉP KÉO NGANG + DỌC */
     .iframe-wrap {
       width: 100%;
       height: 100%;
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;              /* cho kéo ngang khung sheet */
       -webkit-overflow-scrolling: touch;
     }
     .iframe-scale {
       transform-origin: top left;
-      width: 1200px;
+      width: 1200px;  /* chiều rộng gốc của sheet */
       min-height: 600px;
     }
     iframe {
@@ -221,14 +285,26 @@
         padding: 10px 14px;
       }
       .toolbar {
-        flex: 1;
-        justify-content: flex-end;
+        overflow-x: visible;
       }
       main { padding: 10px; }
     }
   </style>
 </head>
 <body>
+
+<!-- LAYER LOGO ĐANG TẢI DUKICO -->
+<div id="loadingOverlay">
+  <div class="loading-box">
+    <div class="loading-logo">
+      <div class="loading-ring"></div>
+      <div class="loading-core">
+        <span>DUKICO</span>
+      </div>
+    </div>
+    <div class="loading-text">ĐANG TẢI...</div>
+  </div>
+</div>
 
 <!-- LAYER MẬT KHẨU -->
 <div id="lockScreen">
@@ -252,7 +328,9 @@
     <select id="fileMenu"></select>
     <select id="sheetMenu"></select>
     <button id="editBtn" class="small-btn">Sửa</button>
-    <button id="driveBtn" class="small-btn">Thư mục Drive</button>
+    <button id="driveBtn" class="small-btn">Drive</button>
+    <button id="zoomOutBtn" class="small-btn">−</button>
+    <button id="zoomInBtn" class="small-btn">+</button>
   </div>
 </header>
 
@@ -279,13 +357,36 @@ const passwordInput = document.getElementById("passwordInput");
 const passwordError = document.getElementById("passwordError");
 const unlockBtn     = document.getElementById("unlockBtn");
 
+const loadingOverlay = document.getElementById("loadingOverlay");
+
 const topBar    = document.getElementById("topBar");
 const fileMenu  = document.getElementById("fileMenu");
 const sheetMenu = document.getElementById("sheetMenu");
 const editBtn   = document.getElementById("editBtn");
 const driveBtn  = document.getElementById("driveBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+const zoomInBtn  = document.getElementById("zoomInBtn");
 const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
+
+/* ===== ZOOM STATE ===== */
+let baseScale = 1;       // scale theo màn hình
+let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
+
+/* ===== LOADING HELPERS ===== */
+function showLoading() {
+  loadingOverlay.style.display = "flex";
+}
+function hideLoading() {
+  loadingOverlay.style.display = "none";
+}
+
+/* Khi iframe load xong thì tắt logo tải */
+frame.addEventListener("load", () => {
+  if (frame.src && frame.src !== "about:blank") {
+    hideLoading();
+  }
+});
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -318,19 +419,38 @@ function startApp() {
   passwordError.textContent = "";
   lockScreen.style.display = "none";
   topBar.style.display = "flex";
+  showLoading();
   loadFiles();
   autoScaleIframe();
+}
+
+/* ===== APPLY SCALE ===== */
+function applyScale() {
+  if (!iframeScaleDiv) return;
+  const scale = baseScale * zoomMultiplier;
+  iframeScaleDiv.style.transform = "scale(" + scale + ")";
 }
 
 /* ===== AUTO SCALE THEO MÀN HÌNH ===== */
 function autoScaleIframe() {
   if (!iframeScaleDiv) return;
   const screenW = window.innerWidth || document.documentElement.clientWidth;
-  const scale = Math.min(1, screenW / BASE_WIDTH);
-  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+  baseScale = Math.min(1, screenW / BASE_WIDTH); // PC không phóng to quá 1
+  applyScale();
 }
 
 window.addEventListener("resize", autoScaleIframe);
+
+/* ===== NÚT ZOOM +/- ===== */
+function changeZoom(delta) {
+  zoomMultiplier += delta;
+  if (zoomMultiplier < 0.5) zoomMultiplier = 0.5;
+  if (zoomMultiplier > 2)   zoomMultiplier = 2;
+  applyScale();
+}
+
+zoomOutBtn.onclick = () => changeZoom(-0.1);
+zoomInBtn.onclick  = () => changeZoom(+0.1);
 
 /* ===== UTIL ===== */
 function extractSheetId(url) {
@@ -374,6 +494,7 @@ function isCurrentMonthValue(val, curM, curY) {
 
 /* ===== LOAD FILES ===== */
 async function loadFiles() {
+  showLoading();
   try {
     const res  = await fetch(API_URL + "?action=files");
     const json = await res.json();
@@ -405,24 +526,32 @@ async function loadFiles() {
     if (fileMenu.options.length > 0) {
       fileMenu.selectedIndex = defaultIndex;
       await loadSheetsForCurrentFile();
+    } else {
+      hideLoading();
     }
   } catch (err) {
     console.error(err);
     alert("Lỗi tải danh sách file từ API.");
+    hideLoading();
   }
 }
 
 /* ===== LOAD SHEETS ===== */
 async function loadSheetsForCurrentFile() {
   const fileUrl = fileMenu.value;
-  if (!fileUrl) return;
+  if (!fileUrl) {
+    hideLoading();
+    return;
+  }
 
   const id = extractSheetId(fileUrl);
   if (!id) {
     sheetMenu.innerHTML = "";
+    hideLoading();
     return;
   }
 
+  showLoading();
   try {
     const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
     const tabs = await res.json();
@@ -452,10 +581,13 @@ async function loadSheetsForCurrentFile() {
         sheetMenu.selectedIndex = 0;
       }
       updateFrame();
+    } else {
+      hideLoading();
     }
   } catch (err) {
     console.error(err);
     alert("Lỗi tải danh sách sheet/tabs.");
+    hideLoading();
   }
 }
 
@@ -475,6 +607,7 @@ function buildEditUrl() {
 function updateFrame() {
   const url = buildEditUrl();
   if (url) {
+    showLoading();
     frame.src = url;
     setTimeout(autoScaleIframe, 300);
   }
