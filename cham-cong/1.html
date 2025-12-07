@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
-
-  <!-- CHO PHÉP PINCH-ZOOM / CTRL+WHEEL -->
+  <!-- TẮT PINCH ZOOM, CHỈ DÙNG ZOOM NÚT + / - -->
   <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
   <!-- Favicon DK -->
   <link rel="icon" type="image/png"
@@ -29,7 +28,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden;
+      overflow-x: hidden; /* Không cho kéo ngang cả trang */
     }
 
     /* ---------- LOCK LAYER ---------- */
@@ -94,56 +93,6 @@
       cursor: pointer;
     }
 
-    /* ---------- GLOBAL LOADER (GIỮA MÀN HÌNH) ---------- */
-    #globalLoader {
-      position: fixed;
-      inset: 0;
-      background: rgba(2,6,23,0.92);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9000;
-    }
-    .loader-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .loader-core {
-      position: relative;
-      width: 80px;
-      height: 80px;
-    }
-    .loader-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      border: 2px solid rgba(148,163,184,0.25);
-      border-top-color: #38bdf8;
-      border-right-color: #22c55e;
-      animation: loader-spin 0.9s linear infinite;
-    }
-    .loader-square {
-      position: absolute;
-      inset: 18px;
-      border-radius: 6px;
-      border: 1px solid rgba(248,250,252,0.7);
-      transform: rotate(12deg);
-    }
-    .loader-text {
-      font-size: 0.75rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #e5e7eb;
-      opacity: 0.9;
-      text-align: center;
-      white-space: nowrap;
-    }
-    @keyframes loader-spin {
-      to { transform: rotate(360deg); }
-    }
-
     /* ---------- HEADER ---------- */
     header {
       padding: 8px 10px 6px;
@@ -190,12 +139,12 @@
       white-space: nowrap;
     }
 
-    /* ===== TOOLBAR – THU NHỎ, 1 HÀNG, CÓ THỂ VUỐT NGANG ===== */
+    /* ===== TOOLBAR – THU NHỎ CHO VÀO 1 HÀNG ===== */
     .toolbar {
       display: flex;
       gap: 4px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      flex-wrap: nowrap;          /* Không cho xuống dòng */
+      overflow-x: auto;           /* Vuốt ngang nếu chật */
       padding-bottom: 4px;
     }
 
@@ -210,8 +159,8 @@
     }
 
     select {
-      flex: 1 1 auto;
-      min-width: 90px;
+      flex: 1 1 auto;             /* Cho tự co lại */
+      min-width: 90px;            /* Thu hẹp để dễ nằm 1 hàng */
     }
 
     button.small-btn {
@@ -221,6 +170,7 @@
       padding: 5px 8px;
     }
 
+    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
     #editBtn {
       background: #22c55e;
       border-color: #22c55e;
@@ -253,25 +203,21 @@
       width: 100%;
       height: 100%;
       overflow-y: auto;
-      overflow-x: auto;
+      overflow-x: auto;              /* cho kéo ngang khung sheet */
       -webkit-overflow-scrolling: touch;
-      position: relative;
     }
-
-    /* Không scale, chỉ là wrapper cho đẹp */
     .iframe-scale {
-      display: block;
-      width: 100%;
+      transform-origin: top left;
+      width: 1200px;  /* chiều rộng gốc của sheet */
+      min-height: 600px;
     }
-
     iframe {
+      width: 100%;
+      height: 100vh;
       border: none;
       background: #020617;
-      width: 100%;          /* LUÔN VỪA CHIỀU NGANG VIEWER */
-      height: 100vh;        /* cao hết màn hình làm việc */
     }
 
-    /* Trên PC: canh giữa theo chiều ngang của viewer (iframe đã full width rồi nên không lệch) */
     @media (min-width: 768px) {
       header {
         flex-direction: row;
@@ -299,17 +245,6 @@
   </div>
 </div>
 
-<!-- LOADER GIỮA MÀN -->
-<div id="globalLoader">
-  <div class="loader-box">
-    <div class="loader-core">
-      <div class="loader-ring"></div>
-      <div class="loader-square"></div>
-    </div>
-    <div class="loader-text">DUKICO / ĐANG TẢI</div>
-  </div>
-</div>
-
 <!-- HEADER CHÍNH -->
 <header id="topBar" style="display:none;">
   <div class="brand">
@@ -321,7 +256,9 @@
     <select id="fileMenu"></select>
     <select id="sheetMenu"></select>
     <button id="editBtn" class="small-btn">Sửa</button>
-    <button id="driveBtn" class="small-btn">Thư mục Drive</button>
+    <button id="driveBtn" class="small-btn">Drive</button>
+    <button id="zoomOutBtn" class="small-btn">−</button>
+    <button id="zoomInBtn" class="small-btn">+</button>
   </div>
 </header>
 
@@ -340,6 +277,7 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec";
 const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
+const BASE_WIDTH = 1200;
 
 /* ===== DOM ===== */
 const lockScreen    = document.getElementById("lockScreen");
@@ -352,16 +290,14 @@ const fileMenu  = document.getElementById("fileMenu");
 const sheetMenu = document.getElementById("sheetMenu");
 const editBtn   = document.getElementById("editBtn");
 const driveBtn  = document.getElementById("driveBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+const zoomInBtn  = document.getElementById("zoomInBtn");
 const frame     = document.getElementById("sheetFrame");
-const globalLoader   = document.getElementById("globalLoader");
+const iframeScaleDiv = document.getElementById("iframeScale");
 
-/* ===== LOADER CONTROL ===== */
-function showLoader() {
-  globalLoader.style.display = "flex";
-}
-function hideLoader() {
-  globalLoader.style.display = "none";
-}
+/* ===== ZOOM STATE ===== */
+let baseScale = 1;       // scale theo màn hình
+let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -394,16 +330,37 @@ function startApp() {
   passwordError.textContent = "";
   lockScreen.style.display = "none";
   topBar.style.display = "flex";
-  showLoader();
   loadFiles();
+  autoScaleIframe();
 }
 
-/* Iframe load xong thì tắt loader */
-frame.addEventListener("load", () => {
-  if (frame.src && frame.src !== "about:blank") {
-    hideLoader();
-  }
-});
+/* ===== APPLY SCALE ===== */
+function applyScale() {
+  if (!iframeScaleDiv) return;
+  const scale = baseScale * zoomMultiplier;
+  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+}
+
+/* ===== AUTO SCALE THEO MÀN HÌNH ===== */
+function autoScaleIframe() {
+  if (!iframeScaleDiv) return;
+  const screenW = window.innerWidth || document.documentElement.clientWidth;
+  baseScale = Math.min(1, screenW / BASE_WIDTH); // PC không phóng to quá 1
+  applyScale();
+}
+
+window.addEventListener("resize", autoScaleIframe);
+
+/* ===== NÚT ZOOM +/- ===== */
+function changeZoom(delta) {
+  zoomMultiplier += delta;
+  if (zoomMultiplier < 0.5) zoomMultiplier = 0.5;
+  if (zoomMultiplier > 2)   zoomMultiplier = 2;
+  applyScale();
+}
+
+zoomOutBtn.onclick = () => changeZoom(-0.1);
+zoomInBtn.onclick  = () => changeZoom(+0.1);
 
 /* ===== UTIL ===== */
 function extractSheetId(url) {
@@ -447,7 +404,6 @@ function isCurrentMonthValue(val, curM, curY) {
 
 /* ===== LOAD FILES ===== */
 async function loadFiles() {
-  showLoader();
   try {
     const res  = await fetch(API_URL + "?action=files");
     const json = await res.json();
@@ -479,32 +435,24 @@ async function loadFiles() {
     if (fileMenu.options.length > 0) {
       fileMenu.selectedIndex = defaultIndex;
       await loadSheetsForCurrentFile();
-    } else {
-      hideLoader();
     }
   } catch (err) {
     console.error(err);
     alert("Lỗi tải danh sách file từ API.");
-    hideLoader();
   }
 }
 
 /* ===== LOAD SHEETS ===== */
 async function loadSheetsForCurrentFile() {
   const fileUrl = fileMenu.value;
-  if (!fileUrl) {
-    hideLoader();
-    return;
-  }
+  if (!fileUrl) return;
 
   const id = extractSheetId(fileUrl);
   if (!id) {
     sheetMenu.innerHTML = "";
-    hideLoader();
     return;
   }
 
-  showLoader();
   try {
     const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
     const tabs = await res.json();
@@ -534,13 +482,10 @@ async function loadSheetsForCurrentFile() {
         sheetMenu.selectedIndex = 0;
       }
       updateFrame();
-    } else {
-      hideLoader();
     }
   } catch (err) {
     console.error(err);
     alert("Lỗi tải danh sách sheet/tabs.");
-    hideLoader();
   }
 }
 
@@ -560,8 +505,8 @@ function buildEditUrl() {
 function updateFrame() {
   const url = buildEditUrl();
   if (url) {
-    showLoader();
     frame.src = url;
+    setTimeout(autoScaleIframe, 300);
   }
 }
 
