@@ -172,16 +172,32 @@
       flex: 1;
       padding: 6px;
       display: flex;
+      min-height: 0;
     }
     .viewer {
       width: 100%;
       border-radius: 14px;
       overflow: hidden;
       background: #020617;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Khung auto zoom */
+    .iframe-wrap {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .iframe-scale {
+      transform-origin: top left;
+      width: 1200px;           /* chiều rộng “gốc” giả định của sheet */
+      min-height: 600px;
     }
     iframe {
       width: 100%;
-      height: 100%;
+      height: 100vh;           /* đủ cao để hiển thị, có scroll trong iframe-wrap */
       border: none;
       background: #020617;
     }
@@ -230,7 +246,11 @@
 
 <main>
   <div class="viewer">
-    <iframe id="sheetFrame"></iframe>
+    <div class="iframe-wrap">
+      <div class="iframe-scale" id="iframeScale">
+        <iframe id="sheetFrame"></iframe>
+      </div>
+    </div>
   </div>
 </main>
 
@@ -246,6 +266,9 @@ const PASSWORD = "123";
 // key lưu vào localStorage
 const AUTH_KEY = "dukico_viewer_auth_v1";
 
+// chiều rộng gốc (px) của sheet để tính scale
+const BASE_WIDTH = 1200;
+
 /* ===== DOM ===== */
 const lockScreen    = document.getElementById("lockScreen");
 const passwordInput = document.getElementById("passwordInput");
@@ -257,6 +280,7 @@ const fileMenu  = document.getElementById("fileMenu");
 const sheetMenu = document.getElementById("sheetMenu");
 const editBtn   = document.getElementById("editBtn");
 const frame     = document.getElementById("sheetFrame");
+const iframeScaleDiv = document.getElementById("iframeScale");
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -264,6 +288,7 @@ window.addEventListener("load", () => {
     const auth = localStorage.getItem(AUTH_KEY);
     if (auth === "ok") {
       startApp(); // vào thẳng, không hỏi mật khẩu
+      return;
     }
   } catch (e) {
     // nếu trình duyệt chặn localStorage thì thôi, người dùng vẫn nhập pass bình thường
@@ -291,7 +316,19 @@ function startApp() {
   lockScreen.style.display = "none";
   topBar.style.display = "flex";
   loadFiles();
+  autoScaleIframe();
 }
+
+/* ===== AUTO SCALE THEO MÀN HÌNH ===== */
+function autoScaleIframe() {
+  if (!iframeScaleDiv) return;
+  const screenW = window.innerWidth || document.documentElement.clientWidth;
+  // scale <= 1 để PC không bị phóng to
+  const scale = Math.min(1, screenW / BASE_WIDTH);
+  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+}
+
+window.addEventListener("resize", autoScaleIframe);
 
 /* ===== UTIL ===== */
 function extractSheetId(url) {
@@ -368,13 +405,18 @@ function buildEditUrl() {
   const gid = sheetMenu.value || "";
   if (!id) return fileUrl;
 
+  // dùng edit#gid để vẫn chỉnh sửa được khi mở tab mới
   return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
 }
 
 /* ===== UPDATE IFRAME (XEM) ===== */
 function updateFrame() {
   const url = buildEditUrl();
-  if (url) frame.src = url;
+  if (url) {
+    frame.src = url;
+    // scale lại một tí sau khi đổi sheet
+    setTimeout(autoScaleIframe, 300);
+  }
 }
 
 fileMenu.onchange  = () => { loadSheetsForCurrentFile(); };
