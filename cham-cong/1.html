@@ -28,7 +28,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden; /* Không cho kéo ngang cả trang */
+      overflow-x: hidden; /* không kéo ngang toàn trang */
     }
 
     /* ---------- LOCK LAYER ---------- */
@@ -139,12 +139,12 @@
       white-space: nowrap;
     }
 
-    /* ===== TOOLBAR – THU NHỎ CHO VÀO 1 HÀNG ===== */
+    /* ===== TOOLBAR – THU NHỎ, 1 HÀNG, CÓ THỂ VUỐT NGANG ===== */
     .toolbar {
       display: flex;
       gap: 4px;
-      flex-wrap: nowrap;          /* Không cho xuống dòng */
-      overflow-x: auto;           /* Vuốt ngang nếu chật */
+      flex-wrap: nowrap;
+      overflow-x: auto;
       padding-bottom: 4px;
     }
 
@@ -159,8 +159,8 @@
     }
 
     select {
-      flex: 1 1 auto;             /* Cho tự co lại */
-      min-width: 90px;            /* Thu hẹp để dễ nằm 1 hàng */
+      flex: 1 1 auto;
+      min-width: 90px;
     }
 
     button.small-btn {
@@ -170,7 +170,6 @@
       padding: 5px 8px;
     }
 
-    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
     #editBtn {
       background: #22c55e;
       border-color: #22c55e;
@@ -203,19 +202,21 @@
       width: 100%;
       height: 100%;
       overflow-y: auto;
-      overflow-x: auto;              /* cho kéo ngang khung sheet */
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      position: relative;
     }
+
     .iframe-scale {
       transform-origin: top left;
-      width: 1200px;  /* chiều rộng gốc của sheet */
-      min-height: 600px;
+      display: inline-block; /* để kích thước bám theo iframe thật */
     }
+
     iframe {
-      width: 100%;
-      height: 100vh;
       border: none;
       background: #020617;
+      width: 100%;
+      height: 100vh;
     }
 
     @media (min-width: 768px) {
@@ -256,7 +257,7 @@
     <select id="fileMenu"></select>
     <select id="sheetMenu"></select>
     <button id="editBtn" class="small-btn">Sửa</button>
-    <button id="driveBtn" class="small-btn">Drive</button>
+    <button id="driveBtn" class="small-btn">Thư mục Drive</button>
     <button id="zoomOutBtn" class="small-btn">−</button>
     <button id="zoomInBtn" class="small-btn">+</button>
   </div>
@@ -277,7 +278,6 @@
 const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec";
 const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
-const BASE_WIDTH = 1200;
 
 /* ===== DOM ===== */
 const lockScreen    = document.getElementById("lockScreen");
@@ -295,9 +295,8 @@ const zoomInBtn  = document.getElementById("zoomInBtn");
 const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
 
-/* ===== ZOOM STATE ===== */
-let baseScale = 1;       // scale theo màn hình
-let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
+/* ===== ZOOM STATE – 1 là kích thước gốc ===== */
+let zoom = 1;
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -331,31 +330,23 @@ function startApp() {
   lockScreen.style.display = "none";
   topBar.style.display = "flex";
   loadFiles();
-  autoScaleIframe();
+  applyScale(); // zoom = 1
 }
 
 /* ===== APPLY SCALE ===== */
 function applyScale() {
   if (!iframeScaleDiv) return;
-  const scale = baseScale * zoomMultiplier;
-  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+  iframeScaleDiv.style.transform = "scale(" + zoom + ")";
 }
 
-/* ===== AUTO SCALE THEO MÀN HÌNH ===== */
-function autoScaleIframe() {
-  if (!iframeScaleDiv) return;
-  const screenW = window.innerWidth || document.documentElement.clientWidth;
-  baseScale = Math.min(1, screenW / BASE_WIDTH); // PC không phóng to quá 1
-  applyScale();
-}
-
-window.addEventListener("resize", autoScaleIframe);
+/* Khi xoay màn hình, cứ giữ zoom hiện tại, chỉ apply lại */
+window.addEventListener("resize", applyScale);
 
 /* ===== NÚT ZOOM +/- ===== */
 function changeZoom(delta) {
-  zoomMultiplier += delta;
-  if (zoomMultiplier < 0.5) zoomMultiplier = 0.5;
-  if (zoomMultiplier > 2)   zoomMultiplier = 2;
+  zoom += delta;
+  if (zoom < 0.5) zoom = 0.5;
+  if (zoom > 2)   zoom = 2;
   applyScale();
 }
 
@@ -506,7 +497,8 @@ function updateFrame() {
   const url = buildEditUrl();
   if (url) {
     frame.src = url;
-    setTimeout(autoScaleIframe, 300);
+    // giữ zoom hiện tại, chỉ apply lại transform
+    setTimeout(applyScale, 300);
   }
 }
 
