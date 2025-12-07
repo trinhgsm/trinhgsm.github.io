@@ -2,9 +2,9 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Board Chấm Công – MASTER Viewer</title>
+  <title>Board Chấm Công – Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Font hiện đại -->
+  <!-- Font hiện đại kiểu kiến trúc -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -17,12 +17,17 @@
       --bg-dark: #0f172a;
       --bg-panel: #131c2b;
       --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.15);
       --text-main: #e5e7eb;
       --text-muted: #9ca3af;
       --danger: #f97373;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
@@ -34,7 +39,7 @@
       flex-direction: column;
     }
 
-    /* ====== OVERLAY PASSWORD ====== */
+    /* ========== OVERLAY NHẬP PASSWORD ========== */
 
     .overlay {
       position: fixed;
@@ -45,12 +50,14 @@
       justify-content: center;
       z-index: 9999;
     }
+
     .overlay.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
       transition: opacity 0.35s ease, visibility 0.35s ease;
     }
+
     .overlay-panel {
       width: 100%;
       max-width: 420px;
@@ -62,6 +69,7 @@
         0 0 0 1px rgba(148, 163, 184, 0.12);
       border: 1px solid rgba(248, 250, 252, 0.04);
     }
+
     .overlay-title {
       font-size: 1.25rem;
       font-weight: 600;
@@ -70,13 +78,16 @@
       color: var(--accent);
       margin-bottom: 6px;
     }
+
     .overlay-subtitle {
       font-size: 0.84rem;
       color: var(--text-muted);
       margin-bottom: 18px;
     }
+
     .overlay-divider {
       height: 1px;
+      width: 100%;
       background: linear-gradient(
         to right,
         transparent,
@@ -85,6 +96,7 @@
       );
       margin: 12px 0 18px;
     }
+
     .overlay-label {
       font-size: 0.78rem;
       text-transform: uppercase;
@@ -93,10 +105,15 @@
       margin-bottom: 6px;
       display: block;
     }
-    .overlay-input-wrap { margin-bottom: 8px; }
+
+    .overlay-input-wrap {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
     .overlay-input {
       width: 100%;
-      padding: 10px 12px;
+      padding: 10px 12px 10px 12px;
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.4);
       background: rgba(15, 23, 42, 0.7);
@@ -104,27 +121,32 @@
       outline: none;
       font-size: 0.9rem;
     }
+
     .overlay-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45);
       background: rgba(15, 23, 42, 0.85);
     }
+
     .overlay-error {
       min-height: 18px;
       font-size: 0.78rem;
       color: var(--danger);
       margin-bottom: 12px;
     }
+
     .overlay-actions {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: flex-end;
       gap: 10px;
+      align-items: center;
     }
+
     .overlay-hint {
       font-size: 0.75rem;
       color: var(--text-muted);
     }
+
     .overlay-btn {
       border-radius: 999px;
       border: none;
@@ -134,19 +156,27 @@
       font-weight: 500;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
+      transition: transform 0.1s ease, box-shadow 0.1s ease,
+        background 0.15s ease;
     }
+
     .overlay-btn-primary {
       background: linear-gradient(135deg, #38bdf8, #0ea5e9);
       color: #0b1120;
       box-shadow: 0 10px 25px rgba(56, 189, 248, 0.45);
     }
+
     .overlay-btn-primary:hover {
       transform: translateY(-1px);
       box-shadow: 0 14px 30px rgba(56, 189, 248, 0.65);
     }
 
-    /* ====== APP ====== */
+    .overlay-btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.45);
+    }
+
+    /* ========== MAIN LAYOUT ========== */
 
     .app-shell {
       display: flex;
@@ -156,6 +186,7 @@
       transform: translateY(10px);
       transition: opacity 0.35s ease, transform 0.35s ease;
     }
+
     .app-shell.visible {
       opacity: 1;
       transform: translateY(0);
@@ -170,11 +201,13 @@
       border-bottom: 1px solid rgba(148, 163, 184, 0.3);
       backdrop-filter: blur(10px);
     }
+
     .brand {
       display: flex;
       align-items: center;
       gap: 10px;
     }
+
     .brand-mark {
       width: 30px;
       height: 30px;
@@ -192,6 +225,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .brand-inner {
       width: 100%;
       height: 100%;
@@ -206,12 +240,14 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
     }
+
     .brand-text-main {
       font-size: 0.95rem;
       font-weight: 600;
       letter-spacing: 0.16em;
       text-transform: uppercase;
     }
+
     .brand-text-sub {
       font-size: 0.72rem;
       color: var(--text-muted);
@@ -224,7 +260,11 @@
       align-items: center;
       gap: 10px;
     }
-    .select-wrap { position: relative; }
+
+    .select-wrap {
+      position: relative;
+    }
+
     .select-label {
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -232,6 +272,7 @@
       color: var(--text-muted);
       margin-bottom: 2px;
     }
+
     .select-el {
       padding: 7px 30px 7px 12px;
       border-radius: 999px;
@@ -242,12 +283,14 @@
       cursor: pointer;
       outline: none;
       appearance: none;
-      min-width: 210px;
+      min-width: 180px;
     }
+
     .select-el:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
     }
+
     .select-arrow {
       position: absolute;
       right: 10px;
@@ -268,11 +311,13 @@
       background: rgba(15, 23, 42, 0.75);
       color: var(--text-muted);
     }
+
     .status-chip.ok {
       border-color: rgba(34, 197, 94, 0.6);
       color: #bbf7d0;
       background: rgba(22, 163, 74, 0.16);
     }
+
     .status-chip.err {
       border-color: rgba(248, 113, 113, 0.7);
       color: #fecaca;
@@ -284,7 +329,9 @@
       padding: 6px 10px 10px;
       display: flex;
       flex-direction: column;
+      gap: 6px;
     }
+
     .frame-wrap {
       flex: 1;
       border-radius: 16px;
@@ -295,6 +342,7 @@
         0 0 0 1px rgba(15, 23, 42, 0.6);
       background: var(--bg-panel);
     }
+
     iframe#sheetFrame {
       width: 100%;
       height: 100%;
@@ -310,7 +358,10 @@
       padding: 2px 16px 6px;
       opacity: 0.8;
     }
-    .footer-accent { color: var(--accent); }
+
+    .footer-accent {
+      color: var(--accent);
+    }
 
     @media (max-width: 768px) {
       header.app-header {
@@ -322,13 +373,17 @@
         width: 100%;
         justify-content: space-between;
       }
-      .select-el { min-width: 160px; }
-      .status-chip { display: none; }
+      .select-el {
+        min-width: 150px;
+      }
+      .status-chip {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Overlay password -->
+  <!-- OVERLAY NHẬP PASSWORD -->
   <div class="overlay" id="passwordOverlay">
     <div class="overlay-panel">
       <div class="overlay-title">Site Access</div>
@@ -354,7 +409,7 @@
 
       <div class="overlay-actions">
         <div class="overlay-hint">
-          Dùng nội bộ – dựa trên Nguồn chấm công (cột C).
+          Dùng chung nội bộ đội thi công.
         </div>
         <button class="overlay-btn overlay-btn-primary" id="passwordButton">
           Mở board
@@ -363,7 +418,7 @@
     </div>
   </div>
 
-  <!-- App chính -->
+  <!-- APP SHELL CHÍNH -->
   <div class="app-shell" id="appShell">
     <header class="app-header">
       <div class="brand">
@@ -371,14 +426,14 @@
           <div class="brand-inner">DK</div>
         </div>
         <div>
-          <div class="brand-text-main">DUKICO – MASTER</div>
-          <div class="brand-text-sub">Nguồn chấm công / Cột C</div>
+          <div class="brand-text-main">DUKICO – CHẤM CÔNG</div>
+          <div class="brand-text-sub">Master board / annual view</div>
         </div>
       </div>
 
       <div class="controls">
         <div class="select-wrap">
-          <div class="select-label">File đang xem (theo dòng C)</div>
+          <div class="select-label">Sheet đang xem</div>
           <select id="sheetSelect" class="select-el"></select>
           <span class="select-arrow">▼</span>
         </div>
@@ -393,21 +448,24 @@
     </main>
 
     <div class="footer-bar">
-      <div>Quyền chỉnh sửa phụ thuộc chia sẻ file Google Sheets (cột C).</div>
-      <div>Config từ sheet <span class="footer-accent">Nguồn chấm công</span>.</div>
+      <div>Để chỉnh sửa được file: tài khoản Google của bạn phải có quyền <span class="footer-accent">Editor</span>.</div>
+      <div>Viewer UI by <span class="footer-accent">GitHub Pages</span></div>
     </div>
   </div>
 
   <script>
-    // ====== CẤU HÌNH ======
+    // ========== CẤU HÌNH CỦA BẠN ==========
 
     // 1. Mật khẩu mở giao diện
-    const APP_PASSWORD = "changeme123"; // <-- đổi pass
+    const APP_PASSWORD = "123"; // <-- sửa thành pass bạn muốn
 
-    // 2. URL Apps Script Web App (doGet)
-    const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec"; // <-- dán URL exec
+    // 2. Spreadsheet ID (MASTER)
+    const SPREADSHEET_ID = "1YX7imCB3GempjY2X9z_GUc8LDl019FZvMVJ5l_aht2c"; // <-- sửa
 
-    // ====== DOM ======
+    // 3. URL Web App Apps Script (doGet) trả danh sách sheet
+    const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec"; // <-- sửa
+
+    // ========== CODE ==========
 
     const passwordOverlay = document.getElementById("passwordOverlay");
     const passwordInput = document.getElementById("passwordInput");
@@ -419,6 +477,10 @@
     const sheetFrame = document.getElementById("sheetFrame");
     const statusChip = document.getElementById("statusChip");
 
+    function buildSheetUrl(gid) {
+      return `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/edit#gid=${gid}`;
+    }
+
     function setStatus(text, type) {
       statusChip.textContent = text;
       statusChip.classList.remove("ok", "err");
@@ -427,45 +489,37 @@
     }
 
     function updateIframe() {
-      const url = sheetSelect.value;
-      if (!url) return;
-      sheetFrame.src = url;
+      const gid = sheetSelect.value;
+      if (!gid) return;
+      sheetFrame.src = buildSheetUrl(gid);
     }
 
-    function loadConfigFromMaster() {
-      setStatus("Đang tải link từ cột C…", null);
+    function loadSheets() {
+      setStatus("Đang tải danh sách sheet…", null);
       fetch(API_URL)
-        .then(res => res.json())
-        .then(data => {
-          if (!Array.isArray(data)) {
-            if (data && data.error) {
-              setStatus("Lỗi API: " + (data.message || "Không rõ"), "err");
-            } else {
-              setStatus("Dữ liệu trả về không hợp lệ", "err");
-            }
-            return;
+        .then((res) => res.json())
+        .then((data) => {
+          if (Array.isArray(data)) {
+            sheetSelect.innerHTML = "";
+            data.forEach((sh, index) => {
+              const opt = document.createElement("option");
+              opt.value = sh.gid;
+              opt.textContent = sh.name;
+              if (index === 0) opt.selected = true;
+              sheetSelect.appendChild(opt);
+            });
+            setStatus("Kết nối file MASTER OK", "ok");
+            updateIframe();
+          } else if (data && data.error) {
+            console.error("API error:", data.message);
+            setStatus("Lỗi API: " + (data.message || "Không rõ"), "err");
+          } else {
+            setStatus("Dữ liệu trả về không hợp lệ", "err");
           }
-
-          if (data.length === 0) {
-            setStatus("Không tìm thấy link nào ở cột C.", "err");
-            return;
-          }
-
-          sheetSelect.innerHTML = "";
-          data.forEach((item, index) => {
-            const opt = document.createElement("option");
-            opt.value = item.url;
-            opt.textContent = item.label + " (C" + item.rowIndex + ")";
-            if (index === 0) opt.selected = true;
-            sheetSelect.appendChild(opt);
-          });
-
-          setStatus("Đã nạp " + data.length + " link từ cột C.", "ok");
-          updateIframe();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
-          setStatus("Không gọi được API (check deploy Web App).", "err");
+          setStatus("Không gọi được API (check URL / quyền web app)", "err");
         });
     }
 
@@ -481,17 +535,21 @@
         passwordError.textContent = "Mật khẩu không đúng.";
         return;
       }
+      // đúng mật khẩu
       passwordError.textContent = "";
       passwordOverlay.classList.add("hidden");
       appShell.classList.add("visible");
-      loadConfigFromMaster();
+      loadSheets();
     }
 
     passwordButton.addEventListener("click", tryUnlock);
-    passwordInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") tryUnlock();
+    passwordInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        tryUnlock();
+      }
     });
 
+    // Auto focus vào input lúc mới mở
     window.addEventListener("load", () => {
       setTimeout(() => passwordInput.focus(), 200);
     });
