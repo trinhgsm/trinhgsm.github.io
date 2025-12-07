@@ -461,8 +461,8 @@ window.addEventListener("resize", autoScaleIframe);
 /* ===== NÚT ZOOM +/- ===== */
 function changeZoom(delta) {
   zoomMultiplier += delta;
-  if (zoomMultiplier < 1) zoomMultiplier = 0.5;
-  if (zoomMultiplier > 4)   zoomMultiplier = 2;
+  if (zoomMultiplier < 1.5) zoomMultiplier = 1.5;
+  if (zoomMultiplier > 4)   zoomMultiplier = 4;
   applyScale();
 }
 
