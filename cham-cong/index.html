@@ -2,182 +2,190 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Dukico – Master Chấm Công</title>
+  <title>Board Chấm Công – MASTER Viewer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Font hiện đại -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
     :root {
-      --bg-main: #020617;
-      --bg-sidebar: #020817;
-      --bg-header: #02081c;
-      --bg-card: #020e26;
-      --border-subtle: rgba(148, 163, 184, 0.35);
+      --bg-dark: #0f172a;
+      --bg-panel: #131c2b;
       --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.16);
-      --accent-strong: rgba(56, 189, 248, 0.35);
       --text-main: #e5e7eb;
       --text-muted: #9ca3af;
       --danger: #f97373;
-      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.85);
-      --radius-xl: 18px;
-      --radius-lg: 14px;
-      --radius-md: 10px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 60%);
+      font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
     }
 
-    /* ========= OVERLAY LOGIN ========= */
+    /* ====== OVERLAY PASSWORD ====== */
 
     .overlay {
       position: fixed;
       inset: 0;
+      background: radial-gradient(circle at top, #111827 0, #020617 65%);
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, #020617 0, #000 70%);
       z-index: 9999;
     }
     .overlay.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity .3s ease, visibility .3s ease;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
     }
     .overlay-panel {
       width: 100%;
       max-width: 420px;
-      padding: 28px 26px 22px;
-      border-radius: var(--radius-xl);
-      background: linear-gradient(150deg,#020617 0%,#02081c 50%,#020617 100%);
-      box-shadow: var(--shadow-soft),0 0 0 1px rgba(148,163,184,.18);
-      border: 1px solid rgba(248,250,252,.04);
+      padding: 32px 28px 26px;
+      background: linear-gradient(145deg, #020617 0%, #111827 60%, #020617 100%);
+      border-radius: 18px;
+      box-shadow:
+        0 18px 45px rgba(15, 23, 42, 0.8),
+        0 0 0 1px rgba(148, 163, 184, 0.12);
+      border: 1px solid rgba(248, 250, 252, 0.04);
     }
     .overlay-title {
-      font-size: .95rem;
-      text-transform: uppercase;
-      letter-spacing: .24em;
-      color: var(--accent);
-      margin-bottom: 4px;
-    }
-    .overlay-heading {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
       margin-bottom: 6px;
     }
     .overlay-subtitle {
-      font-size: .82rem;
+      font-size: 0.84rem;
       color: var(--text-muted);
-      margin-bottom: 14px;
+      margin-bottom: 18px;
     }
     .overlay-divider {
       height: 1px;
-      background: linear-gradient(to right,transparent,rgba(148,163,184,.6),transparent);
-      margin-bottom: 18px;
+      background: linear-gradient(
+        to right,
+        transparent,
+        rgba(148, 163, 184, 0.4),
+        transparent
+      );
+      margin: 12px 0 18px;
     }
     .overlay-label {
-      font-size: .75rem;
-      letter-spacing: .18em;
+      font-size: 0.78rem;
       text-transform: uppercase;
+      letter-spacing: 0.2em;
       color: var(--text-muted);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       display: block;
     }
+    .overlay-input-wrap { margin-bottom: 8px; }
     .overlay-input {
       width: 100%;
       padding: 10px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,.4);
-      background: rgba(15,23,42,.85);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.7);
       color: var(--text-main);
       outline: none;
-      font-size: .9rem;
+      font-size: 0.9rem;
     }
     .overlay-input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent-strong);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45);
+      background: rgba(15, 23, 42, 0.85);
     }
     .overlay-error {
       min-height: 18px;
-      font-size: .78rem;
+      font-size: 0.78rem;
       color: var(--danger);
-      margin-top: 4px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .overlay-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 4px;
+      gap: 10px;
     }
     .overlay-hint {
-      font-size: .75rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
     }
     .overlay-btn {
       border-radius: 999px;
-      padding: 8px 16px;
       border: none;
       cursor: pointer;
+      padding: 8px 16px;
+      font-size: 0.86rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      letter-spacing: .12em;
-      font-size: .8rem;
-      background: linear-gradient(135deg,#38bdf8,#0ea5e9);
-      color:#020617;
-      box-shadow: 0 10px 30px rgba(56,189,248,.5);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
     }
-    .overlay-btn:hover {
-      box-shadow: 0 14px 34px rgba(56,189,248,.7);
+    .overlay-btn-primary {
+      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+      color: #0b1120;
+      box-shadow: 0 10px 25px rgba(56, 189, 248, 0.45);
+    }
+    .overlay-btn-primary:hover {
       transform: translateY(-1px);
-    }
-    .overlay-btn:active {
-      transform: translateY(0);
-      box-shadow: 0 7px 18px rgba(56,189,248,.5);
+      box-shadow: 0 14px 30px rgba(56, 189, 248, 0.65);
     }
 
-    /* ========= APP LAYOUT ========= */
+    /* ====== APP ====== */
 
     .app-shell {
-      display: grid;
-      grid-template-columns: 280px minmax(0,1fr);
-      width: 100%;
-      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
       opacity: 0;
       transform: translateY(10px);
-      transition: opacity .35s ease, transform .35s ease;
+      transition: opacity 0.35s ease, transform 0.35s ease;
     }
     .app-shell.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    .sidebar {
-      background: var(--bg-sidebar);
-      border-right: 1px solid rgba(148,163,184,.3);
-      padding: 14px 12px 12px;
+    header.app-header {
+      padding: 10px 16px;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.92);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+      backdrop-filter: blur(10px);
     }
-
-    .brand-block {
+    .brand {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 4px;
     }
     .brand-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
       background: conic-gradient(
-        from 190deg,#38bdf8,#22c55e,#eab308,#f97316,#38bdf8
+        from 180deg,
+        #38bdf8,
+        #22c55e,
+        #f97316,
+        #eab308,
+        #38bdf8
       );
       padding: 2px;
       display: flex;
@@ -185,325 +193,231 @@
       justify-content: center;
     }
     .brand-inner {
-      flex: 1;
+      width: 100%;
       height: 100%;
-      border-radius: 10px;
+      border-radius: 8px;
       background: #020617;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: .7rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: .16em;
-      text-transform: uppercase;
       color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
     }
     .brand-text-main {
-      font-size: .9rem;
+      font-size: 0.95rem;
       font-weight: 600;
-      letter-spacing: .18em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
     .brand-text-sub {
-      font-size: .72rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      letter-spacing: .12em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    .sidebar-section-title {
-      margin-top: 8px;
-      font-size: .72rem;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .file-list {
-      margin-top: 6px;
-      border-radius: var(--radius-lg);
-      background: rgba(15,23,42,.8);
-      border: 1px solid rgba(148,163,184,.35);
-      padding: 4px;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .file-item {
-      padding: 7px 8px;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-      margin-bottom: 3px;
-      transition: background .12s ease,border-color .12s ease,transform .07s ease;
-      border: 1px solid transparent;
-    }
-    .file-item:hover {
-      background: rgba(15,23,42,1);
-      border-color: rgba(148,163,184,.6);
-      transform: translateY(-1px);
-    }
-    .file-item.active {
-      background: var(--accent-soft);
-      border-color: var(--accent);
-    }
-    .file-item-title {
-      font-size: .84rem;
-      font-weight: 500;
-    }
-    .file-item-sub {
-      font-size: .7rem;
-      color: var(--text-muted);
-    }
-
-    .sidebar-footer {
-      margin-top: 6px;
-      font-size: .7rem;
-      color: var(--text-muted);
-      border-top: 1px dashed rgba(148,163,184,.4);
-      padding-top: 5px;
-    }
-
-    /* ========= MAIN AREA ========= */
-
-    .main {
-      display: flex;
-      flex-direction: column;
-      background: var(--bg-main);
-    }
-    .main-header {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(148,163,184,.3);
-      background: var(--bg-header);
+    .controls {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 10px;
     }
-    .main-title-block {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .main-title {
-      font-size: .9rem;
-      font-weight: 600;
-      letter-spacing: .14em;
+    .select-wrap { position: relative; }
+    .select-label {
+      font-size: 0.7rem;
       text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
     }
-    .main-subtitle {
-      font-size: .74rem;
+    .select-el {
+      padding: 7px 30px 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      font-size: 0.8rem;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      min-width: 210px;
+    }
+    .select-el:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+    .select-arrow {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-2px);
+      pointer-events: none;
+      font-size: 0.7rem;
       color: var(--text-muted);
     }
 
     .status-chip {
-      font-size: .7rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: .15em;
+      letter-spacing: 0.14em;
       padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,.6);
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.75);
       color: var(--text-muted);
-      background: rgba(15,23,42,.8);
     }
     .status-chip.ok {
-      border-color: rgba(34,197,94,.8);
+      border-color: rgba(34, 197, 94, 0.6);
       color: #bbf7d0;
-      background: rgba(22,163,74,.18);
+      background: rgba(22, 163, 74, 0.16);
     }
     .status-chip.err {
-      border-color: rgba(248,113,113,.8);
+      border-color: rgba(248, 113, 113, 0.7);
       color: #fecaca;
-      background: rgba(220,38,38,.15);
+      background: rgba(220, 38, 38, 0.15);
     }
 
-    .sheet-tabs {
-      display: flex;
-      overflow-x: auto;
-      gap: 6px;
-      padding: 6px 10px 4px;
-      border-bottom: 1px solid rgba(148,163,184,.25);
-      background: radial-gradient(circle at top,#020b1c 0,var(--bg-main) 55%);
-    }
-
-    .sheet-pill {
-      flex-shrink: 0;
-      padding: 5px 11px;
-      border-radius: 999px;
-      font-size: .78rem;
-      border: 1px solid rgba(148,163,184,.6);
-      color: var(--text-muted);
-      cursor: pointer;
-      background: rgba(15,23,42,.8);
-      white-space: nowrap;
-      transition: background .12s ease,border-color .12s ease,transform .07s ease;
-    }
-    .sheet-pill:hover {
-      background: rgba(15,23,42,1);
-      transform: translateY(-1px);
-    }
-    .sheet-pill.active {
-      border-color: var(--accent);
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    .iframe-wrap {
+    main.app-main {
       flex: 1;
-      padding: 8px 10px 10px;
+      padding: 6px 10px 10px;
+      display: flex;
+      flex-direction: column;
     }
-    .iframe-inner {
-      width: 100%;
-      height: 100%;
-      border-radius: var(--radius-xl);
+    .frame-wrap {
+      flex: 1;
+      border-radius: 16px;
       overflow: hidden;
-      background: var(--bg-card);
-      border: 1px solid rgba(148,163,184,.4);
-      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow:
+        0 14px 38px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(15, 23, 42, 0.6);
+      background: var(--bg-panel);
     }
-    iframe {
+    iframe#sheetFrame {
       width: 100%;
       height: 100%;
       border: none;
-      background: #0b1120;
     }
 
-    .main-footer {
-      font-size: .7rem;
+    .footer-bar {
+      font-size: 0.7rem;
       color: var(--text-muted);
-      padding: 4px 12px 6px;
-      border-top: 1px solid rgba(148,163,184,.28);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #020617;
+      padding: 2px 16px 6px;
+      opacity: 0.8;
     }
-    .highlight {
-      color: var(--accent);
-    }
+    .footer-accent { color: var(--accent); }
 
-    @media (max-width: 900px) {
-      .app-shell {
-        grid-template-columns: minmax(0,1fr);
-        grid-template-rows: auto auto minmax(0,1fr);
+    @media (max-width: 768px) {
+      header.app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
       }
-      .sidebar {
-        grid-row: 2;
-        flex-direction: row;
-        overflow-x: auto;
-        border-right: none;
-        border-bottom: 1px solid rgba(148,163,184,.3);
+      .controls {
+        width: 100%;
+        justify-content: space-between;
       }
-      .file-list {
-        flex: 1;
-        max-height: 160px;
-      }
-      .sidebar-footer { display:none; }
+      .select-el { min-width: 160px; }
+      .status-chip { display: none; }
     }
   </style>
 </head>
 <body>
-  <!-- LOGIN OVERLAY -->
-  <div class="overlay" id="loginOverlay">
+  <!-- Overlay password -->
+  <div class="overlay" id="passwordOverlay">
     <div class="overlay-panel">
-      <div class="overlay-title">Dukico Internal</div>
-      <div class="overlay-heading">Board chấm công MASTER</div>
+      <div class="overlay-title">Site Access</div>
       <div class="overlay-subtitle">
-        Nhập mật khẩu để truy cập giao diện xem / chọn file từ <strong>Nguồn chấm công</strong>.
+        Nhập mật khẩu để mở <strong>Board chấm công MASTER</strong>.
       </div>
+
       <div class="overlay-divider"></div>
-      <label class="overlay-label" for="passwordInput">ACCESS CODE</label>
-      <input
-        id="passwordInput"
-        class="overlay-input"
-        type="password"
-        placeholder="••••••••"
-        autocomplete="off"
-      />
+
+      <label class="overlay-label" for="passwordInput">
+        ACCESS CODE
+      </label>
+      <div class="overlay-input-wrap">
+        <input
+          id="passwordInput"
+          type="password"
+          class="overlay-input"
+          autocomplete="off"
+          placeholder="••••••••"
+        />
+      </div>
       <div class="overlay-error" id="passwordError"></div>
+
       <div class="overlay-actions">
         <div class="overlay-hint">
-          Dùng chung cho team chấm công & kỹ thuật.
+          Dùng nội bộ – dựa trên Nguồn chấm công (cột C).
         </div>
-        <button class="overlay-btn" id="loginBtn">Mở board</button>
+        <button class="overlay-btn overlay-btn-primary" id="passwordButton">
+          Mở board
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- APP SHELL -->
+  <!-- App chính -->
   <div class="app-shell" id="appShell">
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div>
-        <div class="brand-block">
-          <div class="brand-mark"><div class="brand-inner">DK</div></div>
-          <div>
-            <div class="brand-text-main">DUKICO</div>
-            <div class="brand-text-sub">Master / Nguồn chấm công</div>
-          </div>
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark">
+          <div class="brand-inner">DK</div>
         </div>
-        <div class="sidebar-section-title">Danh sách file (cột C)</div>
-      </div>
-
-      <div class="file-list" id="fileList"></div>
-
-      <div class="sidebar-footer">
-        Dữ liệu lấy trực tiếp từ sheet <span class="highlight">Nguồn chấm công</span> – cột C (link / ID).
-      </div>
-    </aside>
-
-    <!-- MAIN AREA -->
-    <section class="main">
-      <header class="main-header">
-        <div class="main-title-block">
-          <div class="main-title" id="currentFileTitle">Chưa chọn file</div>
-          <div class="main-subtitle" id="currentSheetTitle">–</div>
-        </div>
-        <div class="status-chip" id="statusChip">Chờ đăng nhập…</div>
-      </header>
-
-      <div class="sheet-tabs" id="sheetTabs"></div>
-
-      <div class="iframe-wrap">
-        <div class="iframe-inner">
-          <iframe id="viewerFrame"></iframe>
+        <div>
+          <div class="brand-text-main">DUKICO – MASTER</div>
+          <div class="brand-text-sub">Nguồn chấm công / Cột C</div>
         </div>
       </div>
 
-      <footer class="main-footer">
-        <div>Muốn chỉnh sửa: tài khoản Google của bạn phải có quyền edit từng file.</div>
-        <div>Viewer chạy từ <span class="highlight">GitHub Pages</span>.</div>
-      </footer>
-    </section>
+      <div class="controls">
+        <div class="select-wrap">
+          <div class="select-label">File đang xem (theo dòng C)</div>
+          <select id="sheetSelect" class="select-el"></select>
+          <span class="select-arrow">▼</span>
+        </div>
+        <div class="status-chip" id="statusChip">Đang tải cấu hình…</div>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div class="frame-wrap">
+        <iframe id="sheetFrame" src=""></iframe>
+      </div>
+    </main>
+
+    <div class="footer-bar">
+      <div>Quyền chỉnh sửa phụ thuộc chia sẻ file Google Sheets (cột C).</div>
+      <div>Config từ sheet <span class="footer-accent">Nguồn chấm công</span>.</div>
+    </div>
   </div>
 
   <script>
-    // ================== CẤU HÌNH ==================
-    const API_URL =
-      "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec";
+    // ====== CẤU HÌNH ======
 
-    // ================== BIẾN TOÀN CỤC ==================
-    let PASSWORD = "";
-    let files = [];   // [{label,fileId}]
-    let sheets = [];  // [{name,gid}]
-    let currentFileId = null;
-    let currentGid = null;
+    // 1. Mật khẩu mở giao diện
+    const APP_PASSWORD = "changeme123"; // <-- đổi pass
 
-    // DOM
-    const loginOverlay = document.getElementById("loginOverlay");
+    // 2. URL Apps Script Web App (doGet)
+    const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec"; // <-- dán URL exec
+
+    // ====== DOM ======
+
+    const passwordOverlay = document.getElementById("passwordOverlay");
     const passwordInput = document.getElementById("passwordInput");
+    const passwordButton = document.getElementById("passwordButton");
     const passwordError = document.getElementById("passwordError");
-    const loginBtn = document.getElementById("loginBtn");
-
     const appShell = document.getElementById("appShell");
-    const fileListEl = document.getElementById("fileList");
-    const sheetTabsEl = document.getElementById("sheetTabs");
-    const viewerFrame = document.getElementById("viewerFrame");
+
+    const sheetSelect = document.getElementById("sheetSelect");
+    const sheetFrame = document.getElementById("sheetFrame");
     const statusChip = document.getElementById("statusChip");
-    const currentFileTitle = document.getElementById("currentFileTitle");
-    const currentSheetTitle = document.getElementById("currentSheetTitle");
 
     function setStatus(text, type) {
       statusChip.textContent = text;
@@ -512,224 +426,75 @@
       if (type === "err") statusChip.classList.add("err");
     }
 
-    // ================== LOGIN ==================
-    function doLogin() {
-      const pass = passwordInput.value.trim();
-      if (!pass) {
-        passwordError.textContent = "Vui lòng nhập mật khẩu.";
-        return;
-      }
-      PASSWORD = pass;
-      passwordError.textContent = "";
-      setStatus("Đang nạp danh sách file…", null);
+    function updateIframe() {
+      const url = sheetSelect.value;
+      if (!url) return;
+      sheetFrame.src = url;
+    }
 
-      fetch(API_URL + "?mode=files&pass=" + encodeURIComponent(PASSWORD))
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.error) {
-            if (data.error === "wrong_password") {
-              passwordError.textContent = "Sai mật khẩu.";
-              setStatus("Sai mật khẩu", "err");
+    function loadConfigFromMaster() {
+      setStatus("Đang tải link từ cột C…", null);
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(data => {
+          if (!Array.isArray(data)) {
+            if (data && data.error) {
+              setStatus("Lỗi API: " + (data.message || "Không rõ"), "err");
             } else {
-              passwordError.textContent = data.message || "Lỗi API (files).";
-              setStatus("Lỗi: " + data.error, "err");
+              setStatus("Dữ liệu trả về không hợp lệ", "err");
             }
             return;
           }
 
-          if (!Array.isArray(data)) {
-            passwordError.textContent = "API files trả về dữ liệu không hợp lệ.";
-            setStatus("Lỗi dữ liệu API files", "err");
+          if (data.length === 0) {
+            setStatus("Không tìm thấy link nào ở cột C.", "err");
             return;
           }
 
-          files = data;
-          renderFileList();
-          loginOverlay.classList.add("hidden");
-          appShell.classList.add("visible");
-          setStatus("Đã tải " + files.length + " file từ cột C.", "ok");
+          sheetSelect.innerHTML = "";
+          data.forEach((item, index) => {
+            const opt = document.createElement("option");
+            opt.value = item.url;
+            opt.textContent = item.label + " (C" + item.rowIndex + ")";
+            if (index === 0) opt.selected = true;
+            sheetSelect.appendChild(opt);
+          });
 
-          if (files.length > 0) {
-            selectFile(files[0].fileId);
-          }
+          setStatus("Đã nạp " + data.length + " link từ cột C.", "ok");
+          updateIframe();
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
-          alert("Lỗi gọi API (files): " + err);
-          passwordError.textContent = "Không gọi được API (files).";
-          setStatus("Không gọi được API files", "err");
+          setStatus("Không gọi được API (check deploy Web App).", "err");
         });
     }
 
-    loginBtn.addEventListener("click", doLogin);
+    sheetSelect.addEventListener("change", updateIframe);
+
+    function tryUnlock() {
+      const val = passwordInput.value.trim();
+      if (!val) {
+        passwordError.textContent = "Vui lòng nhập mật khẩu.";
+        return;
+      }
+      if (val !== APP_PASSWORD) {
+        passwordError.textContent = "Mật khẩu không đúng.";
+        return;
+      }
+      passwordError.textContent = "";
+      passwordOverlay.classList.add("hidden");
+      appShell.classList.add("visible");
+      loadConfigFromMaster();
+    }
+
+    passwordButton.addEventListener("click", tryUnlock);
     passwordInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") doLogin();
+      if (e.key === "Enter") tryUnlock();
     });
+
     window.addEventListener("load", () => {
       setTimeout(() => passwordInput.focus(), 200);
     });
-
-    // ================== FILE LIST ==================
-    function renderFileList() {
-      fileListEl.innerHTML = "";
-      if (!files || files.length === 0) {
-        fileListEl.innerHTML =
-          '<div class="file-item"><div class="file-item-title">Không có file nào</div></div>';
-        return;
-      }
-
-      files.forEach((f) => {
-        const item = document.createElement("div");
-        item.className = "file-item";
-        item.dataset.fileId = f.fileId || "";
-
-        const title = document.createElement("div");
-        title.className = "file-item-title";
-        title.textContent = f.label || "(không có tên)";
-
-        const sub = document.createElement("div");
-        sub.className = "file-item-sub";
-        const shortId = (f.fileId || "").substring(0, 10);
-        sub.textContent = shortId ? shortId + "…" : "ID trống";
-
-        item.appendChild(title);
-        item.appendChild(sub);
-
-        item.addEventListener("click", () => {
-          if (f.fileId) selectFile(f.fileId);
-        });
-
-        fileListEl.appendChild(item);
-      });
-
-      updateActiveFileHighlight();
-    }
-
-    function updateActiveFileHighlight() {
-      const items = fileListEl.querySelectorAll(".file-item");
-      items.forEach((el) => {
-        el.classList.toggle("active", el.dataset.fileId === currentFileId);
-      });
-    }
-
-    function selectFile(fileId) {
-      if (!fileId) return;
-      currentFileId = fileId;
-      updateActiveFileHighlight();
-      sheets = [];
-      sheetTabsEl.innerHTML = "";
-      currentSheetTitle.textContent = "Đang tải danh sách sheet…";
-
-      const shortFileId = (fileId || "").substring(0, 8);
-      currentFileTitle.textContent = shortFileId
-        ? "File: " + shortFileId + "…"
-        : "File: (không có ID)";
-
-      setStatus("Đang tải sheets…", null);
-
-      fetch(
-        API_URL +
-          "?mode=sheets&fileId=" +
-          encodeURIComponent(fileId) +
-          "&pass=" +
-          encodeURIComponent(PASSWORD)
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.error) {
-            setStatus("Lỗi sheets: " + data.error, "err");
-            currentSheetTitle.textContent = data.message || "Lỗi tải sheet.";
-            return;
-          }
-
-          if (!Array.isArray(data)) {
-            setStatus("Lỗi dữ liệu API sheets", "err");
-            currentSheetTitle.textContent = "Lỗi tải sheet.";
-            return;
-          }
-
-          sheets = data;
-          renderSheetTabs();
-          setStatus("Đã nạp " + sheets.length + " sheet.", "ok");
-          if (sheets.length > 0) {
-            selectSheet(sheets[0].gid);
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          setStatus("Không gọi được API sheets", "err");
-          currentSheetTitle.textContent = "Không gọi được API sheets.";
-        });
-    }
-
-    // ================== SHEET TABS ==================
-    function renderSheetTabs() {
-      sheetTabsEl.innerHTML = "";
-      if (!sheets || sheets.length === 0) {
-        const span = document.createElement("span");
-        span.textContent = "Không có sheet nào.";
-        span.style.fontSize = ".8rem";
-        span.style.color = "var(--text-muted)";
-        sheetTabsEl.appendChild(span);
-        return;
-      }
-
-      sheets.forEach((sh) => {
-        const pill = document.createElement("button");
-        pill.type = "button";
-        pill.className = "sheet-pill";
-        pill.textContent = sh.name;
-        pill.dataset.gid = sh.gid;
-        pill.addEventListener("click", () => selectSheet(sh.gid));
-        sheetTabsEl.appendChild(pill);
-      });
-
-      updateActiveSheetHighlight();
-    }
-
-    function updateActiveSheetHighlight() {
-      const pills = sheetTabsEl.querySelectorAll(".sheet-pill");
-      pills.forEach((el) => {
-        el.classList.toggle("active", el.dataset.gid === String(currentGid));
-      });
-    }
-
-    function selectSheet(gid) {
-      if (!gid || !currentFileId) return;
-      currentGid = gid;
-      updateActiveSheetHighlight();
-
-      const sh = sheets.find((s) => String(s.gid) === String(gid));
-      currentSheetTitle.textContent = sh ? "Sheet: " + sh.name : "Sheet: " + gid;
-      setStatus("Đang tạo link nhúng…", null);
-
-      fetch(
-        API_URL +
-          "?mode=embed&fileId=" +
-          encodeURIComponent(currentFileId) +
-          "&gid=" +
-          encodeURIComponent(gid) +
-          "&pass=" +
-          encodeURIComponent(PASSWORD)
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data && data.error) {
-            setStatus("Lỗi embed: " + data.error, "err");
-            return;
-          }
-          if (!data || !data.url) {
-            setStatus("Lỗi API embed.", "err");
-            return;
-          }
-          viewerFrame.src = data.url;
-          setStatus("Đang xem file / sheet đã chọn.", "ok");
-        })
-        .catch((err) => {
-          console.error(err);
-          setStatus("Không gọi được API embed", "err");
-        });
-    }
   </script>
 </body>
 </html>
