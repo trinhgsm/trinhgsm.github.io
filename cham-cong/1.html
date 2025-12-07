@@ -7,7 +7,7 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
-  <!-- Favicon DK (dùng base64 như bạn đưa) -->
+  <!-- Favicon DK -->
   <link rel="icon" type="image/png"
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
 
@@ -139,29 +139,35 @@
       white-space: nowrap;
     }
 
+    /* ===== TOOLBAR – THU NHỎ CHO VÀO 1 HÀNG ===== */
     .toolbar {
       display: flex;
-      gap: 6px;
-      flex-wrap: wrap; /* cho phép xuống dòng nếu chật */
+      gap: 4px;
+      flex-wrap: nowrap;          /* Không cho xuống dòng */
+      overflow-x: auto;           /* Vuốt ngang nếu chật */
+      padding-bottom: 4px;
     }
 
     select,
     button.small-btn {
-      border-radius: 10px;
+      border-radius: 8px;
       border: 1px solid var(--border-soft);
       background: #020617;
       color: #e5e7eb;
-      font-size: 0.8rem;
-      padding: 6px 8px;
+      font-size: 0.75rem;
+      padding: 5px 6px;
     }
+
     select {
-      flex: 1 1 120px;
-      min-width: 0;
+      flex: 1 1 auto;             /* Cho tự co lại */
+      min-width: 90px;            /* Thu hẹp để dễ nằm 1 hàng */
     }
+
     button.small-btn {
       flex: 0 0 auto;
       cursor: pointer;
       white-space: nowrap;
+      padding: 5px 8px;
     }
 
     /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
@@ -220,8 +226,7 @@
         padding: 10px 14px;
       }
       .toolbar {
-        flex: 1;
-        justify-content: flex-end;
+        overflow-x: visible;
       }
       main { padding: 10px; }
     }
@@ -251,7 +256,7 @@
     <select id="fileMenu"></select>
     <select id="sheetMenu"></select>
     <button id="editBtn" class="small-btn">Sửa</button>
-    <button id="driveBtn" class="small-btn">Thư mục Drive</button>
+    <button id="driveBtn" class="small-btn">Drive</button>
     <button id="zoomOutBtn" class="small-btn">−</button>
     <button id="zoomInBtn" class="small-btn">+</button>
   </div>
