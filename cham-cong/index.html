@@ -222,9 +222,12 @@ function loadFiles() {
       menu.innerHTML = "";
 
       list.forEach(item => {
-        let op = document.createElement("option");
+        const op = document.createElement("option");
         op.value = item.url;
-        op.textContent = item.name;
+
+        // Ưu tiên dùng label, nếu không có thì fallback name/rowIndex
+        op.textContent = item.label || item.name || ("Hàng " + (item.rowIndex || ""));
+
         menu.appendChild(op);
       });
 
@@ -234,6 +237,7 @@ function loadFiles() {
     })
     .catch(err => {
       alert("Lỗi tải danh sách file: " + err);
+      console.error(err);
     });
 }
 
@@ -241,6 +245,7 @@ menu.onchange = () => {
   frame.src = menu.value;
 };
 </script>
+
 
 </body>
 </html>
