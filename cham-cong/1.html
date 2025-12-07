@@ -28,7 +28,7 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      overflow-x: hidden; /* không kéo ngang toàn trang */
+      overflow-x: hidden;
     }
 
     /* ---------- LOCK LAYER ---------- */
@@ -91,6 +91,56 @@
       font-weight: 600;
       font-size: 0.86rem;
       cursor: pointer;
+    }
+
+    /* ---------- GLOBAL LOADER (GIỮA MÀN HÌNH) ---------- */
+    #globalLoader {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.92);
+      display: none;               /* bật/tắt bằng JS */
+      align-items: center;
+      justify-content: center;
+      z-index: 9000;
+    }
+    .loader-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .loader-core {
+      position: relative;
+      width: 80px;
+      height: 80px;
+    }
+    .loader-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      border: 2px solid rgba(148,163,184,0.25);
+      border-top-color: #38bdf8;
+      border-right-color: #22c55e;
+      animation: loader-spin 0.9s linear infinite;
+    }
+    .loader-square {
+      position: absolute;
+      inset: 18px;
+      border-radius: 6px;
+      border: 1px solid rgba(248,250,252,0.7);
+      transform: rotate(12deg);
+    }
+    .loader-text {
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #e5e7eb;
+      opacity: 0.9;
+      text-align: center;
+      white-space: nowrap;
+    }
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
     }
 
     /* ---------- HEADER ---------- */
@@ -209,7 +259,7 @@
 
     .iframe-scale {
       transform-origin: top left;
-      display: inline-block; /* để kích thước bám theo iframe thật */
+      display: inline-block;
     }
 
     iframe {
@@ -243,6 +293,17 @@
     <input id="passwordInput" type="password" placeholder="Mật khẩu..." />
     <div id="passwordError"></div>
     <button id="unlockBtn">MỞ</button>
+  </div>
+</div>
+
+<!-- LOADER GIỮA MÀN -->
+<div id="globalLoader">
+  <div class="loader-box">
+    <div class="loader-core">
+      <div class="loader-ring"></div>
+      <div class="loader-square"></div>
+    </div>
+    <div class="loader-text">DUKICO / ĐANG TẢI</div>
   </div>
 </div>
 
@@ -294,8 +355,17 @@ const zoomOutBtn = document.getElementById("zoomOutBtn");
 const zoomInBtn  = document.getElementById("zoomInBtn");
 const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
+const globalLoader   = document.getElementById("globalLoader");
 
-/* ===== ZOOM STATE – 1 là kích thước gốc ===== */
+/* ===== LOADER CONTROL ===== */
+function showLoader() {
+  globalLoader.style.display = "flex";
+}
+function hideLoader() {
+  globalLoader.style.display = "none";
+}
+
+/* ===== ZOOM STATE ===== */
 let zoom = 1;
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
@@ -329,8 +399,9 @@ function startApp() {
   passwordError.textContent = "";
   lockScreen.style.display = "none";
   topBar.style.display = "flex";
+  showLoader();
   loadFiles();
-  applyScale(); // zoom = 1
+  applyScale();
 }
 
 /* ===== APPLY SCALE ===== */
@@ -339,7 +410,6 @@ function applyScale() {
   iframeScaleDiv.style.transform = "scale(" + zoom + ")";
 }
 
-/* Khi xoay màn hình, cứ giữ zoom hiện tại, chỉ apply lại */
 window.addEventListener("resize", applyScale);
 
 /* ===== NÚT ZOOM +/- ===== */
@@ -352,6 +422,13 @@ function changeZoom(delta) {
 
 zoomOutBtn.onclick = () => changeZoom(-0.1);
 zoomInBtn.onclick  = () => changeZoom(+0.1);
+
+/* Khi iframe load xong thì tắt loader */
+frame.addEventListener("load", () => {
+  if (frame.src && frame.src !== "about:blank") {
+    hideLoader();
+  }
+});
 
 /* ===== UTIL ===== */
 function extractSheetId(url) {
@@ -395,6 +472,7 @@ function isCurrentMonthValue(val, curM, curY) {
 
 /* ===== LOAD FILES ===== */
 async function loadFiles() {
+  showLoader();
   try {
     const res  = await fetch(API_URL + "?action=files");
     const json = await res.json();
@@ -426,24 +504,32 @@ async function loadFiles() {
     if (fileMenu.options.length > 0) {
       fileMenu.selectedIndex = defaultIndex;
       await loadSheetsForCurrentFile();
+    } else {
+      hideLoader();
     }
   } catch (err) {
     console.error(err);
     alert("Lỗi tải danh sách file từ API.");
+    hideLoader();
   }
 }
 
 /* ===== LOAD SHEETS ===== */
 async function loadSheetsForCurrentFile() {
   const fileUrl = fileMenu.value;
-  if (!fileUrl) return;
+  if (!fileUrl) {
+    hideLoader();
+    return;
+  }
 
   const id = extractSheetId(fileUrl);
   if (!id) {
     sheetMenu.innerHTML = "";
+    hideLoader();
     return;
   }
 
+  showLoader();
   try {
     const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
     const tabs = await res.json();
@@ -473,10 +559,13 @@ async function loadSheetsForCurrentFile() {
         sheetMenu.selectedIndex = 0;
       }
       updateFrame();
+    } else {
+      hideLoader();
     }
   } catch (err) {
     console.error(err);
     alert("Lỗi tải danh sách sheet/tabs.");
+    hideLoader();
   }
 }
 
@@ -496,8 +585,8 @@ function buildEditUrl() {
 function updateFrame() {
   const url = buildEditUrl();
   if (url) {
+    showLoader();
     frame.src = url;
-    // giữ zoom hiện tại, chỉ apply lại transform
     setTimeout(applyScale, 300);
   }
 }
