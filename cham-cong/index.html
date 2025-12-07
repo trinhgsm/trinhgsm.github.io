@@ -337,7 +337,47 @@ function extractSheetId(url) {
   return m ? m[1] : null;
 }
 
-/* ===== LOAD FILES ===== */
+/**
+ * Kiểm tra 1 giá trị "tháng" (lấy từ cột A) có phải tháng hiện tại không
+ * Hỗ trợ các kiểu: 12/2025, 12-2025, 2025-12, "Tháng 12-2025", ...
+ */
+function isCurrentMonthValue(val, curM, curY) {
+  if (!val) return false;
+
+  if (val instanceof Date) {
+    return (val.getMonth() + 1 === curM) && (val.getFullYear() === curY);
+  }
+
+  const s = String(val).trim();
+
+  // 12/2025 hoặc 12-2025
+  let m = s.match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  // 2025/12 hoặc 2025-12
+  m = s.match(/^(\d{4})\s*[\/\-]\s*(\d{1,2})$/);
+  if (m) {
+    const year  = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  // "Tháng 12-2025" hoặc "Tháng 12/2025"
+  m = s.match(/Tháng\s*(\d{1,2})\s*[\/\-]?\s*(\d{4})?/i);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = m[2] ? parseInt(m[2], 10) : curY;
+    return month === curM && year === curY;
+  }
+
+  return false;
+}
+
+/* ===== LOAD FILES (MENU CỘT B) – auto chọn tháng hiện tại ===== */
 async function loadFiles() {
   try {
     const res  = await fetch(API_URL + "?action=files");
@@ -345,17 +385,31 @@ async function loadFiles() {
     const list = Array.isArray(json) ? json : (json.files || []);
 
     fileMenu.innerHTML = "";
-    list.forEach(item => {
+
+    const now  = new Date();
+    const curM = now.getMonth() + 1;
+    const curY = now.getFullYear();
+    let defaultIndex = 0; // nếu không tìm thấy, dùng dòng đầu tiên
+
+    list.forEach((item, idx) => {
       const name = item.name || item.label || ("Dòng " + (item.rowIndex || ""));
       const url  = item.url;
       if (!url) return;
+
       const op = document.createElement("option");
       op.value = url;
       op.textContent = name;
       fileMenu.appendChild(op);
+
+      // lấy giá trị tháng từ phía server nếu có
+      const monthVal = item.month || item.thang || item.A || null;
+      if (monthVal && isCurrentMonthValue(monthVal, curM, curY)) {
+        defaultIndex = idx;
+      }
     });
 
-    if (list.length > 0) {
+    if (fileMenu.options.length > 0) {
+      fileMenu.selectedIndex = defaultIndex;
       await loadSheetsForCurrentFile();
     }
   } catch (err) {
@@ -364,7 +418,7 @@ async function loadFiles() {
   }
 }
 
-/* ===== LOAD SHEETS (TAB) CỦA 1 FILE ===== */
+/* ===== LOAD SHEETS (TAB) CỦA 1 FILE – auto chọn Ngày 1–15 / 16–31 ===== */
 async function loadSheetsForCurrentFile() {
   const fileUrl = fileMenu.value;
   if (!fileUrl) return;
@@ -380,14 +434,29 @@ async function loadSheetsForCurrentFile() {
     const tabs = await res.json();
 
     sheetMenu.innerHTML = "";
+
+    const today = new Date();
+    const day   = today.getDate();
+    const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
+    let preferredGid = null;
+
     tabs.forEach(t => {
       const op = document.createElement("option");
       op.value = t.gid;
       op.textContent = t.name;
       sheetMenu.appendChild(op);
+
+      if (!preferredGid && t.name === preferredName) {
+        preferredGid = t.gid;
+      }
     });
 
-    if (tabs.length > 0) {
+    if (sheetMenu.options.length > 0) {
+      if (preferredGid) {
+        sheetMenu.value = preferredGid; // chọn đúng "Ngày 1–15" hoặc "Ngày 16–31"
+      } else {
+        sheetMenu.selectedIndex = 0;    // nếu không có sheet đó thì chọn sheet đầu tiên
+      }
       updateFrame();
     }
   } catch (err) {
