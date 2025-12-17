@@ -616,16 +616,22 @@ async function loadSheetsForCurrentFile() {
   showLoading();
   try {
     const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
-    const tabs = await res.json();
+const data = await res.json();
 
-    sheetMenu.innerHTML = "";
+const tabs  = data.sheets || [];
+const sites = data.sites  || [];
 
-    const today = new Date();
-    const day   = today.getDate();
-    const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
-    let preferredGid = null;
+renderSiteStatus(sites);   // ⭐ BẮT BUỘC
 
-    tabs.forEach(t => {
+sheetMenu.innerHTML = "";
+
+const today = new Date();
+const day   = today.getDate();
+const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
+let preferredGid = null;
+
+tabs.forEach(t => {
+
       const op = document.createElement("option");
       op.value = t.gid;
       op.textContent = t.name;
