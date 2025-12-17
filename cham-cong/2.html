@@ -305,7 +305,7 @@
         <span>DUKICO</span>
       </div>
     </div>
-    <div class="loading-text">Đợi 15 giây...</div>
+    <div class="loading-text">Đợi 10 giây...</div>
   </div>
 </div>
 
@@ -323,7 +323,7 @@
 <!-- HEADER CHÍNH -->
 <header id="topBar" style="display:none;">
   <div class="brand">
-    <div class="brand-mark"><div class="brand-inner">DK</div></div>
+    <div class="brand-mark"><div class="brand-inner">DKC</div></div>
     <span>DUKICO – Chấm công ghi nhật ký auto</span>
   </div>
 
@@ -461,8 +461,8 @@ window.addEventListener("resize", autoScaleIframe);
 /* ===== NÚT ZOOM +/- ===== */
 function changeZoom(delta) {
   zoomMultiplier += delta;
-  if (zoomMultiplier < 0.5) zoomMultiplier = 0.5;
-  if (zoomMultiplier > 2)   zoomMultiplier = 2;
+  if (zoomMultiplier < 1) zoomMultiplier = 1;
+  if (zoomMultiplier > 4)   zoomMultiplier = 4;
   applyScale();
 }
 
