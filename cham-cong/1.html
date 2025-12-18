@@ -412,15 +412,66 @@
       }
       main { padding: 10px; }
     }
-    .dropdown-menu {
-  background: #020617;
-  border: 1px solid rgba(148,163,184,.4);
-  border-radius: 10px;
-  max-height: 260px;
-  overflow-y: auto;
+    /* ===== DASHBOARD CHUNG ===== */
+#dashboardWrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2,6,23,0.95);
+  z-index: 7000;
 }
-.dropdown-item:hover {
-  background: rgba(56,189,248,.15);
+
+/* ===== MOBILE – CỘT ĐỨNG ===== */
+#mobileChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px;
+  height: 120px;
+  overflow-x: auto;
+}
+
+.m-col {
+  width: 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: 6px 6px 0 0;
+}
+
+.m-col span {
+  font-size: 10px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-bottom: 4px;
+  color: #020617;
+  font-weight: 600;
+}
+
+/* ===== PC – THANH NGANG ===== */
+#pcChart {
+  display: none;
+  padding: 8px 12px;
+}
+
+.pc-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.pc-bar {
+  height: 10px;
+  border-radius: 999px;
+}
+
+/* ===== CHỈ HIỂN THỊ PC ===== */
+@media (min-width: 1024px) {
+  #mobileChart { display: none; }
+  #pcChart { display: block; }
 }
 
   </style>
@@ -459,11 +510,8 @@
   </div>
 
   <div class="toolbar">
-    <div class="dropdown" id="fileDropdown">
-  <button class="dropdown-btn">Chọn file</button>
-  <div class="dropdown-menu"></div>
-</div>
-
+    <select id="fileMenu"></select>
+    <select id="sheetMenu"></select>
     <button id="editBtn" class="small-btn">Sửa</button>
     <button id="driveBtn" class="small-btn">Drive</button>
     <button id="zoomOutBtn" class="small-btn">−</button>
@@ -601,6 +649,10 @@ function changeZoom(delta) {
   if (zoomMultiplier > 4)   zoomMultiplier = 4;
   applyScale();
 }
+const dash = document.getElementById("dashboardWrap");
+if (dash) {
+  dash.style.display = zoomMultiplier > 1 ? "none" : "block";
+}
 
 zoomOutBtn.onclick = () => changeZoom(-0.1);
 zoomInBtn.onclick  = () => changeZoom(+0.1);
@@ -713,6 +765,7 @@ const tabs  = data.sheets || [];
 const sites = data.sites  || [];
 
 renderSiteStatus(sites);   // ⭐ BẮT BUỘC
+renderSiteActivityChart(sites);
 
 sheetMenu.innerHTML = "";
 
@@ -818,6 +871,42 @@ driveBtn.onclick = () => {
 
   bar.style.display = "block";
 }
+function renderSiteActivityChart(sites) {
+  const mobile = document.getElementById("mobileChart");
+  const pc     = document.getElementById("pcChart");
+  if (!mobile || !pc || !sites) return;
+
+  mobile.innerHTML = "";
+  pc.innerHTML = "";
+
+  sites.forEach(site => {
+    let score = 25;
+    if (site.status === "green") score = 100;
+    else if (site.status === "yellow") score = 60;
+
+    const color =
+      site.status === "green"  ? "#22c55e" :
+      site.status === "yellow" ? "#eab308" :
+                                 "#ef4444";
+
+    /* ===== MOBILE: CỘT ĐỨNG ===== */
+    const col = document.createElement("div");
+    col.className = "m-col";
+    col.style.height = score + "%";
+    col.style.background = color;
+    col.innerHTML = `<span>${site.maCan}</span>`;
+    mobile.appendChild(col);
+
+    /* ===== PC: THANH NGANG ===== */
+    const row = document.createElement("div");
+    row.className = "pc-row";
+    row.innerHTML = `
+      <div>${site.maCan}</div>
+      <div class="pc-bar" style="width:${score}%;background:${color}"></div>
+    `;
+    pc.appendChild(row);
+  });
+}
 
 </script>
 <div id="siteStatusBar">
@@ -835,6 +924,16 @@ driveBtn.onclick = () => {
       <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
     </div>
   </div>
+</div>
+<!-- DASHBOARD CÔNG TRÌNH -->
+<div id="dashboardWrap">
+
+  <!-- MOBILE: BIỂU ĐỒ CỘT ĐỨNG -->
+  <div id="mobileChart"></div>
+
+  <!-- PC: BIỂU ĐỒ THANH NGANG -->
+  <div id="pcChart"></div>
+
 </div>
 
 </body>
