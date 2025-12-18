@@ -412,14 +412,27 @@
       }
       main { padding: 10px; }
     }
-    /* ===== DASHBOARD CHUNG ===== */
-#dashboardWrap {
+    /* ===== WRAP CHUNG DƯỚI ===== */
+#bottomPanel {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(2,6,23,0.95);
   z-index: 7000;
+}
+
+/* ===== DASHBOARD ===== */
+#dashboardWrap {
+  background: rgba(2,6,23,0.95);
+  border-top: 1px solid rgba(148,163,184,0.3);
+  max-height: 160px;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+/* trạng thái ẩn */
+#dashboardWrap.collapsed {
+  max-height: 0;
 }
 
 /* ===== MOBILE – CỘT ĐỨNG ===== */
@@ -439,7 +452,6 @@
   justify-content: center;
   border-radius: 6px 6px 0 0;
 }
-
 .m-col span {
   font-size: 10px;
   writing-mode: vertical-rl;
@@ -454,7 +466,6 @@
   display: none;
   padding: 8px 12px;
 }
-
 .pc-row {
   display: grid;
   grid-template-columns: 90px 1fr;
@@ -462,16 +473,35 @@
   align-items: center;
   margin: 6px 0;
 }
-
 .pc-bar {
   height: 10px;
   border-radius: 999px;
 }
 
-/* ===== CHỈ HIỂN THỊ PC ===== */
+/* ===== THANH TRẠNG THÁI ===== */
+#siteStatusBar {
+  background: rgba(15,23,42,0.96);
+  border-top: 1px solid rgba(148,163,184,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+#toggleDashBtn {
+  display: none;
+  border: none;
+  background: transparent;
+  color: #38bdf8;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ===== CHỈ PC MỚI CÓ NÚT & BIỂU ĐỒ NGANG ===== */
 @media (min-width: 1024px) {
   #mobileChart { display: none; }
   #pcChart { display: block; }
+  #toggleDashBtn { display: inline-block; }
 }
 
   </style>
@@ -649,9 +679,9 @@ function changeZoom(delta) {
   if (zoomMultiplier > 4)   zoomMultiplier = 4;
   applyScale();
 }
-const dash = document.getElementById("dashboardWrap");
-if (dash) {
-  dash.style.display = zoomMultiplier > 1 ? "none" : "block";
+const panel = document.getElementById("bottomPanel");
+if (panel) {
+  panel.style.display = zoomMultiplier > 1 ? "none" : "block";
 }
 
 zoomOutBtn.onclick = () => changeZoom(-0.1);
@@ -889,7 +919,7 @@ function renderSiteActivityChart(sites) {
       site.status === "yellow" ? "#eab308" :
                                  "#ef4444";
 
-    /* ===== MOBILE: CỘT ĐỨNG ===== */
+    /* MOBILE – CỘT ĐỨNG */
     const col = document.createElement("div");
     col.className = "m-col";
     col.style.height = score + "%";
@@ -897,7 +927,7 @@ function renderSiteActivityChart(sites) {
     col.innerHTML = `<span>${site.maCan}</span>`;
     mobile.appendChild(col);
 
-    /* ===== PC: THANH NGANG ===== */
+    /* PC – THANH NGANG */
     const row = document.createElement("div");
     row.className = "pc-row";
     row.innerHTML = `
@@ -907,13 +937,45 @@ function renderSiteActivityChart(sites) {
     pc.appendChild(row);
   });
 }
+const dashWrap = document.getElementById("dashboardWrap");
+const toggleBtn = document.getElementById("toggleDashBtn");
+
+if (toggleBtn) {
+  toggleBtn.onclick = () => {
+    dashWrap.classList.toggle("collapsed");
+    toggleBtn.textContent =
+      dashWrap.classList.contains("collapsed") ? "▼" : "▲";
+  };
+}
 
 </script>
-<div id="siteStatusBar">
-  <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
+<!-- WRAP CHUNG -->
+<div id="bottomPanel">
 
-  <div class="status-marquee">
-    <div id="statusList" class="status-track"></div>
+  <!-- DASHBOARD (TRƯỢT LÊN / XUỐNG) -->
+  <div id="dashboardWrap">
+
+    <!-- MOBILE: BIỂU ĐỒ CỘT ĐỨNG -->
+    <div id="mobileChart"></div>
+
+    <!-- PC: BIỂU ĐỒ THANH NGANG -->
+    <div id="pcChart"></div>
+
+  </div>
+
+  <!-- THANH TRẠNG THÁI -->
+  <div id="siteStatusBar">
+    <div class="status-title">
+      CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG
+    </div>
+
+    <!-- NÚT TOGGLE (CHỈ PC) -->
+    <button id="toggleDashBtn" title="Ẩn/hiện biểu đồ">
+      ▲
+    </button>
+
+    <div class="status-marquee">
+      <div id="statusList" class="status-track"></div>
   </div>
 
   <!-- GHI CHÚ MÀU -->
@@ -924,16 +986,6 @@ function renderSiteActivityChart(sites) {
       <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
     </div>
   </div>
-</div>
-<!-- DASHBOARD CÔNG TRÌNH -->
-<div id="dashboardWrap">
-
-  <!-- MOBILE: BIỂU ĐỒ CỘT ĐỨNG -->
-  <div id="mobileChart"></div>
-
-  <!-- PC: BIỂU ĐỒ THANH NGANG -->
-  <div id="pcChart"></div>
-
 </div>
 
 </body>
