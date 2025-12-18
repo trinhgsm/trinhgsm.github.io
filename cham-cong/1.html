@@ -412,65 +412,15 @@
       }
       main { padding: 10px; }
     }
-    /* ===== SELECT – DASHBOARD STYLE ===== */
-.select-wrap {
-  position: relative;
-  flex: 1 1 auto;
-  min-width: 140px;
-}
-
-/* Ẩn mũi tên mặc định */
-.select-wrap select {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-
-  width: 100%;
-  padding: 8px 34px 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(148,163,184,0.35);
-
-  background:
-    linear-gradient(180deg, rgba(15,23,42,0.95), rgba(2,6,23,0.95));
-
-  color: #e5e7eb;
-  font-size: 0.8rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-
-  cursor: pointer;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-
-/* Hover */
-.select-wrap select:hover {
-  border-color: #38bdf8;
-}
-
-/* Focus */
-.select-wrap select:focus {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 2px rgba(56,189,248,0.25);
-}
-
-/* Mũi tên giả */
-.select-wrap::after {
-  content: "▾";
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-
-  font-size: 0.7rem;
-  color: #94a3b8;
-}
-
-/* Option (giới hạn được 1 phần trên Chrome/Edge) */
-.select-wrap select option {
+    .dropdown-menu {
   background: #020617;
-  color: #e5e7eb;
+  border: 1px solid rgba(148,163,184,.4);
+  border-radius: 10px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+.dropdown-item:hover {
+  background: rgba(56,189,248,.15);
 }
 
   </style>
@@ -509,12 +459,9 @@
   </div>
 
   <div class="toolbar">
-    <div class="select-wrap">
-  <select id="fileMenu"></select>
-</div>
-
-<div class="select-wrap">
-  <select id="sheetMenu"></select>
+    <div class="dropdown" id="fileDropdown">
+  <button class="dropdown-btn">Chọn file</button>
+  <div class="dropdown-menu"></div>
 </div>
 
     <button id="editBtn" class="small-btn">Sửa</button>
@@ -536,7 +483,7 @@
 
 <script>
 /* ===== CONFIG ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycby9qKb9w-qHLdzFHXSEZTxkTsmbtL3J0CprP0EcO7PqNObblPLG67kWE4t0cXToChW3/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzAq6ients1L8wi0QZzDfSJEo9ImOHzV5rchXlssye7xip5PekwBR2T2B5sVkW9fHac/exec";
 const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
 const BASE_WIDTH = 1200;
