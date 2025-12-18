@@ -12,6 +12,126 @@
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
 
   <style>
+    /* ===== GHI CHÚ MÀU TRẠNG THÁI ===== */
+.status-note {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+.status-note-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  white-space: nowrap;
+  animation: status-scroll 45s linear infinite;
+}
+
+.status-note-track span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #cbd5f5;
+}
+
+/* dùng lại dot */
+.status-note .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.status-note .green  { background: #22c55e; }
+.status-note .yellow { background: #eab308; }
+.status-note .red    { background: #ef4444; }
+
+/* hover dừng trôi */
+.status-note:hover .status-note-track {
+  animation-play-state: paused;
+}
+
+    #siteStatusBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: env(safe-area-inset-bottom);
+  background: rgba(15,23,42,0.96);
+  border-top: 1px solid rgba(148,163,184,0.4);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  z-index: 8000;
+}
+
+/* ===== TIÊU ĐỀ CỐ ĐỊNH ===== */
+.status-title {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  white-space: nowrap;
+  padding-right: 8px;
+  border-right: 1px solid rgba(148,163,184,0.4);
+}
+
+/* ===== KHUNG TRÔI ===== */
+.status-marquee {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+}
+
+/* ===== DÒNG TRÔI ===== */
+.status-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: status-scroll 35s linear infinite;
+}
+
+/* ===== ITEM ===== */
+.site-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #020617;
+  border: 1px solid rgba(148,163,184,0.4);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* ===== DOT ===== */
+.site-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dot-green  { background: #22c55e; }
+.dot-yellow { background: #eab308; }
+.dot-red    { background: #ef4444; }
+
+/* ===== ANIMATION ===== */
+@keyframes status-scroll {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* ===== HOVER → DỪNG TRÔI ===== */
+.status-marquee:hover .status-track {
+  animation-play-state: paused;
+}
+
     :root {
       --bg-main: #020617;
       --bg-panel: #0f172a;
@@ -292,6 +412,68 @@
       }
       main { padding: 10px; }
     }
+    /* ===== DASHBOARD CHUNG ===== */
+#dashboardWrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(2,6,23,0.95);
+  z-index: 7000;
+}
+
+/* ===== MOBILE – CỘT ĐỨNG ===== */
+#mobileChart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px;
+  height: 120px;
+  overflow-x: auto;
+}
+
+.m-col {
+  width: 28px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  border-radius: 6px 6px 0 0;
+}
+
+.m-col span {
+  font-size: 10px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  margin-bottom: 4px;
+  color: #020617;
+  font-weight: 600;
+}
+
+/* ===== PC – THANH NGANG ===== */
+#pcChart {
+  display: none;
+  padding: 8px 12px;
+}
+
+.pc-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+
+.pc-bar {
+  height: 10px;
+  border-radius: 999px;
+}
+
+/* ===== CHỈ HIỂN THỊ PC ===== */
+@media (min-width: 1024px) {
+  #mobileChart { display: none; }
+  #pcChart { display: block; }
+}
+
   </style>
 </head>
 <body>
@@ -349,7 +531,7 @@
 
 <script>
 /* ===== CONFIG ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbwHS3lImLY7cFJiWE23fZrTN1i8F_hNwfHLwTVLHuh7o1Erwylyj-KwzI7kVhZtlmWm/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzAq6ients1L8wi0QZzDfSJEo9ImOHzV5rchXlssye7xip5PekwBR2T2B5sVkW9fHac/exec";
 const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
 const BASE_WIDTH = 1200;
@@ -371,6 +553,8 @@ const zoomOutBtn = document.getElementById("zoomOutBtn");
 const zoomInBtn  = document.getElementById("zoomInBtn");
 const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
+const siteStatusBar = document.getElementById("siteStatusBar");
+const statusList    = document.getElementById("statusList");
 
 /* ===== ZOOM STATE ===== */
 let baseScale = 1;       // scale theo màn hình
@@ -464,6 +648,10 @@ function changeZoom(delta) {
   if (zoomMultiplier < 1) zoomMultiplier = 1;
   if (zoomMultiplier > 4)   zoomMultiplier = 4;
   applyScale();
+}
+const dash = document.getElementById("dashboardWrap");
+if (dash) {
+  dash.style.display = zoomMultiplier > 1 ? "none" : "block";
 }
 
 zoomOutBtn.onclick = () => changeZoom(-0.1);
@@ -571,16 +759,23 @@ async function loadSheetsForCurrentFile() {
   showLoading();
   try {
     const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
-    const tabs = await res.json();
+const data = await res.json();
 
-    sheetMenu.innerHTML = "";
+const tabs  = data.sheets || [];
+const sites = data.sites  || [];
 
-    const today = new Date();
-    const day   = today.getDate();
-    const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
-    let preferredGid = null;
+renderSiteStatus(sites);   // ⭐ BẮT BUỘC
+renderSiteActivityChart(sites);
 
-    tabs.forEach(t => {
+sheetMenu.innerHTML = "";
+
+const today = new Date();
+const day   = today.getDate();
+const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
+let preferredGid = null;
+
+tabs.forEach(t => {
+
       const op = document.createElement("option");
       op.value = t.gid;
       op.textContent = t.name;
@@ -643,7 +838,103 @@ editBtn.onclick = () => {
 driveBtn.onclick = () => {
   window.open("https://drive.google.com/drive/folders/1o3n5GABxec53ANpnS_OaDU1w0M3cGeAX?usp=sharing", "_blank");
 };
+  function renderSiteStatus(sites) {
+  const bar  = document.getElementById("siteStatusBar");
+  const list = document.getElementById("statusList");
+
+  list.innerHTML = "";
+  if (!sites.length) {
+    bar.style.display = "none";
+    return;
+  }
+
+  sites.forEach(s => {
+    const dot =
+      s.status === "green"  ? "dot-green" :
+      s.status === "yellow" ? "dot-yellow" :
+                              "dot-red";
+
+    const el = document.createElement("div");
+    el.className = "site-item";
+    el.innerHTML = `
+      <span class="site-dot ${dot}"></span>
+      <strong>${s.maCan}</strong>
+    `;
+
+    el.onclick = () => {
+      sheetMenu.value = s.gid;
+      updateFrame();
+    };
+
+    list.appendChild(el);
+  });
+
+  bar.style.display = "block";
+}
+function renderSiteActivityChart(sites) {
+  const mobile = document.getElementById("mobileChart");
+  const pc     = document.getElementById("pcChart");
+  if (!mobile || !pc || !sites) return;
+
+  mobile.innerHTML = "";
+  pc.innerHTML = "";
+
+  sites.forEach(site => {
+    let score = 25;
+    if (site.status === "green") score = 100;
+    else if (site.status === "yellow") score = 60;
+
+    const color =
+      site.status === "green"  ? "#22c55e" :
+      site.status === "yellow" ? "#eab308" :
+                                 "#ef4444";
+
+    /* ===== MOBILE: CỘT ĐỨNG ===== */
+    const col = document.createElement("div");
+    col.className = "m-col";
+    col.style.height = score + "%";
+    col.style.background = color;
+    col.innerHTML = `<span>${site.maCan}</span>`;
+    mobile.appendChild(col);
+
+    /* ===== PC: THANH NGANG ===== */
+    const row = document.createElement("div");
+    row.className = "pc-row";
+    row.innerHTML = `
+      <div>${site.maCan}</div>
+      <div class="pc-bar" style="width:${score}%;background:${color}"></div>
+    `;
+    pc.appendChild(row);
+  });
+}
+
 </script>
+<div id="siteStatusBar">
+  <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
+
+  <div class="status-marquee">
+    <div id="statusList" class="status-track"></div>
+  </div>
+
+  <!-- GHI CHÚ MÀU -->
+  <div class="status-note">
+    <div class="status-note-track">
+      <span><i class="dot green"></i> Xanh: Hôm nay và hôm qua</span>
+      <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
+      <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
+    </div>
+  </div>
+</div>
+<!-- DASHBOARD CÔNG TRÌNH -->
+<div id="dashboardWrap">
+
+  <!-- MOBILE: BIỂU ĐỒ CỘT ĐỨNG -->
+  <div id="mobileChart"></div>
+
+  <!-- PC: BIỂU ĐỒ THANH NGANG -->
+  <div id="pcChart"></div>
+
+</div>
 
 </body>
 </html>
