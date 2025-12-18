@@ -412,6 +412,67 @@
       }
       main { padding: 10px; }
     }
+    /* ===== SELECT – DASHBOARD STYLE ===== */
+.select-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 140px;
+}
+
+/* Ẩn mũi tên mặc định */
+.select-wrap select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  width: 100%;
+  padding: 8px 34px 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(148,163,184,0.35);
+
+  background:
+    linear-gradient(180deg, rgba(15,23,42,0.95), rgba(2,6,23,0.95));
+
+  color: #e5e7eb;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+
+  cursor: pointer;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+/* Hover */
+.select-wrap select:hover {
+  border-color: #38bdf8;
+}
+
+/* Focus */
+.select-wrap select:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56,189,248,0.25);
+}
+
+/* Mũi tên giả */
+.select-wrap::after {
+  content: "▾";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+/* Option (giới hạn được 1 phần trên Chrome/Edge) */
+.select-wrap select option {
+  background: #020617;
+  color: #e5e7eb;
+}
+
   </style>
 </head>
 <body>
@@ -448,8 +509,14 @@
   </div>
 
   <div class="toolbar">
-    <select id="fileMenu"></select>
-    <select id="sheetMenu"></select>
+    <div class="select-wrap">
+  <select id="fileMenu"></select>
+</div>
+
+<div class="select-wrap">
+  <select id="sheetMenu"></select>
+</div>
+
     <button id="editBtn" class="small-btn">Sửa</button>
     <button id="driveBtn" class="small-btn">Drive</button>
     <button id="zoomOutBtn" class="small-btn">−</button>
