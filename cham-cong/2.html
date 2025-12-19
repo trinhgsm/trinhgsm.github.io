@@ -412,8 +412,8 @@
       }
       main { padding: 10px; }
     }
-    /* ===== WRAP CHUNG DƯỚI ===== */
-#bottomPanel {
+    /* === WRAPPER CỐ ĐỊNH DƯỚI === */
+#statusWrapper {
   position: fixed;
   left: 0;
   right: 0;
@@ -421,20 +421,52 @@
   z-index: 7000;
 }
 
-/* ===== DASHBOARD ===== */
-#dashboardWrap {
+/* === BIỂU ĐỒ – MẶC ĐỊNH ẨN (PC) === */
+#statusDashboard {
   background: rgba(2,6,23,0.95);
   border-top: 1px solid rgba(148,163,184,0.3);
-  max-height: 160px;
+  max-height: 0;
   overflow: hidden;
   transition: max-height 0.25s ease;
 }
 
-/* trạng thái ẩn */
-#dashboardWrap.collapsed {
-  max-height: 0;
+/* === KHI MỞ (PC) === */
+#statusWrapper.open #statusDashboard {
+  max-height: 160px;
 }
 
+/* === MOBILE: LUÔN MỞ === */
+@media (max-width: 1023px) {
+  #statusDashboard {
+    max-height: 160px;
+  }
+}
+
+/* === THANH TRẠNG THÁI === */
+#siteStatusBar {
+  background: rgba(15,23,42,0.96);
+  border-top: 1px solid rgba(148,163,184,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+}
+
+/* === NÚT PC === */
+#toggleDashBtn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  cursor: pointer;
+}
+
+/* === CHỈ PC CÓ NÚT === */
+@media (min-width: 1024px) {
+  #toggleDashBtn {
+    display: inline-block;
+  }
+}
 /* ===== MOBILE – CỘT ĐỨNG ===== */
 #mobileChart {
   display: flex;
@@ -452,6 +484,7 @@
   justify-content: center;
   border-radius: 6px 6px 0 0;
 }
+
 .m-col span {
   font-size: 10px;
   writing-mode: vertical-rl;
@@ -466,6 +499,7 @@
   display: none;
   padding: 8px 12px;
 }
+
 .pc-row {
   display: grid;
   grid-template-columns: 90px 1fr;
@@ -473,35 +507,16 @@
   align-items: center;
   margin: 6px 0;
 }
+
 .pc-bar {
   height: 10px;
   border-radius: 999px;
 }
 
-/* ===== THANH TRẠNG THÁI ===== */
-#siteStatusBar {
-  background: rgba(15,23,42,0.96);
-  border-top: 1px solid rgba(148,163,184,0.4);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-}
-
-#toggleDashBtn {
-  display: none;
-  border: none;
-  background: transparent;
-  color: #38bdf8;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* ===== CHỈ PC MỚI CÓ NÚT & BIỂU ĐỒ NGANG ===== */
+/* ===== SWITCH MOBILE / PC ===== */
 @media (min-width: 1024px) {
   #mobileChart { display: none; }
   #pcChart { display: block; }
-  #toggleDashBtn { display: inline-block; }
 }
 
   </style>
@@ -679,10 +694,6 @@ function changeZoom(delta) {
   if (zoomMultiplier > 4)   zoomMultiplier = 4;
   applyScale();
 }
-const panel = document.getElementById("bottomPanel");
-if (panel) {
-  panel.style.display = zoomMultiplier > 1 ? "none" : "block";
-}
 
 zoomOutBtn.onclick = () => changeZoom(-0.1);
 zoomInBtn.onclick  = () => changeZoom(+0.1);
@@ -796,7 +807,6 @@ const sites = data.sites  || [];
 
 renderSiteStatus(sites);   // ⭐ BẮT BUỘC
 renderSiteActivityChart(sites);
-
 sheetMenu.innerHTML = "";
 
 const today = new Date();
@@ -903,23 +913,22 @@ driveBtn.onclick = () => {
 }
 function renderSiteActivityChart(sites) {
   const mobile = document.getElementById("mobileChart");
-  const pc     = document.getElementById("pcChart");
-  if (!mobile || !pc || !sites) return;
+  const pc = document.getElementById("pcChart");
+  if (!mobile || !pc) return;
 
   mobile.innerHTML = "";
   pc.innerHTML = "";
 
   sites.forEach(site => {
-    let score = 25;
-    if (site.status === "green") score = 100;
-    else if (site.status === "yellow") score = 60;
+    let score = site.status === "green" ? 100
+              : site.status === "yellow" ? 60
+              : 25;
 
-    const color =
-      site.status === "green"  ? "#22c55e" :
-      site.status === "yellow" ? "#eab308" :
-                                 "#ef4444";
+    const color = site.status === "green" ? "#22c55e"
+                : site.status === "yellow" ? "#eab308"
+                : "#ef4444";
 
-    /* MOBILE – CỘT ĐỨNG */
+    // MOBILE
     const col = document.createElement("div");
     col.className = "m-col";
     col.style.height = score + "%";
@@ -927,7 +936,7 @@ function renderSiteActivityChart(sites) {
     col.innerHTML = `<span>${site.maCan}</span>`;
     mobile.appendChild(col);
 
-    /* PC – THANH NGANG */
+    // PC
     const row = document.createElement("div");
     row.className = "pc-row";
     row.innerHTML = `
@@ -937,42 +946,39 @@ function renderSiteActivityChart(sites) {
     pc.appendChild(row);
   });
 }
-const dashWrap = document.getElementById("dashboardWrap");
-const toggleBtn = document.getElementById("toggleDashBtn");
+const wrapper = document.getElementById("statusWrapper");
+const btn = document.getElementById("toggleDashBtn");
 
-if (toggleBtn) {
-  toggleBtn.onclick = () => {
-    dashWrap.classList.toggle("collapsed");
-    toggleBtn.textContent =
-      dashWrap.classList.contains("collapsed") ? "▼" : "▲";
+if (btn && wrapper) {
+  btn.onclick = () => {
+    wrapper.classList.toggle("open");
+    btn.textContent = wrapper.classList.contains("open") ? "▼" : "▲";
   };
 }
+const sw = document.getElementById("statusWrapper");
+if (sw) sw.style.display = zoomMultiplier > 1 ? "none" : "block";
 
 </script>
-<!-- WRAP CHUNG -->
-<div id="bottomPanel">
+<!-- WRAPPER TRẠNG THÁI + BIỂU ĐỒ -->
+<div id="statusWrapper">
 
-  <!-- DASHBOARD (TRƯỢT LÊN / XUỐNG) -->
-  <div id="dashboardWrap">
+  <!-- BIỂU ĐỒ (TRƯỢT LÊN TỪ STATUS BAR) -->
+  <div id="statusDashboard">
 
-    <!-- MOBILE: BIỂU ĐỒ CỘT ĐỨNG -->
+    <!-- MOBILE: CỘT ĐỨNG -->
     <div id="mobileChart"></div>
 
-    <!-- PC: BIỂU ĐỒ THANH NGANG -->
+    <!-- PC: THANH NGANG -->
     <div id="pcChart"></div>
 
   </div>
 
-  <!-- THANH TRẠNG THÁI -->
+  <!-- THANH TRẠNG THÁI (LUÔN HIỆN) -->
   <div id="siteStatusBar">
-    <div class="status-title">
-      CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG
-    </div>
+    <span class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</span>
 
-    <!-- NÚT TOGGLE (CHỈ PC) -->
-    <button id="toggleDashBtn" title="Ẩn/hiện biểu đồ">
-      ▲
-    </button>
+    <!-- NÚT PC -->
+    <button id="toggleDashBtn">▲</button>
 
     <div class="status-marquee">
       <div id="statusList" class="status-track"></div>
