@@ -412,7 +412,7 @@
       }
       main { padding: 10px; }
     }
-    /* === WRAPPER CỐ ĐỊNH DƯỚI === */
+    /* === NEO DƯỚI === */
 #statusWrapper {
   position: fixed;
   left: 0;
@@ -421,8 +421,24 @@
   z-index: 7000;
 }
 
-/* === BIỂU ĐỒ – MẶC ĐỊNH ẨN (PC) === */
+/* === THANH TRẠNG THÁI – LUÔN Ở ĐÁY === */
+#siteStatusBar {
+  position: relative;
+  background: rgba(15,23,42,0.96);
+  border-top: 1px solid rgba(148,163,184,0.4);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  z-index: 2;
+}
+
+/* === BIỂU ĐỒ – NẰM TRÊN THANH TRẠNG THÁI === */
 #statusDashboard {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 100%;               /* 🔴 DÒNG QUAN TRỌNG NHẤT */
   background: rgba(2,6,23,0.95);
   border-top: 1px solid rgba(148,163,184,0.3);
   max-height: 0;
@@ -430,100 +446,18 @@
   transition: max-height 0.25s ease;
 }
 
-/* === KHI MỞ (PC) === */
+/* === PC: MỞ KHI CÓ CLASS open === */
 #statusWrapper.open #statusDashboard {
   max-height: 160px;
 }
 
-/* ===== MOBILE: DASHBOARD LUÔN NẰM TRÊN STATUS ===== */
+/* === MOBILE: LUÔN MỞ === */
 @media (max-width: 1023px) {
-  #statusWrapper {
-    display: flex;
-    flex-direction: column-reverse; /* ĐẢO THỨ TỰ */
-  }
-
   #statusDashboard {
-    max-height: none;       /* BỎ GIỚI HẠN */
+    max-height: 160px;
   }
 }
 
-
-/* === THANH TRẠNG THÁI === */
-#siteStatusBar {
-  background: rgba(15,23,42,0.96);
-  border-top: 1px solid rgba(148,163,184,0.4);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-}
-
-/* === NÚT PC === */
-#toggleDashBtn {
-  display: none;
-  background: transparent;
-  border: none;
-  color: #38bdf8;
-  cursor: pointer;
-}
-
-/* === CHỈ PC CÓ NÚT === */
-@media (min-width: 1024px) {
-  #toggleDashBtn {
-    display: inline-block;
-  }
-}
-/* ===== MOBILE – CỘT ĐỨNG ===== */
-#mobileChart {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 8px;
-  height: 120px;
-  overflow-x: auto;
-}
-
-.m-col {
-  width: 28px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  border-radius: 6px 6px 0 0;
-}
-
-.m-col span {
-  font-size: 10px;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  margin-bottom: 4px;
-  color: #020617;
-  font-weight: 600;
-}
-
-/* ===== PC – THANH NGANG ===== */
-#pcChart {
-  display: none;
-  padding: 8px 12px;
-}
-
-.pc-row {
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 8px;
-  align-items: center;
-  margin: 6px 0;
-}
-
-.pc-bar {
-  height: 10px;
-  border-radius: 999px;
-}
-
-/* ===== SWITCH MOBILE / PC ===== */
-@media (min-width: 1024px) {
-  #mobileChart { display: none; }
-  #pcChart { display: block; }
-}
 
   </style>
 </head>
