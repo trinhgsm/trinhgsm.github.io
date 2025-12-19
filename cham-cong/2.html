@@ -412,83 +412,84 @@
       }
       main { padding: 10px; }
     }
-    /* === WRAPPER CỐ ĐỊNH DƯỚI === */
+    /* ========== WRAPPER NEO ĐÁY ========== */
 #statusWrapper {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 7000;
+  z-index: 9000;
+  pointer-events: none;
 }
 
-/* === BIỂU ĐỒ – MẶC ĐỊNH ẨN (PC) === */
-#statusDashboard {
-  background: rgba(2,6,23,0.95);
-  border-top: 1px solid rgba(148,163,184,0.3);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.25s ease;
-}
-
-/* === KHI MỞ (PC) === */
-#statusWrapper.open #statusDashboard {
-  max-height: 160px;
-}
-
-/* ===== MOBILE: DASHBOARD LUÔN NẰM TRÊN STATUS ===== */
-@media (max-width: 1023px) {
-  #statusWrapper {
-    display: flex;
-    flex-direction: column-reverse; /* ĐẢO THỨ TỰ */
-  }
-
-  #statusDashboard {
-    max-height: none;       /* BỎ GIỚI HẠN */
-  }
-}
-
-
-/* === THANH TRẠNG THÁI === */
+/* ========== THANH TRẠNG THÁI ========== */
 #siteStatusBar {
-  background: rgba(15,23,42,0.96);
-  border-top: 1px solid rgba(148,163,184,0.4);
+  pointer-events: auto;
+  height: 44px;
+  background: rgba(15,23,42,0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(148,163,184,0.25);
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
+  gap: 10px;
+  padding: 0 12px;
+  font-size: 13px;
 }
 
-/* === NÚT PC === */
+/* ========== BIỂU ĐỒ – NẰM TRÊN STATUS ========== */
+#statusDashboard {
+  pointer-events: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 44px; /* CHÌA KHÓA: luôn nằm trên status */
+  background: rgba(2,6,23,0.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(148,163,184,0.25);
+
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* PC – MỞ KHI CÓ CLASS */
+#statusWrapper.open #statusDashboard {
+  max-height: 180px;
+}
+
+/* MOBILE – LUÔN MỞ */
+@media (max-width: 1023px) {
+  #statusDashboard {
+    max-height: 180px;
+  }
+  #toggleDashBtn {
+    display: none;
+  }
+}
+
+/* NÚT PC */
 #toggleDashBtn {
-  display: none;
-  background: transparent;
+  background: none;
   border: none;
   color: #38bdf8;
   cursor: pointer;
 }
-
-/* === CHỈ PC CÓ NÚT === */
-@media (min-width: 1024px) {
-  #toggleDashBtn {
-    display: inline-block;
-  }
-}
-/* ===== MOBILE – CỘT ĐỨNG ===== */
+/* ===== MOBILE: CỘT ĐỨNG ===== */
 #mobileChart {
   display: flex;
   align-items: flex-end;
   gap: 8px;
-  padding: 8px;
-  height: 120px;
+  padding: 10px;
+  height: 140px;
   overflow-x: auto;
 }
 
 .m-col {
   width: 28px;
+  border-radius: 6px 6px 0 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  border-radius: 6px 6px 0 0;
 }
 
 .m-col span {
@@ -500,16 +501,16 @@
   font-weight: 600;
 }
 
-/* ===== PC – THANH NGANG ===== */
+/* ===== PC: THANH NGANG ===== */
 #pcChart {
   display: none;
-  padding: 8px 12px;
+  padding: 10px 14px;
 }
 
 .pc-row {
   display: grid;
   grid-template-columns: 90px 1fr;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
   margin: 6px 0;
 }
@@ -519,7 +520,7 @@
   border-radius: 999px;
 }
 
-/* ===== SWITCH MOBILE / PC ===== */
+/* SWITCH PC */
 @media (min-width: 1024px) {
   #mobileChart { display: none; }
   #pcChart { display: block; }
@@ -628,20 +629,14 @@ frame.addEventListener("load", () => {
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
-  const wrapper = document.getElementById("statusWrapper");
-  const btn = document.getElementById("toggleDashBtn");
-
-  if (!wrapper || !btn) {
-    console.warn("Không tìm thấy statusWrapper hoặc toggleDashBtn");
-    return;
-  }
-
-  btn.addEventListener("click", () => {
-    const isOpen = wrapper.classList.toggle("open");
-    btn.textContent = isOpen ? "▼" : "▲";
-  });
+  try {
+    const auth = localStorage.getItem(AUTH_KEY);
+    if (auth === "ok") {
+      startApp();
+      return;
+    }
+  } catch (e) {}
 });
-
 
 /* ===== PASSWORD ===== */
 unlockBtn.onclick = handleUnlock;
@@ -818,7 +813,7 @@ const tabs  = data.sheets || [];
 const sites = data.sites  || [];
 
 renderSiteStatus(sites);   // ⭐ BẮT BUỘC
-renderSiteActivityChart(sites);
+
 sheetMenu.innerHTML = "";
 
 const today = new Date();
@@ -926,21 +921,22 @@ driveBtn.onclick = () => {
 function renderSiteActivityChart(sites) {
   const mobile = document.getElementById("mobileChart");
   const pc = document.getElementById("pcChart");
-  if (!mobile || !pc) return;
+  if (!mobile || !pc || !sites) return;
 
   mobile.innerHTML = "";
   pc.innerHTML = "";
 
   sites.forEach(site => {
-    let score = site.status === "green" ? 100
-              : site.status === "yellow" ? 60
-              : 25;
+    const score =
+      site.status === "green"  ? 100 :
+      site.status === "yellow" ? 60  : 25;
 
-    const color = site.status === "green" ? "#22c55e"
-                : site.status === "yellow" ? "#eab308"
-                : "#ef4444";
+    const color =
+      site.status === "green"  ? "#22c55e" :
+      site.status === "yellow" ? "#eab308" :
+                                 "#ef4444";
 
-    // MOBILE
+    /* MOBILE */
     const col = document.createElement("div");
     col.className = "m-col";
     col.style.height = score + "%";
@@ -948,7 +944,7 @@ function renderSiteActivityChart(sites) {
     col.innerHTML = `<span>${site.maCan}</span>`;
     mobile.appendChild(col);
 
-    // PC
+    /* PC */
     const row = document.createElement("div");
     row.className = "pc-row";
     row.innerHTML = `
@@ -958,42 +954,47 @@ function renderSiteActivityChart(sites) {
     pc.appendChild(row);
   });
 }
-const wrapper = document.getElementById("statusWrapper");
-const btn = document.getElementById("toggleDashBtn");
+window.addEventListener("load", () => {
+  const wrapper = document.getElementById("statusWrapper");
+  const btn = document.getElementById("toggleDashBtn");
+  if (!wrapper || !btn) return;
 
-if (btn && wrapper) {
   btn.onclick = () => {
-    wrapper.classList.toggle("open");
-    btn.textContent = wrapper.classList.contains("open") ? "▼" : "▲";
+    const open = wrapper.classList.toggle("open");
+    btn.textContent = open ? "▼" : "▲";
   };
-}
-const sw = document.getElementById("statusWrapper");
-if (sw) sw.style.display = zoomMultiplier > 1 ? "none" : "block";
+});
+renderSiteStatus(sites);
+renderSiteActivityChart(sites);
 
 </script>
-<!-- WRAPPER TRẠNG THÁI + BIỂU ĐỒ -->
+  <!-- STATUS + DASHBOARD -->
 <div id="statusWrapper">
 
-  <!-- BIỂU ĐỒ (TRƯỢT LÊN TỪ STATUS BAR) -->
+  <!-- BIỂU ĐỒ (TRƯỢT LÊN TỪ STATUS) -->
   <div id="statusDashboard">
-
-    <!-- MOBILE: CỘT ĐỨNG -->
     <div id="mobileChart"></div>
-
-    <!-- PC: THANH NGANG -->
     <div id="pcChart"></div>
-
   </div>
 
-  <!-- THANH TRẠNG THÁI (LUÔN HIỆN) -->
+  <!-- THANH TRẠNG THÁI -->
   <div id="siteStatusBar">
     <span class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</span>
 
-    <!-- NÚT PC -->
-    <button id="toggleDashBtn">▲</button>
+    <button id="toggleDashBtn" aria-label="Mở/Đóng biểu đồ">▲</button>
 
     <div class="status-marquee">
-      <div id="statusList" class="status-track"></div>
+      <div id="statusList"></div>
+    </div>
+  </div>
+
+</div>
+
+<div id="siteStatusBar">
+  <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
+
+  <div class="status-marquee">
+    <div id="statusList" class="status-track"></div>
   </div>
 
   <!-- GHI CHÚ MÀU -->
