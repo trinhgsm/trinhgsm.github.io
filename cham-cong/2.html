@@ -435,12 +435,18 @@
   max-height: 160px;
 }
 
-/* === MOBILE: LUÔN MỞ === */
+/* ===== MOBILE: DASHBOARD LUÔN NẰM TRÊN STATUS ===== */
 @media (max-width: 1023px) {
+  #statusWrapper {
+    display: flex;
+    flex-direction: column-reverse; /* ĐẢO THỨ TỰ */
+  }
+
   #statusDashboard {
-    max-height: 160px;
+    max-height: none;       /* BỎ GIỚI HẠN */
   }
 }
+
 
 /* === THANH TRẠNG THÁI === */
 #siteStatusBar {
@@ -622,14 +628,20 @@ frame.addEventListener("load", () => {
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
-  try {
-    const auth = localStorage.getItem(AUTH_KEY);
-    if (auth === "ok") {
-      startApp();
-      return;
-    }
-  } catch (e) {}
+  const wrapper = document.getElementById("statusWrapper");
+  const btn = document.getElementById("toggleDashBtn");
+
+  if (!wrapper || !btn) {
+    console.warn("Không tìm thấy statusWrapper hoặc toggleDashBtn");
+    return;
+  }
+
+  btn.addEventListener("click", () => {
+    const isOpen = wrapper.classList.toggle("open");
+    btn.textContent = isOpen ? "▼" : "▲";
+  });
 });
+
 
 /* ===== PASSWORD ===== */
 unlockBtn.onclick = handleUnlock;
