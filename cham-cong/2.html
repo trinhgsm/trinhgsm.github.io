@@ -713,8 +713,9 @@ async function loadSheetsForCurrentFile() {
     const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
 const data = await res.json();
 
-const tabs  = data.sheets || [];
-const sites = data.sites  || [];
+/* === ĐOẠN QUAN TRỌNG === */
+const tabs  = Array.isArray(data.tabs) ? data.tabs : [];
+const sites = Array.isArray(data.sites) ? data.sites : [];
 
 renderSiteStatus(sites);   // ⭐ BẮT BUỘC
 renderSiteActivityChart(sites);
