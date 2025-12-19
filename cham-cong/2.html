@@ -51,18 +51,9 @@
   animation-play-state: paused;
 }
 
-    #siteStatusBar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: env(safe-area-inset-bottom);
-  background: rgba(15,23,42,0.96);
-  border-top: 1px solid rgba(148,163,184,0.4);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 10px;
-  z-index: 8000;
+   #siteStatusBar {
+  position: relative;
+  height: 44px;
 }
 
 /* ===== TIÊU ĐỀ CỐ ĐỊNH ===== */
@@ -412,118 +403,31 @@
       }
       main { padding: 10px; }
     }
-    /* ========== WRAPPER NEO ĐÁY ========== */
-#statusWrapper {
+    #statusWrapper {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9000;
-  pointer-events: none;
+  z-index: 8000;
 }
 
-/* ========== THANH TRẠNG THÁI ========== */
-#siteStatusBar {
-  pointer-events: auto;
-  height: 44px;
-  background: rgba(15,23,42,0.95);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(148,163,184,0.25);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 12px;
-  font-size: 13px;
-}
-
-/* ========== BIỂU ĐỒ – NẰM TRÊN STATUS ========== */
 #statusDashboard {
-  pointer-events: auto;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 44px; /* CHÌA KHÓA: luôn nằm trên status */
+  bottom: 44px; /* nằm TRÊN status */
   background: rgba(2,6,23,0.92);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(148,163,184,0.25);
-
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s cubic-bezier(.4,0,.2,1);
+  transition: max-height .3s ease;
 }
 
-/* PC – MỞ KHI CÓ CLASS */
 #statusWrapper.open #statusDashboard {
   max-height: 180px;
 }
 
-/* MOBILE – LUÔN MỞ */
 @media (max-width: 1023px) {
-  #statusDashboard {
-    max-height: 180px;
-  }
-  #toggleDashBtn {
-    display: none;
-  }
-}
-
-/* NÚT PC */
-#toggleDashBtn {
-  background: none;
-  border: none;
-  color: #38bdf8;
-  cursor: pointer;
-}
-/* ===== MOBILE: CỘT ĐỨNG ===== */
-#mobileChart {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 10px;
-  height: 140px;
-  overflow-x: auto;
-}
-
-.m-col {
-  width: 28px;
-  border-radius: 6px 6px 0 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.m-col span {
-  font-size: 10px;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  margin-bottom: 4px;
-  color: #020617;
-  font-weight: 600;
-}
-
-/* ===== PC: THANH NGANG ===== */
-#pcChart {
-  display: none;
-  padding: 10px 14px;
-}
-
-.pc-row {
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 10px;
-  align-items: center;
-  margin: 6px 0;
-}
-
-.pc-bar {
-  height: 10px;
-  border-radius: 999px;
-}
-
-/* SWITCH PC */
-@media (min-width: 1024px) {
-  #mobileChart { display: none; }
-  #pcChart { display: block; }
+  #statusDashboard { max-height: 180px; }
 }
 
   </style>
@@ -813,6 +717,7 @@ const tabs  = data.sheets || [];
 const sites = data.sites  || [];
 
 renderSiteStatus(sites);   // ⭐ BẮT BUỘC
+renderSiteActivityChart(sites);
 
 sheetMenu.innerHTML = "";
 
@@ -918,60 +823,11 @@ driveBtn.onclick = () => {
 
   bar.style.display = "block";
 }
-function renderSiteActivityChart(sites) {
-  const mobile = document.getElementById("mobileChart");
-  const pc = document.getElementById("pcChart");
-  if (!mobile || !pc || !sites) return;
-
-  mobile.innerHTML = "";
-  pc.innerHTML = "";
-
-  sites.forEach(site => {
-    const score =
-      site.status === "green"  ? 100 :
-      site.status === "yellow" ? 60  : 25;
-
-    const color =
-      site.status === "green"  ? "#22c55e" :
-      site.status === "yellow" ? "#eab308" :
-                                 "#ef4444";
-
-    /* MOBILE */
-    const col = document.createElement("div");
-    col.className = "m-col";
-    col.style.height = score + "%";
-    col.style.background = color;
-    col.innerHTML = `<span>${site.maCan}</span>`;
-    mobile.appendChild(col);
-
-    /* PC */
-    const row = document.createElement("div");
-    row.className = "pc-row";
-    row.innerHTML = `
-      <div>${site.maCan}</div>
-      <div class="pc-bar" style="width:${score}%;background:${color}"></div>
-    `;
-    pc.appendChild(row);
-  });
-}
-window.addEventListener("load", () => {
-  const wrapper = document.getElementById("statusWrapper");
-  const btn = document.getElementById("toggleDashBtn");
-  if (!wrapper || !btn) return;
-
-  btn.onclick = () => {
-    const open = wrapper.classList.toggle("open");
-    btn.textContent = open ? "▼" : "▲";
-  };
-});
-renderSiteStatus(sites);
-renderSiteActivityChart(sites);
 
 </script>
-  <!-- STATUS + DASHBOARD -->
 <div id="statusWrapper">
 
-  <!-- BIỂU ĐỒ (TRƯỢT LÊN TỪ STATUS) -->
+  <!-- DASHBOARD (BIỂU ĐỒ) -->
   <div id="statusDashboard">
     <div id="mobileChart"></div>
     <div id="pcChart"></div>
@@ -979,23 +835,21 @@ renderSiteActivityChart(sites);
 
   <!-- THANH TRẠNG THÁI -->
   <div id="siteStatusBar">
-    <span class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</span>
-
-    <button id="toggleDashBtn" aria-label="Mở/Đóng biểu đồ">▲</button>
+    <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
 
     <div class="status-marquee">
-      <div id="statusList"></div>
-   
-  </div>
+      <div id="statusList" class="status-track"></div>
+    </div>
 
-  <!-- GHI CHÚ MÀU -->
-  <div class="status-note">
-    <div class="status-note-track">
-      <span><i class="dot green"></i> Xanh: Hôm nay và hôm qua</span>
-      <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
-      <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
+    <div class="status-note">
+      <div class="status-note-track">
+        <span><i class="dot green"></i> Xanh: Hôm nay & hôm qua</span>
+        <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
+        <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
+      </div>
     </div>
   </div>
+
 </div>
 
 </body>
