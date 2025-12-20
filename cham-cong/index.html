@@ -2,23 +2,25 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>DUKICO – Chấm công & Nhật ký</title>
+  <title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
 
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-  <!-- CSS -->
+  <!-- CSS tách riêng -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- TỐI ƯU LOAD -->
+  <!-- Tối ưu kết nối Google -->
   <link rel="preconnect" href="https://docs.google.com">
 </head>
 
 <body>
 
-<!-- ===== HEADER / TOOLBAR (GIỮ LOGIC CŨ) ===== -->
+<!-- ===== HEADER / TOOLBAR (PHẦN CŨ – GIỮ NGUYÊN LOGIC) ===== -->
 <header id="topBar">
-  <div class="brand">DUKICO – CHẤM CÔNG</div>
+  <div class="brand">
+    DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO
+  </div>
 
   <div class="toolbar">
     <select id="fileMenu"></select>
@@ -32,33 +34,36 @@
   <iframe id="sheetFrame"></iframe>
 </main>
 
-<!-- ===== STATUS BAR (PHẦN MỚI) ===== -->
+<!-- ===== STATUS BAR (GIỮ NGUYÊN TEXT + TÍCH HỢP PHẦN MỚI) ===== -->
 <div id="siteStatusBar">
 
+  <!-- TIÊU ĐỀ – GIỮ NGUYÊN -->
   <div class="status-title">
     CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG
   </div>
 
-  <!-- NÚT MÃ CĂN -->
+  <!-- DÒNG NÚT MÃ CĂN -->
   <div class="status-marquee">
     <div id="statusList" class="status-track"></div>
   </div>
 
-  <!-- GHI CHÚ MÀU (CỐ ĐỊNH) -->
-  <div class="status-note static-note">
-    <span><i class="dot green"></i> Xanh: Hôm nay & hôm qua</span>
-    <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
-    <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
+  <!-- GHI CHÚ MÀU – GIỮ NGUYÊN 100% NỘI DUNG -->
+  <div class="status-note">
+    <div class="status-note-track">
+      <span><i class="dot green"></i> Xanh: Hôm nay và hôm qua</span>
+      <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
+      <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
+    </div>
   </div>
 
-  <!-- GHI CHÚ TRÔI (ĐỘNG) -->
-  <div class="status-note moving-note">
+  <!-- ⭐ GHI CHÚ TRÔI (SUMMARY – PHẦN MỚI, KHÔNG ĐỔI TEXT CŨ) -->
+  <div class="status-note">
     <div id="statusNoteTrack"></div>
   </div>
 
 </div>
 
-<!-- JS -->
+<!-- JS tách riêng -->
 <script src="app.js" defer></script>
 
 </body>
