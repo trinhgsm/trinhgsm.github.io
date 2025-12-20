@@ -783,38 +783,8 @@ driveBtn.onclick = () => {
   function renderSiteStatus(sites) {
   const bar  = document.getElementById("siteStatusBar");
   const list = document.getElementById("statusList");
-    noteDynamic.innerHTML = "";
 
-sites.forEach(s => {
-  let d = s.diffDays;
-  let text = "";
-
-  if (typeof d !== "number") {
-    text = "🔴 " + s.maCan + ": không xác định ngày thi công";
-  }
-  else if (d === 0) {
-    text = s.summary
-      ? "🟢 " + s.maCan + ": hôm nay thi công (" + s.summary + ")"
-      : "🟢 " + s.maCan + ": hôm nay đang thi công";
-  }
-  else if (d === 1) {
-    text = s.summary
-      ? "🟢 " + s.maCan + ": hôm qua có thi công (" + s.summary + ")"
-      : "🟢 " + s.maCan + ": hôm qua có thi công";
-  }
-  else if (d === 2) {
-    text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
-  }
-  else {
-    text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
-  }
-
-  const span = document.createElement("span");
-  span.textContent = text;
-  noteDynamic.appendChild(span);
-});
-
-list.innerHTML = "";
+  list.innerHTML = "";
   if (!sites.length) {
     bar.style.display = "none";
     return;
