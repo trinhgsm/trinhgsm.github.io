@@ -848,16 +848,20 @@ list.innerHTML = "";
 
   <!-- GHI CHÚ MÀU -->
   <div class="status-note">
-  <div class="status-note-track" id="statusNoteDynamic">
-    <!-- JS đổ nội dung vào -->
-  </div>
-</div>
 
+    <!-- GHI CHÚ TĨNH (GIỮ NGUYÊN) -->
+    <div class="status-note-track">
       <span><i class="dot green"></i> Xanh: Hôm nay và hôm qua</span>
       <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
       <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
     </div>
+
+    <!-- ⭐ DÒNG TRÔI ĐỘNG (THÊM MỚI) -->
+    <div class="status-note-track status-note-dynamic"
+         id="statusNoteDynamic">
+      <!-- JS sẽ đổ summary vào đây -->
     </div>
+
   </div>
 </div>
 
