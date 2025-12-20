@@ -503,30 +503,6 @@ const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
 const siteStatusBar = document.getElementById("siteStatusBar");
 const statusList    = document.getElementById("statusList");
-/* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
-const noteDynamic = document.getElementById("statusNoteDynamic");
-if (!noteDynamic) return;
-
-noteDynamic.innerHTML = "";
-
-sites.forEach(s => {
-  let text = "";
-
-  if (s.status === "green" && s.summary) {
-    text = "🟢 " + s.maCan + ": " + s.summary;
-  } else if (s.status === "yellow") {
-    text = "🟡 " + s.maCan + ": 1 ngày không thi công";
-  } else if (s.status === "red") {
-    text = "🔴 " + s.maCan + ": Trên 2 ngày không thi công";
-  }
-
-  if (!text) return;
-
-  const span = document.createElement("span");
-  span.textContent = text;
-  noteDynamic.appendChild(span);
-});
-
 /* ===== ZOOM STATE ===== */
 let baseScale = 1;       // scale theo màn hình
 let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
@@ -807,6 +783,29 @@ driveBtn.onclick = () => {
   function renderSiteStatus(sites) {
   const bar  = document.getElementById("siteStatusBar");
   const list = document.getElementById("statusList");
+/* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
+const noteDynamic = document.getElementById("statusNoteDynamic");
+if (!noteDynamic) return;
+
+noteDynamic.innerHTML = "";
+
+sites.forEach(s => {
+  let text = "";
+
+  if (s.status === "green" && s.summary) {
+    text = "🟢 " + s.maCan + ": " + s.summary;
+  } else if (s.status === "yellow") {
+    text = "🟡 " + s.maCan + ": 1 ngày không thi công";
+  } else if (s.status === "red") {
+    text = "🔴 " + s.maCan + ": Trên 2 ngày không thi công";
+  }
+
+  if (!text) return;
+
+  const span = document.createElement("span");
+  span.textContent = text;
+  noteDynamic.appendChild(span);
+});
 
   list.innerHTML = "";
   if (!sites.length) {
