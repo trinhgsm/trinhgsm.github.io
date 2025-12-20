@@ -783,7 +783,7 @@ driveBtn.onclick = () => {
   function renderSiteStatus(sites) {
   const bar  = document.getElementById("siteStatusBar");
   const list = document.getElementById("statusList");
-/* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
+    /* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
 const noteDynamic = document.getElementById("statusNoteDynamic");
 if (!noteDynamic) return;
 
@@ -807,7 +807,7 @@ sites.forEach(s => {
   noteDynamic.appendChild(span);
 });
 
-  list.innerHTML = "";
+list.innerHTML = "";
   if (!sites.length) {
     bar.style.display = "none";
     return;
