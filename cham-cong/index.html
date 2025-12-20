@@ -790,22 +790,34 @@ if (!noteDynamic) return;
 noteDynamic.innerHTML = "";
 
 sites.forEach(s => {
+  let d = s.diffDays;
   let text = "";
 
-  if (s.status === "green" && s.summary) {
-    text = "🟢 " + s.maCan + ": " + s.summary;
-  } else if (s.status === "yellow") {
-    text = "🟡 " + s.maCan + ": 1 ngày không thi công";
-  } else if (s.status === "red") {
-    text = "🔴 " + s.maCan + ": Trên 2 ngày không thi công";
+  if (typeof d !== "number") {
+    text = "🔴 " + s.maCan + ": không xác định ngày thi công";
   }
-
-  if (!text) return;
+  else if (d === 0) {
+    text = s.summary
+      ? "🟢 " + s.maCan + ": hôm nay thi công (" + s.summary + ")"
+      : "🟢 " + s.maCan + ": hôm nay đang thi công";
+  }
+  else if (d === 1) {
+    text = s.summary
+      ? "🟢 " + s.maCan + ": hôm qua có thi công (" + s.summary + ")"
+      : "🟢 " + s.maCan + ": hôm qua có thi công";
+  }
+  else if (d === 2) {
+    text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
+  }
+  else {
+    text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
+  }
 
   const span = document.createElement("span");
   span.textContent = text;
   noteDynamic.appendChild(span);
 });
+
 
   list.innerHTML = "";
   if (!sites.length) {
