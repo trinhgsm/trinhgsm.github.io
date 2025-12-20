@@ -1,0 +1,107 @@
+/* ===== RESET NHẸ ===== */
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+/* ===== HEADER ===== */
+header {
+  background: #0f172a;
+  padding: 6px 10px;
+  border-bottom: 1px solid #1f2937;
+}
+.toolbar {
+  display: flex;
+  gap: 6px;
+}
+
+/* ===== VIEWER ===== */
+main {
+  padding-bottom: 110px; /* chừa chỗ status bar */
+}
+iframe {
+  width: 100%;
+  height: 100vh;
+  border: none;
+}
+
+/* ===== STATUS BAR ===== */
+#siteStatusBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15,23,42,0.97);
+  border-top: 1px solid rgba(148,163,184,0.35);
+  padding: 6px 10px;
+  z-index: 9999;
+  font-size: 12px;
+}
+
+/* TITLE */
+.status-title {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  margin-bottom: 4px;
+}
+
+/* ===== NÚT MÃ CĂN ===== */
+.status-marquee {
+  overflow-x: auto;
+}
+.status-track {
+  display: inline-flex;
+  gap: 8px;
+}
+.site-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #020617;
+  border: 1px solid rgba(148,163,184,0.35);
+  cursor: pointer;
+}
+.site-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dot.green { background: #22c55e; }
+.dot.yellow { background: #eab308; }
+.dot.red { background: #ef4444; }
+
+/* ===== GHI CHÚ ===== */
+.status-note {
+  margin-top: 4px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* ===== GHI CHÚ TRÔI ===== */
+.moving-note {
+  overflow: hidden;
+}
+#statusNoteTrack {
+  display: inline-flex;
+  gap: 40px;
+  animation: noteScroll 45s linear infinite;
+  opacity: 0.9;
+}
+#statusNoteTrack:hover {
+  animation-play-state: paused;
+}
+
+@keyframes noteScroll {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
