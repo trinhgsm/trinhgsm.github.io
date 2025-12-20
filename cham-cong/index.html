@@ -786,24 +786,27 @@ driveBtn.onclick = () => {
 /* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
 const noteDynamic = document.getElementById("statusNoteDynamic");
 if (!noteDynamic) return;
-
 noteDynamic.innerHTML = "";
 
 sites.forEach(s => {
   let d = s.diffDays;
   let text = "";
 
+  let toText = s.summary
+    ? s.summary.replace(/,\s*/g, " | ")
+    : "";
+
   if (typeof d !== "number") {
     text = "🔴 " + s.maCan + ": không xác định ngày thi công";
   }
   else if (d === 0) {
-    text = s.summary
-      ? "🟢 " + s.maCan + ": hôm nay thi công (" + s.summary + ")"
+    text = toText
+      ? "🟢 " + s.maCan + " – Tổ: " + toText
       : "🟢 " + s.maCan + ": hôm nay đang thi công";
   }
   else if (d === 1) {
-    text = s.summary
-      ? "🟢 " + s.maCan + ": hôm qua có thi công (" + s.summary + ")"
+    text = toText
+      ? "🟢 " + s.maCan + " – Tổ (hôm qua): " + toText
       : "🟢 " + s.maCan + ": hôm qua có thi công";
   }
   else if (d === 2) {
@@ -817,7 +820,6 @@ sites.forEach(s => {
   span.textContent = text;
   noteDynamic.appendChild(span);
 });
-
 
   list.innerHTML = "";
   if (!sites.length) {
