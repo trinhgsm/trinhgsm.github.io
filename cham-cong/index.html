@@ -785,11 +785,14 @@ sites.forEach(s => {
       ? "🟢 " + s.maCan + " – Tổ: " + toText
       : "🟢 " + s.maCan + ": hôm nay đang thi công";
   }
-  else if (d === 1) {
-    text = toText
-      ? "🟢 " + s.maCan + " – Tổ (hôm qua): " + toText
-      : "🟢 " + s.maCan + ": hôm qua có thi công";
-  }
+  else if (d === 0 || d === 1) {
+  const whenText = (d === 0) ? "hôm nay" : "hôm qua";
+
+  text = toText
+    ? "🟢 " + s.maCan + " – Tổ (" + whenText + "): " + toText
+    : "🟢 " + s.maCan + ": " + whenText + " có thi công";
+}
+
   else if (d === 2) {
     text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
   }
