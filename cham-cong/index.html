@@ -36,16 +36,6 @@
   color: #cbd5f5;
 }
 
-/* dùng lại dot */
-.status-note .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.status-note .green  { background: #22c55e; }
-.status-note .yellow { background: #eab308; }
-.status-note .red    { background: #ef4444; }
-
 /* hover dừng trôi */
 .status-note:hover .status-note-track {
   animation-play-state: paused;
@@ -412,16 +402,7 @@
       }
       main { padding: 10px; }
     }
-    /* ===== DÒNG TRÔI ĐỘNG (SUMMARY) ===== */
-.status-note-dynamic {
-  margin-top: 4px;
-  opacity: 0.95;
-}
-
-.status-note-dynamic span {
-  margin-right: 40px;
-}
-
+    
   </style>
 </head>
 <body>
@@ -859,12 +840,12 @@ sites.forEach(s => {
     <div id="statusList" class="status-track"></div>
   </div>
 <!-- ⭐ DÒNG TRÔI ĐỘNG (THÊM MỚI) -->
-    <div class="status-note-track status-note-dynamic"
-         id="statusNoteDynamic">
-      <!-- JS sẽ đổ summary vào đây -->
-    </div>
-
+    <div class="status-note">
+  <div class="status-note-track" id="statusNoteDynamic">
+    <!-- JS đổ nội dung mới vào đây -->
   </div>
+</div>
+
 </div>
 
 </body>
