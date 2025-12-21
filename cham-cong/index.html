@@ -498,6 +498,9 @@ function showLoading() {
 }
 function hideLoading() {
   loadingOverlay.style.display = "none";
+
+  // ⭐ BÁO HIỆU: LOGO ĐÃ BIẾN MẤT
+  document.dispatchEvent(new Event("dukico-loading-hidden"));
 }
 
 /* Khi iframe load xong thì tắt logo tải */
@@ -857,6 +860,13 @@ else {
 
   bar.style.display = "block";
 }
+/* ===== B2: BẮT ĐẦU TRÔI KHI LOGO BIẾN MẤT ===== */
+document.addEventListener("dukico-loading-hidden", () => {
+  const note = document.getElementById("statusNoteDynamic");
+  if (!note) return;
+
+  note.classList.remove("paused");
+});
 
 </script>
 <div id="siteStatusBar">
