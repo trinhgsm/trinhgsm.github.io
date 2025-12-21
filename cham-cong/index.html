@@ -116,6 +116,14 @@
     transform: translateX(-100%);
   }
 }
+@keyframes note-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+.status-note-dynamic {
+  animation: note-scroll 45s linear infinite;
+}
 
 /* ===== HOVER → DỪNG TRÔI ===== */
 .status-marquee:hover .status-track {
