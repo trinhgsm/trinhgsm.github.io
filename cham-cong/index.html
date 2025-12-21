@@ -778,14 +778,9 @@ sites.forEach(s => {
     : "";
 
   if (typeof d !== "number") {
-    text = "🔴 " + s.maCan + ": không xác định ngày thi công";
-  }
-  else if (d === 0) {
-    text = toText
-      ? "🟢 " + s.maCan + " – Tổ: " + toText
-      : "🟢 " + s.maCan + ": hôm nay đang thi công";
-  }
-  else if (d === 0 || d === 1) {
+  text = "🔴 " + s.maCan + ": không xác định ngày thi công";
+}
+else if (d === 0 || d === 1) {
   const whenText = (d === 0) ? "Hôm nay" : "Hôm qua";
 
   if (toText) {
@@ -793,9 +788,9 @@ sites.forEach(s => {
     // → "Tổ nề 3 công | Tổ thợ sơn 2 công"
     const toReadable = toText
       .split("|")
-      .map(s => {
-        const m = s.trim().match(/^(.+?)\s+(\d+(?:\.\d+)?)c$/i);
-        if (!m) return s.trim();
+      .map(item => {
+        const m = item.trim().match(/^(.+?)\s+(\d+(?:\.\d+)?)c$/i);
+        if (!m) return item.trim();
         return "Tổ " + m[1].trim() + " " + m[2] + " công";
       })
       .join(" | ");
@@ -809,13 +804,12 @@ sites.forEach(s => {
            " có thi công";
   }
 }
-  else if (d === 2) {
-    text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
-  }
-  else {
-    text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
-  }
-
+else if (d === 2) {
+  text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
+}
+else {
+  text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
+}
   const span = document.createElement("span");
   span.textContent = text;
   noteDynamic.appendChild(span);
