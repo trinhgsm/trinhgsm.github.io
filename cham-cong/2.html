@@ -182,33 +182,72 @@
       border-right-color: #22c55e;
       animation: loading-spin 0.9s linear infinite;
     }
-    .loading-core {
-      position: relative;
-      width: 60px;
-      height: 60px;
-      border-radius: 14px;
-      background: #020617;
-      border: 1px solid rgba(148,163,184,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-    .loading-core span {
-      transform: translateX(0.05em);
-    }
-    .loading-text {
-      font-size: 0.75rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: #e5e7eb;
-      opacity: 0.9;
-    }
-    @keyframes loading-spin {
-      to { transform: rotate(360deg); }
-    }
+    /* ===== LOADING CORE – CLEAN VERSION ===== */
+.loading-core {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  background: #020617;
+  border: 1px solid rgba(148,163,184,0.7);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+/* ===== LOGO DUKICO (CSS DRAW STYLE) ===== */
+.dukico-logo {
+  font-family: system-ui, "Arial Black", sans-serif;
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  background: linear-gradient(
+    to bottom,
+    #c7ffb0 0%,
+    #7dff5a 45%,
+    #2dbb1f 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  -webkit-text-stroke: 1.6px #1f6f1f;
+
+  text-shadow:
+    0 1px 0 #1f6f1f,
+    0 2px 0 #1f6f1f,
+    0 3px 4px rgba(0,0,0,0.35);
+}
+
+/* ===== GHÉP CHỮ U + K ===== */
+.dukico-logo .uk {
+  display: inline-block;
+  position: relative;
+}
+
+.dukico-logo .u {
+  display: inline-block;
+}
+
+.dukico-logo .k {
+  display: inline-block;
+  margin-left: -0.34em; /* mượn nét U */
+  transform: scaleX(1.05);
+}
+
+/* ===== TEXT DƯỚI LOGO ===== */
+.loading-text {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  opacity: 0.9;
+}
 
     /* ---------- LOCK LAYER ---------- */
     #lockScreen {
@@ -425,8 +464,15 @@
     <div class="loading-logo">
       <div class="loading-ring"></div>
       <div class="loading-core">
-        <span>DUKICO</span>
-      </div>
+  <div class="dukico-logo">
+    D
+    <span class="uk">
+      <span class="u">U</span><span class="k">K</span>
+    </span>
+    ICO
+  </div>
+</div>
+
     </div>
     <div class="loading-text">Đợi 10 giây...</div>
   </div>
