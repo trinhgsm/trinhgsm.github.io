@@ -26,7 +26,7 @@
   gap: 24px;
   width: max-content;
   white-space: nowrap;
-  animation: status-scroll 45s linear infinite;
+  animation: status-scroll 55s linear infinite;
 }
 
 .status-note-track span {
@@ -35,16 +35,6 @@
   gap: 6px;
   color: #cbd5f5;
 }
-
-/* dùng lại dot */
-.status-note .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.status-note .green  { background: #22c55e; }
-.status-note .yellow { background: #eab308; }
-.status-note .red    { background: #ef4444; }
 
 /* hover dừng trôi */
 .status-note:hover .status-note-track {
@@ -125,6 +115,14 @@
   to {
     transform: translateX(-100%);
   }
+}
+@keyframes note-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+.status-note-dynamic {
+  animation: note-scroll 45s linear infinite;
 }
 
 /* ===== HOVER → DỪNG TRÔI ===== */
@@ -412,6 +410,11 @@
       }
       main { padding: 10px; }
     }
+  /* trạng thái CHƯA CHẠY */
+.status-note-track.paused {
+  animation-play-state: paused;
+}
+  
   </style>
 </head>
 <body>
@@ -422,8 +425,15 @@
     <div class="loading-logo">
       <div class="loading-ring"></div>
       <div class="loading-core">
-        <span>DUKICO</span>
-      </div>
+  <div class="dukico-logo">
+    D
+    <span class="uk">
+      <span class="u">U</span><span class="k">K</span>
+    </span>
+    ICO
+  </div>
+</div>
+
     </div>
     <div class="loading-text">Đợi 10 giây...</div>
   </div>
@@ -468,8 +478,50 @@
 </main>
 
 <script>
+  /* ===== LOGO DUKICO – CSS TEXT (U–K DÙNG CHUNG TRỤ) ===== */
+.dukico-logo {
+  font-family: "Arial Black", "Segoe UI Black", system-ui, sans-serif;
+  font-size: 42px;              /* nhỏ hơn để vừa loading-core */
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
+
+  background: linear-gradient(
+    to bottom,
+    #baff9f 0%,
+    #7dff5a 45%,
+    #34c924 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  -webkit-text-stroke: 1.8px #1f6f1f;
+
+  text-shadow:
+    0 1px 0 #1f6f1f,
+    0 2px 0 #1f6f1f,
+    0 3px 4px rgba(0,0,0,0.35);
+}
+
+/* ===== KHỐI U–K DÙNG CHUNG TRỤ ===== */
+.dukico-logo .uk {
+  position: relative;
+  display: inline-block;
+}
+
+.dukico-logo .u {
+  display: inline-block;
+}
+
+.dukico-logo .k {
+  display: inline-block;
+  margin-left: -0.32em;     /* mượn nét U */
+  transform: scaleX(1.04);
+}
+
 /* ===== CONFIG ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbzAq6ients1L8wi0QZzDfSJEo9ImOHzV5rchXlssye7xip5PekwBR2T2B5sVkW9fHac/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzZRE8_2j2Tgk5w0QRHmAC2ertSS1G4jeG8U0KoYyo6KdaabekkW7GITgwv9uDaF9X5/exec";
 const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
 const BASE_WIDTH = 1200;
@@ -493,7 +545,6 @@ const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
 const siteStatusBar = document.getElementById("siteStatusBar");
 const statusList    = document.getElementById("statusList");
-
 /* ===== ZOOM STATE ===== */
 let baseScale = 1;       // scale theo màn hình
 let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
@@ -504,14 +555,26 @@ function showLoading() {
 }
 function hideLoading() {
   loadingOverlay.style.display = "none";
+
+  // ⭐ BÁO HIỆU: LOGO ĐÃ BIẾN MẤT
+  document.dispatchEvent(new Event("dukico-loading-hidden"));
 }
 
 /* Khi iframe load xong thì tắt logo tải */
 frame.addEventListener("load", () => {
   if (frame.src && frame.src !== "about:blank") {
     hideLoading();
+
+    // ⭐ cho dòng ghi chú bắt đầu trôi SAU khi load xong
+    setTimeout(() => {
+      const note = document.getElementById("statusNoteDynamic");
+      if (note) {
+        note.classList.remove("paused");
+      }
+    }, 300);
   }
 });
+
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -774,6 +837,56 @@ driveBtn.onclick = () => {
   function renderSiteStatus(sites) {
   const bar  = document.getElementById("siteStatusBar");
   const list = document.getElementById("statusList");
+/* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
+const noteDynamic = document.getElementById("statusNoteDynamic");
+if (!noteDynamic) return;
+noteDynamic.innerHTML = "";
+noteDynamic.classList.add("paused"); // ⭐ THÊM DÒNG NÀY
+sites.forEach(s => {
+  let d = s.diffDays;
+  let text = "";
+
+  let toText = s.summary
+    ? s.summary.replace(/,\s*/g, " | ")
+    : "";
+
+  if (typeof d !== "number") {
+  text = "🔴 " + s.maCan + ": không xác định ngày thi công";
+}
+else if (d === 0 || d === 1) {
+  const whenText = (d === 0) ? "Hôm nay" : "Hôm qua";
+
+  if (toText) {
+    // Chuẩn hoá: "nề 3c | thợ sơn 2c"
+    // → "Tổ nề 3 công | Tổ thợ sơn 2 công"
+    const toReadable = toText
+      .split("|")
+      .map(item => {
+        const m = item.trim().match(/^(.+?)\s+(\d+(?:\.\d+)?)c$/i);
+        if (!m) return item.trim();
+        return "Tổ " + m[1].trim() + " " + m[2] + " công";
+      })
+      .join(" | ");
+
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công gồm: " + toReadable;
+  } else {
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công";
+  }
+}
+else if (d === 2) {
+  text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
+}
+else {
+  text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
+}
+  const span = document.createElement("span");
+  span.textContent = text;
+  noteDynamic.appendChild(span);
+});
 
   list.innerHTML = "";
   if (!sites.length) {
@@ -804,6 +917,13 @@ driveBtn.onclick = () => {
 
   bar.style.display = "block";
 }
+/* ===== B2: BẮT ĐẦU TRÔI KHI LOGO BIẾN MẤT ===== */
+document.addEventListener("dukico-loading-hidden", () => {
+  const note = document.getElementById("statusNoteDynamic");
+  if (!note) return;
+
+  note.classList.remove("paused");
+});
 
 </script>
 <div id="siteStatusBar">
@@ -812,15 +932,13 @@ driveBtn.onclick = () => {
   <div class="status-marquee">
     <div id="statusList" class="status-track"></div>
   </div>
-
-  <!-- GHI CHÚ MÀU -->
-  <div class="status-note">
-    <div class="status-note-track">
-      <span><i class="dot green"></i> Xanh: Hôm nay và hôm qua</span>
-      <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
-      <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
-    </div>
+<!-- ⭐ DÒNG TRÔI ĐỘNG (THÊM MỚI) -->
+    <div class="status-note">
+  <div class="status-note-track" id="statusNoteDynamic">
+    <!-- JS đổ nội dung mới vào đây -->
   </div>
+</div>
+
 </div>
 
 </body>
