@@ -26,7 +26,7 @@
   gap: 24px;
   width: max-content;
   white-space: nowrap;
-  animation: status-scroll 45s linear infinite;
+  animation: status-scroll 55s linear infinite;
 }
 
 .status-note-track span {
@@ -35,16 +35,6 @@
   gap: 6px;
   color: #cbd5f5;
 }
-
-/* dùng lại dot */
-.status-note .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.status-note .green  { background: #22c55e; }
-.status-note .yellow { background: #eab308; }
-.status-note .red    { background: #ef4444; }
 
 /* hover dừng trôi */
 .status-note:hover .status-note-track {
@@ -125,6 +115,14 @@
   to {
     transform: translateX(-100%);
   }
+}
+@keyframes note-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+.status-note-dynamic {
+  animation: note-scroll 45s linear infinite;
 }
 
 /* ===== HOVER → DỪNG TRÔI ===== */
@@ -412,68 +410,11 @@
       }
       main { padding: 10px; }
     }
-    /* ===== DASHBOARD CHUNG ===== */
-#dashboardWrap {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(2,6,23,0.95);
-  z-index: 7000;
+  /* trạng thái CHƯA CHẠY */
+.status-note-track.paused {
+  animation-play-state: paused;
 }
-
-/* ===== MOBILE – CỘT ĐỨNG ===== */
-#mobileChart {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 8px;
-  height: 120px;
-  overflow-x: auto;
-}
-
-.m-col {
-  width: 28px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  border-radius: 6px 6px 0 0;
-}
-
-.m-col span {
-  font-size: 10px;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  margin-bottom: 4px;
-  color: #020617;
-  font-weight: 600;
-}
-
-/* ===== PC – THANH NGANG ===== */
-#pcChart {
-  display: none;
-  padding: 8px 12px;
-}
-
-.pc-row {
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 8px;
-  align-items: center;
-  margin: 6px 0;
-}
-
-.pc-bar {
-  height: 10px;
-  border-radius: 999px;
-}
-
-/* ===== CHỈ HIỂN THỊ PC ===== */
-@media (min-width: 1024px) {
-  #mobileChart { display: none; }
-  #pcChart { display: block; }
-}
-
+  
   </style>
 </head>
 <body>
@@ -531,7 +472,7 @@
 
 <script>
 /* ===== CONFIG ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbzAq6ients1L8wi0QZzDfSJEo9ImOHzV5rchXlssye7xip5PekwBR2T2B5sVkW9fHac/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzZRE8_2j2Tgk5w0QRHmAC2ertSS1G4jeG8U0KoYyo6KdaabekkW7GITgwv9uDaF9X5/exec";
 const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
 const BASE_WIDTH = 1200;
@@ -555,7 +496,6 @@ const frame     = document.getElementById("sheetFrame");
 const iframeScaleDiv = document.getElementById("iframeScale");
 const siteStatusBar = document.getElementById("siteStatusBar");
 const statusList    = document.getElementById("statusList");
-
 /* ===== ZOOM STATE ===== */
 let baseScale = 1;       // scale theo màn hình
 let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
@@ -566,14 +506,26 @@ function showLoading() {
 }
 function hideLoading() {
   loadingOverlay.style.display = "none";
+
+  // ⭐ BÁO HIỆU: LOGO ĐÃ BIẾN MẤT
+  document.dispatchEvent(new Event("dukico-loading-hidden"));
 }
 
 /* Khi iframe load xong thì tắt logo tải */
 frame.addEventListener("load", () => {
   if (frame.src && frame.src !== "about:blank") {
     hideLoading();
+
+    // ⭐ cho dòng ghi chú bắt đầu trôi SAU khi load xong
+    setTimeout(() => {
+      const note = document.getElementById("statusNoteDynamic");
+      if (note) {
+        note.classList.remove("paused");
+      }
+    }, 300);
   }
 });
+
 
 /* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
 window.addEventListener("load", () => {
@@ -648,10 +600,6 @@ function changeZoom(delta) {
   if (zoomMultiplier < 1) zoomMultiplier = 1;
   if (zoomMultiplier > 4)   zoomMultiplier = 4;
   applyScale();
-}
-const dash = document.getElementById("dashboardWrap");
-if (dash) {
-  dash.style.display = zoomMultiplier > 1 ? "none" : "block";
 }
 
 zoomOutBtn.onclick = () => changeZoom(-0.1);
@@ -765,7 +713,6 @@ const tabs  = data.sheets || [];
 const sites = data.sites  || [];
 
 renderSiteStatus(sites);   // ⭐ BẮT BUỘC
-renderSiteActivityChart(sites);
 
 sheetMenu.innerHTML = "";
 
@@ -841,6 +788,56 @@ driveBtn.onclick = () => {
   function renderSiteStatus(sites) {
   const bar  = document.getElementById("siteStatusBar");
   const list = document.getElementById("statusList");
+/* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
+const noteDynamic = document.getElementById("statusNoteDynamic");
+if (!noteDynamic) return;
+noteDynamic.innerHTML = "";
+noteDynamic.classList.add("paused"); // ⭐ THÊM DÒNG NÀY
+sites.forEach(s => {
+  let d = s.diffDays;
+  let text = "";
+
+  let toText = s.summary
+    ? s.summary.replace(/,\s*/g, " | ")
+    : "";
+
+  if (typeof d !== "number") {
+  text = "🔴 " + s.maCan + ": không xác định ngày thi công";
+}
+else if (d === 0 || d === 1) {
+  const whenText = (d === 0) ? "Hôm nay" : "Hôm qua";
+
+  if (toText) {
+    // Chuẩn hoá: "nề 3c | thợ sơn 2c"
+    // → "Tổ nề 3 công | Tổ thợ sơn 2 công"
+    const toReadable = toText
+      .split("|")
+      .map(item => {
+        const m = item.trim().match(/^(.+?)\s+(\d+(?:\.\d+)?)c$/i);
+        if (!m) return item.trim();
+        return "Tổ " + m[1].trim() + " " + m[2] + " công";
+      })
+      .join(" | ");
+
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công gồm: " + toReadable;
+  } else {
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công";
+  }
+}
+else if (d === 2) {
+  text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
+}
+else {
+  text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
+}
+  const span = document.createElement("span");
+  span.textContent = text;
+  noteDynamic.appendChild(span);
+});
 
   list.innerHTML = "";
   if (!sites.length) {
@@ -871,42 +868,13 @@ driveBtn.onclick = () => {
 
   bar.style.display = "block";
 }
-function renderSiteActivityChart(sites) {
-  const mobile = document.getElementById("mobileChart");
-  const pc     = document.getElementById("pcChart");
-  if (!mobile || !pc || !sites) return;
+/* ===== B2: BẮT ĐẦU TRÔI KHI LOGO BIẾN MẤT ===== */
+document.addEventListener("dukico-loading-hidden", () => {
+  const note = document.getElementById("statusNoteDynamic");
+  if (!note) return;
 
-  mobile.innerHTML = "";
-  pc.innerHTML = "";
-
-  sites.forEach(site => {
-    let score = 25;
-    if (site.status === "green") score = 100;
-    else if (site.status === "yellow") score = 60;
-
-    const color =
-      site.status === "green"  ? "#22c55e" :
-      site.status === "yellow" ? "#eab308" :
-                                 "#ef4444";
-
-    /* ===== MOBILE: CỘT ĐỨNG ===== */
-    const col = document.createElement("div");
-    col.className = "m-col";
-    col.style.height = score + "%";
-    col.style.background = color;
-    col.innerHTML = `<span>${site.maCan}</span>`;
-    mobile.appendChild(col);
-
-    /* ===== PC: THANH NGANG ===== */
-    const row = document.createElement("div");
-    row.className = "pc-row";
-    row.innerHTML = `
-      <div>${site.maCan}</div>
-      <div class="pc-bar" style="width:${score}%;background:${color}"></div>
-    `;
-    pc.appendChild(row);
-  });
-}
+  note.classList.remove("paused");
+});
 
 </script>
 <div id="siteStatusBar">
@@ -915,24 +883,12 @@ function renderSiteActivityChart(sites) {
   <div class="status-marquee">
     <div id="statusList" class="status-track"></div>
   </div>
-
-  <!-- GHI CHÚ MÀU -->
-  <div class="status-note">
-    <div class="status-note-track">
-      <span><i class="dot green"></i> Xanh: Hôm nay và hôm qua</span>
-      <span><i class="dot yellow"></i> Vàng: 1 ngày không thi công</span>
-      <span><i class="dot red"></i> Đỏ: Trên 2 ngày không thi công</span>
-    </div>
+<!-- ⭐ DÒNG TRÔI ĐỘNG (THÊM MỚI) -->
+    <div class="status-note">
+  <div class="status-note-track" id="statusNoteDynamic">
+    <!-- JS đổ nội dung mới vào đây -->
   </div>
 </div>
-<!-- DASHBOARD CÔNG TRÌNH -->
-<div id="dashboardWrap">
-
-  <!-- MOBILE: BIỂU ĐỒ CỘT ĐỨNG -->
-  <div id="mobileChart"></div>
-
-  <!-- PC: BIỂU ĐỒ THANH NGANG -->
-  <div id="pcChart"></div>
 
 </div>
 
