@@ -1,322 +1,1037 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="UTF-8" />
+  <title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
+  <!-- TẮT PINCH ZOOM, CHỈ DÙNG ZOOM NÚT + / - -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
-<style>
-:root{
-  --bg:#020617;
-  --panel:#0f172a;
-  --border:rgba(148,163,184,.4);
-  --accent:#38bdf8;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,Segoe UI,sans-serif;
-  background:var(--bg);
-  color:#e5e7eb;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-}
+  <!-- Favicon DK -->
+  <link rel="icon" type="image/png"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
 
-/* ===== HEADER ===== */
-header{
-  background:var(--panel);
-  border-bottom:1px solid #1f2937;
-  padding:8px 10px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-.brand{
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.brand b{color:var(--accent)}
-.toolbar{
-  display:flex;
-  gap:6px;
-}
-select,button{
+  <style>
+    .kpi-box{
   background:#020617;
-  border:1px solid var(--border);
-  color:#e5e7eb;
-  border-radius:8px;
-  padding:4px 6px;
-  font-size:12px;
-  cursor:pointer;
-}
-button{white-space:nowrap}
-
-/* ===== MAIN ===== */
-main{
-  flex:1;
-  display:flex;
-  overflow:hidden;
-}
-
-/* ===== VIEWER ===== */
-.viewer{
-  flex:1;
-  display:flex;
-}
-.iframe-wrap{
-  flex:1;
-  overflow:auto;
-}
-iframe{
-  width:1200px;
-  height:100%;
-  border:none;
-}
-
-/* ===== REPORT DASHBOARD ===== */
-#reportDashboard{
-  flex:1;
-  display:none;
-  padding:12px;
-  overflow:auto;
-}
-.kpi{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:10px;
-}
-.kpi-card{
-  background:#020617;
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px;
-}
-.kpi-card h3{
-  margin:0;
-  font-size:12px;
-  color:#9ca3af;
-}
-.kpi-card b{
-  font-size:22px;
-  color:#38bdf8;
-}
-#reportList{
-  margin-top:14px;
-  background:#020617;
-  border:1px solid var(--border);
+  border:1px solid rgba(148,163,184,.4);
   border-radius:12px;
   padding:10px;
+  text-align:center;
+  font-size:.8rem;
 }
-#reportList div{
-  padding:6px 0;
-  border-bottom:1px dashed #1f2937;
-  font-size:13px;
-}
-#reportList div:last-child{border-bottom:none}
+.kpi-box strong{ font-size:1.2rem; }
 
-/* ===== STATUS BAR ===== */
-#siteStatusBar{
-  position:fixed;
-  left:0;right:0;bottom:0;
-  background:#020617;
-  border-top:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:6px 10px;
+    /* ===== GHI CHÚ MÀU TRẠNG THÁI ===== */
+.status-note {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  font-size: 0.7rem;
+  opacity: 0.9;
 }
-.status-title{
-  font-size:12px;
-  color:var(--accent);
-  white-space:nowrap;
-}
-.status-marquee{
-  overflow:hidden;
-  flex:1;
-}
-.status-track{
-  display:flex;
-  gap:10px;
-  animation:scroll 30s linear infinite;
-}
-.site-item{
-  display:flex;
-  gap:6px;
-  align-items:center;
-  padding:4px 8px;
-  border-radius:999px;
-  background:#020617;
-  border:1px solid var(--border);
-  font-size:12px;
-}
-.site-dot{
-  width:8px;height:8px;border-radius:50%;
-}
-.dot-green{background:#22c55e}
-.dot-yellow{background:#eab308}
-.dot-red{background:#ef4444}
 
-@keyframes scroll{
-  from{transform:translateX(100%)}
-  to{transform:translateX(-100%)}
+.status-note-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  white-space: nowrap;
+  animation: status-scroll 55s linear infinite;
 }
-</style>
+
+.status-note-track span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #cbd5f5;
+}
+
+/* hover dừng trôi */
+.status-note:hover .status-note-track {
+  animation-play-state: paused;
+}
+
+    #siteStatusBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: env(safe-area-inset-bottom);
+  background: rgba(15,23,42,0.96);
+  border-top: 1px solid rgba(148,163,184,0.4);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  z-index: 8000;
+}
+
+/* ===== TIÊU ĐỀ CỐ ĐỊNH ===== */
+.status-title {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #38bdf8;
+  white-space: nowrap;
+  padding-right: 8px;
+  border-right: 1px solid rgba(148,163,184,0.4);
+}
+
+/* ===== KHUNG TRÔI ===== */
+.status-marquee {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+}
+
+/* ===== DÒNG TRÔI ===== */
+.status-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: status-scroll 35s linear infinite;
+}
+
+/* ===== ITEM ===== */
+.site-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #020617;
+  border: 1px solid rgba(148,163,184,0.4);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* ===== DOT ===== */
+.site-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dot-green  { background: #22c55e; }
+.dot-yellow { background: #eab308; }
+.dot-red    { background: #ef4444; }
+
+/* ===== ANIMATION ===== */
+@keyframes status-scroll {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+@keyframes note-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+.status-note-dynamic {
+  animation: note-scroll 45s linear infinite;
+}
+
+/* ===== HOVER → DỪNG TRÔI ===== */
+.status-marquee:hover .status-track {
+  animation-play-state: paused;
+}
+
+    :root {
+      --bg-main: #020617;
+      --bg-panel: #0f172a;
+      --accent: #38bdf8;
+      --border-soft: rgba(148,163,184,0.5);
+    }
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-main);
+      color: #e5e7eb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden; /* Không cho kéo ngang cả trang */
+    }
+
+    /* ===== LOADING OVERLAY ===== */
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ===== WRAP ===== */
+.loading-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ===== RING ===== */
+.loading-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(148,163,184,0.35);
+  border-top-color: #38bdf8;
+  border-right-color: #22c55e;
+  animation: loading-spin 1.2s linear infinite;
+}
+
+/* ===== CORE ===== */
+.loading-core {
+  width: 116px;
+  height: 60px;
+  
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* ===== LOGO DUKICO ===== */
+.dukico-logo {
+  font-family: system-ui, "Arial Black", sans-serif;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+
+  color: #6dff4d;
+
+  transform: translateX(3px);
+}
+
+
+/* ===== U + K CHUNG NÉT ===== */
+.dukico-logo .uk {
+  display: inline-block;
+}
+
+.dukico-logo .u {
+  display: inline-block;
+}
+
+.dukico-logo .k {
+  display: inline-block;
+  margin-left: -0.34em;
+  transform: scaleX(1.05);
+}
+
+/* ===== TEXT ===== */
+.loading-text {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  opacity: 0.9;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes loading-spin {
+  to { transform: rotate(360deg); }
+}
+
+    /* ---------- LOCK LAYER ---------- */
+    #lockScreen {
+      position: fixed;
+      inset: 0;
+      background: rgba(2,6,23,0.96);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+    #lockBox {
+      width: 100%;
+      max-width: 340px;
+      background: rgba(15,23,42,0.95);
+      padding: 22px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(148,163,184,0.5);
+      text-align: center;
+    }
+    #lockBox h2 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    #lockBox p {
+      margin: 0 0 12px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+    #passwordInput {
+      width: 100%;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid #475569;
+      outline: none;
+      background: #020617;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    #passwordError {
+      min-height: 18px;
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #f97373;
+      text-align: left;
+    }
+    #unlockBtn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 9px;
+      border-radius: 10px;
+      border: none;
+      background: var(--accent);
+      color: #020617;
+      font-weight: 600;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    /* ---------- HEADER ---------- */
+    header {
+      padding: 8px 10px 6px;
+      background: rgba(15,23,42,0.98);
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: conic-gradient(#38bdf8,#22c55e,#f97316,#eab308,#38bdf8);
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .brand-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #38bdf8;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+    }
+    .brand span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ===== TOOLBAR – THU NHỎ CHO VÀO 1 HÀNG ===== */
+    .toolbar {
+      display: flex;
+      gap: 4px;
+      flex-wrap: nowrap;          /* Không cho xuống dòng */
+      overflow-x: auto;           /* Vuốt ngang nếu chật */
+      padding-bottom: 4px;
+    }
+
+    select,
+    button.small-btn {
+      border-radius: 8px;
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.75rem;
+      padding: 5px 6px;
+    }
+
+    select {
+      flex: 1 1 auto;             /* Cho tự co lại */
+      min-width: 90px;            /* Thu hẹp để dễ nằm 1 hàng */
+    }
+
+    button.small-btn {
+      flex: 0 0 auto;
+      cursor: pointer;
+      white-space: nowrap;
+      padding: 5px 8px;
+    }
+
+    /* Nút SỬA – chỉ hiện trên màn nhỏ (mobile) */
+    #editBtn {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #022c22;
+      display: inline-block;
+    }
+    @media (min-width: 768px) {
+      #editBtn {
+        display: none;
+      }
+    }
+
+    main {
+      flex: 1;
+      padding: 6px;
+      display: flex;
+      min-height: 0;
+    }
+    .viewer {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #020617;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* KHUNG CHO PHÉP KÉO NGANG + DỌC - GIỜ CHỈ MỞ NGANG KHI ZOOM > 1 (JS LO HANDLE) */
+    .iframe-wrap {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;              /* mặc định: KHÔNG cho kéo ngang để tránh vùng đen */
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;             /* ưu tiên cuộn dọc */
+    }
+    .iframe-scale {
+      transform-origin: top left;
+      width: 1200px;  /* chiều rộng gốc của sheet */
+      min-height: 600px;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      background: #020617;
+    }
+
+    @media (min-width: 768px) {
+      header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+      }
+      .toolbar {
+        overflow-x: visible;
+      }
+      main { padding: 10px; }
+    }
+  /* trạng thái CHƯA CHẠY */
+.status-note-track.paused {
+  animation-play-state: paused;
+}
+  
+  </style>
 </head>
-
 <body>
+<!-- ===== LOADING OVERLAY – CLEAN ===== -->
+<div id="loadingOverlay">
+  <div class="loading-wrap">
+    <div class="loading-ring"></div>
 
-<header>
-  <div class="brand">
-    <b>DUKICO</b>
-    <span>Chấm công ghi nhật ký auto</span>
+    <div class="loading-core">
+      <div class="dukico-logo">
+        D<span class="uk">
+          <span class="u">U</span><span class="k">K</span>
+        </span>ICO
+      </div>
+    </div>
+
+    <div class="loading-text">ĐANG TẢI…</div>
   </div>
+</div>
+
+<!-- LAYER MẬT KHẨU -->
+<div id="lockScreen">
+  <div id="lockBox">
+    <h2>Mật khẩu</h2>
+    <p>Nhập mật khẩu để mở viewer.</p>
+    <input id="passwordInput" type="password" placeholder="Mật khẩu..." />
+    <div id="passwordError"></div>
+    <button id="unlockBtn">MỞ</button>
+  </div>
+</div>
+
+<!-- HEADER CHÍNH -->
+<header id="topBar" style="display:none;">
+  <div class="brand">
+    <div class="brand-mark"><div class="brand-inner">DKC</div></div>
+    <span>DUKICO – Chấm công ghi nhật ký auto</span>
+  </div>
+
   <div class="toolbar">
     <select id="fileMenu"></select>
     <select id="sheetMenu"></select>
-    <button id="viewBtn">Xem</button>
-    <button id="reportBtn">Báo cáo</button>
+    <button id="editBtn" class="small-btn">Sửa</button>
+    <button id="driveBtn" class="small-btn">Drive</button>
+    <button id="reportBtn" class="small-btn">Báo cáo</button>
+
+    <button id="zoomOutBtn" class="small-btn">−</button>
+    <button id="zoomInBtn" class="small-btn">+</button>
   </div>
 </header>
 
 <main>
-  <!-- VIEWER -->
-  <div class="viewer" id="viewer">
+  <div class="viewer">
     <div class="iframe-wrap">
-      <iframe id="sheetFrame"></iframe>
-    </div>
-  </div>
-
-  <!-- REPORT -->
-  <div id="reportDashboard">
-    <div class="kpi">
-      <div class="kpi-card">
-        <h3>TỔNG CÔNG</h3>
-        <b id="kpiTotal">0</b>
-      </div>
-      <div class="kpi-card">
-        <h3>SỐ CĂN</h3>
-        <b id="kpiCount">0</b>
-      </div>
-      <div class="kpi-card">
-        <h3>TB / CĂN</h3>
-        <b id="kpiAvg">0</b>
+      <div class="iframe-scale" id="iframeScale">
+        <iframe id="sheetFrame"></iframe>
       </div>
     </div>
-    <div id="reportList"></div>
   </div>
-</main>
+  <!-- ===== REPORT DASHBOARD (ẨN MẶC ĐỊNH) ===== -->
+<div id="reportDashboard" style="display:none; padding:10px;">
+  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+    <select id="monthSelect"></select>
+    <button id="backToViewer" class="small-btn">Quay lại Viewer</button>
+  </div>
 
-<!-- STATUS BAR -->
-<div id="siteStatusBar">
-  <div class="status-title">CÔNG TRƯỜNG</div>
-  <div class="status-marquee">
-    <div class="status-track" id="statusList"></div>
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px;">
+    <div class="kpi-box">Tổng công<br><strong id="kpiTotal">0</strong></div>
+    <div class="kpi-box">Số căn<br><strong id="kpiCount">0</strong></div>
+    <div class="kpi-box">TB / căn<br><strong id="kpiAvg">0</strong></div>
+  </div>
+
+  <div id="chartWrap" style="margin-top:12px;">
+    <canvas id="reportChart"></canvas>
   </div>
 </div>
 
+</main>
+
 <script>
-const API_URL="https://script.google.com/macros/s/AKfycbzZRE8_2j2Tgk5w0QRHmAC2ertSS1G4jeG8U0KoYyo6KdaabekkW7GITgwv9uDaF9X5/exec";
 
-const fileMenu=document.getElementById("fileMenu");
-const sheetMenu=document.getElementById("sheetMenu");
-const frame=document.getElementById("sheetFrame");
-const statusList=document.getElementById("statusList");
+/* ===== CONFIG ===== */
+const API_URL = "https://script.google.com/macros/s/AKfycbzku27ZdK35VBt8TtqteFflePjqJbZ-NK3z9aP67rjOXMiLl7uVq1CC9WB1trmqtPIxcQ/exec";
+const PASSWORD = "123";
+const AUTH_KEY = "dukico_viewer_auth_v1";
+const BASE_WIDTH = 1200;
 
-const viewer=document.getElementById("viewer");
-const report=document.getElementById("reportDashboard");
+/* ===== DOM ===== */
+const lockScreen    = document.getElementById("lockScreen");
+const passwordInput = document.getElementById("passwordInput");
+const passwordError = document.getElementById("passwordError");
+const unlockBtn     = document.getElementById("unlockBtn");
+const loadingOverlay = document.getElementById("loadingOverlay");
+const topBar    = document.getElementById("topBar");
+const fileMenu  = document.getElementById("fileMenu");
+const sheetMenu = document.getElementById("sheetMenu");
+const editBtn   = document.getElementById("editBtn");
+const driveBtn  = document.getElementById("driveBtn");
+const zoomOutBtn = document.getElementById("zoomOutBtn");
+const zoomInBtn  = document.getElementById("zoomInBtn");
+const frame     = document.getElementById("sheetFrame");
+const iframeScaleDiv = document.getElementById("iframeScale");
+const siteStatusBar = document.getElementById("siteStatusBar");
+const statusList    = document.getElementById("statusList");
+/* ===== ZOOM STATE ===== */
+let baseScale = 1;       // scale theo màn hình
+let zoomMultiplier = 1;  // user chỉnh thêm (0.5 → 2)
 
-document.getElementById("viewBtn").onclick=()=>{
-  report.style.display="none";
-  viewer.style.display="flex";
+/* ===== LOADING HELPERS ===== */
+function showLoading() {
+  loadingOverlay.style.display = "flex";
+}
+function hideLoading() {
+  loadingOverlay.style.display = "none";
+
+  // ⭐ BÁO HIỆU: LOGO ĐÃ BIẾN MẤT
+  document.dispatchEvent(new Event("dukico-loading-hidden"));
+}
+
+/* Khi iframe load xong thì tắt logo tải */
+frame.addEventListener("load", () => {
+  if (frame.src && frame.src !== "about:blank") {
+    hideLoading();
+
+    // ⭐ cho dòng ghi chú bắt đầu trôi SAU khi load xong
+    setTimeout(() => {
+      const note = document.getElementById("statusNoteDynamic");
+      if (note) {
+        note.classList.remove("paused");
+      }
+    }, 300);
+  }
+});
+
+
+/* ===== INIT: AUTO UNLOCK NẾU ĐÃ LƯU ===== */
+window.addEventListener("load", () => {
+  try {
+    const auth = localStorage.getItem(AUTH_KEY);
+    if (auth === "ok") {
+      startApp();
+      return;
+    }
+  } catch (e) {}
+});
+
+/* ===== PASSWORD ===== */
+unlockBtn.onclick = handleUnlock;
+passwordInput.onkeydown = (e) => { if (e.key === "Enter") handleUnlock(); };
+
+function handleUnlock() {
+  const pass = passwordInput.value.trim();
+  if (pass === PASSWORD) {
+    try {
+      localStorage.setItem(AUTH_KEY, "ok");
+    } catch (e) {}
+    startApp();
+  } else {
+    passwordError.textContent = "Sai mật khẩu!";
+  }
+}
+
+function startApp() {
+  passwordError.textContent = "";
+  lockScreen.style.display = "none";
+  topBar.style.display = "flex";
+  showLoading();
+  loadFiles();
+  autoScaleIframe();
+}
+
+/* ===== APPLY SCALE ===== */
+function applyScale() {
+  if (!iframeScaleDiv) return;
+  const scale = baseScale * zoomMultiplier;
+  iframeScaleDiv.style.transform = "scale(" + scale + ")";
+
+  // ⭐ TỰ ĐỘNG BẬT/TẮT CUỘN NGANG THEO ZOOM
+  const wrap = document.querySelector(".iframe-wrap");
+  if (wrap) {
+    if (zoomMultiplier > 1) {
+      // zoom > 1: cho vuốt ngang để xem hết sheet
+      wrap.style.overflowX = "auto";
+      wrap.style.touchAction = "pan-x pan-y";
+    } else {
+      // zoom = 1: tắt ngang, tránh kéo ra thấy vùng đen
+      wrap.style.overflowX = "hidden";
+      wrap.style.touchAction = "pan-y";
+    }
+  }
+}
+
+/* ===== AUTO SCALE THEO MÀN HÌNH ===== */
+function autoScaleIframe() {
+  if (!iframeScaleDiv) return;
+  const screenW = window.innerWidth || document.documentElement.clientWidth;
+  baseScale = Math.min(1, screenW / BASE_WIDTH); // PC không phóng to quá 1
+  applyScale();
+}
+
+window.addEventListener("resize", autoScaleIframe);
+
+/* ===== NÚT ZOOM +/- ===== */
+function changeZoom(delta) {
+  zoomMultiplier += delta;
+  if (zoomMultiplier < 1) zoomMultiplier = 1;
+  if (zoomMultiplier > 4)   zoomMultiplier = 4;
+  applyScale();
+}
+
+zoomOutBtn.onclick = () => changeZoom(-0.1);
+zoomInBtn.onclick  = () => changeZoom(+0.1);
+
+/* ===== UTIL ===== */
+function extractSheetId(url) {
+  if (!url) return null;
+  const m = String(url).match(/\/d\/([a-zA-Z0-9\-_]+)/);
+  return m ? m[1] : null;
+}
+
+function isCurrentMonthValue(val, curM, curY) {
+  if (!val) return false;
+
+  if (val instanceof Date) {
+    return (val.getMonth() + 1 === curM) && (val.getFullYear() === curY);
+  }
+
+  const s = String(val).trim();
+
+  let m = s.match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  m = s.match(/^(\d{4})\s*[\/\-]\s*(\d{1,2})$/);
+  if (m) {
+    const year  = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10);
+    return month === curM && year === curY;
+  }
+
+  m = s.match(/Tháng\s*(\d{1,2})\s*[\/\-]?\s*(\d{4})?/i);
+  if (m) {
+    const month = parseInt(m[1], 10);
+    const year  = m[2] ? parseInt(m[2], 10) : curY;
+    return month === curM && year === curY;
+  }
+
+  return false;
+}
+
+/* ===== LOAD FILES ===== */
+async function loadFiles() {
+  showLoading();
+  try {
+    const res  = await fetch(API_URL + "?action=files");
+    const json = await res.json();
+    const list = Array.isArray(json) ? json : (json.files || []);
+
+    fileMenu.innerHTML = "";
+
+    const now  = new Date();
+    const curM = now.getMonth() + 1;
+    const curY = now.getFullYear();
+    let defaultIndex = 0;
+
+    list.forEach((item, idx) => {
+      const name = item.name || item.label || ("Dòng " + (item.rowIndex || ""));
+      const url  = item.url;
+      if (!url) return;
+
+      const op = document.createElement("option");
+      op.value = url;
+      op.textContent = name;
+      fileMenu.appendChild(op);
+
+      const monthVal = item.month || item.thang || item.A || null;
+      if (monthVal && isCurrentMonthValue(monthVal, curM, curY)) {
+        defaultIndex = idx;
+      }
+    });
+
+    if (fileMenu.options.length > 0) {
+      fileMenu.selectedIndex = defaultIndex;
+      await loadSheetsForCurrentFile();
+    } else {
+      hideLoading();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi tải danh sách file từ API.");
+    hideLoading();
+  }
+}
+
+/* ===== LOAD SHEETS ===== */
+async function loadSheetsForCurrentFile() {
+  const fileUrl = fileMenu.value;
+  if (!fileUrl) {
+    hideLoading();
+    return;
+  }
+
+  const id = extractSheetId(fileUrl);
+  if (!id) {
+    sheetMenu.innerHTML = "";
+    hideLoading();
+    return;
+  }
+
+  showLoading();
+  try {
+    const res  = await fetch(API_URL + "?action=sheets&fileId=" + encodeURIComponent(id));
+const data = await res.json();
+
+const tabs  = data.sheets || [];
+const sites = data.sites  || [];
+
+renderSiteStatus(sites);   // ⭐ BẮT BUỘC
+
+sheetMenu.innerHTML = "";
+
+const today = new Date();
+const day   = today.getDate();
+const preferredName = (day <= 15) ? "Ngày 1 đến 15" : "Ngày 16 đến 31";
+let preferredGid = null;
+
+tabs.forEach(t => {
+
+      const op = document.createElement("option");
+      op.value = t.gid;
+      op.textContent = t.name;
+      sheetMenu.appendChild(op);
+
+      if (!preferredGid && t.name === preferredName) {
+        preferredGid = t.gid;
+      }
+    });
+
+    if (sheetMenu.options.length > 0) {
+      if (preferredGid) {
+        sheetMenu.value = preferredGid;
+      } else {
+        sheetMenu.selectedIndex = 0;
+      }
+      updateFrame();
+    } else {
+      hideLoading();
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi tải danh sách sheet/tabs.");
+    hideLoading();
+  }
+}
+
+/* ===== BUILD URL EDIT#GID ===== */
+function buildEditUrl() {
+  const fileUrl = fileMenu.value;
+  if (!fileUrl) return "";
+
+  const id  = extractSheetId(fileUrl);
+  const gid = sheetMenu.value || "";
+  if (!id) return fileUrl;
+
+  return `https://docs.google.com/spreadsheets/d/${id}/edit#gid=${gid}`;
+}
+
+/* ===== UPDATE IFRAME ===== */
+function updateFrame() {
+  const url = buildEditUrl();
+  if (url) {
+    showLoading();
+    frame.src = url;
+    setTimeout(autoScaleIframe, 300);
+  }
+}
+
+fileMenu.onchange  = () => { loadSheetsForCurrentFile(); };
+sheetMenu.onchange = updateFrame;
+
+/* ===== NÚT SỬA (MOBILE) ===== */
+editBtn.onclick = () => {
+  const url = buildEditUrl();
+  if (url) window.open(url, "_blank");
 };
 
-document.getElementById("reportBtn").onclick=()=>{
-  viewer.style.display="none";
-  report.style.display="block";
-  loadReport();
+/* ===== NÚT THƯ MỤC DRIVE ===== */
+driveBtn.onclick = () => {
+  window.open("https://drive.google.com/drive/folders/1o3n5GABxec53ANpnS_OaDU1w0M3cGeAX?usp=sharing", "_blank");
 };
+  function renderSiteStatus(sites) {
+  const bar  = document.getElementById("siteStatusBar");
+  const list = document.getElementById("statusList");
+/* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
+const noteDynamic = document.getElementById("statusNoteDynamic");
+if (!noteDynamic) return;
+noteDynamic.innerHTML = "";
+noteDynamic.classList.add("paused"); // ⭐ THÊM DÒNG NÀY
+sites.forEach(s => {
+  let d = s.diffDays;
+  let text = "";
 
-async function loadFiles(){
-  const res=await fetch(API_URL+"?action=files");
-  const data=await res.json();
-  fileMenu.innerHTML="";
-  data.forEach(f=>{
-    const op=document.createElement("option");
-    op.value=f.url;
-    op.textContent=f.name;
-    fileMenu.appendChild(op);
-  });
-  loadSheets();
+  let toText = s.summary
+    ? s.summary.replace(/,\s*/g, " | ")
+    : "";
+
+  if (typeof d !== "number") {
+  text = "🔴 " + s.maCan + ": không xác định ngày thi công";
 }
+else if (d === 0 || d === 1) {
+  const whenText = (d === 0) ? "Hôm nay" : "Hôm qua";
 
-async function loadSheets(){
-  const id=(fileMenu.value.match(/\/d\/([^/]+)/)||[])[1];
-  if(!id)return;
-  const res=await fetch(API_URL+"?action=sheets&fileId="+id);
-  const data=await res.json();
-  sheetMenu.innerHTML="";
-  data.sheets.forEach(s=>{
-    const op=document.createElement("option");
-    op.value=s.gid;
-    op.textContent=s.name;
-    sheetMenu.appendChild(op);
-  });
-  renderStatus(data.sites||[]);
-  updateFrame();
+  if (toText) {
+    // Chuẩn hoá: "nề 3c | thợ sơn 2c"
+    // → "Tổ nề 3 công | Tổ thợ sơn 2 công"
+    const toReadable = toText
+      .split("|")
+      .map(item => {
+        const m = item.trim().match(/^(.+?)\s+(\d+(?:\.\d+)?)c$/i);
+        if (!m) return item.trim();
+        return "Tổ " + m[1].trim() + " " + m[2] + " công";
+      })
+      .join(" | ");
+
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công gồm: " + toReadable;
+  } else {
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công";
+  }
 }
-
-function updateFrame(){
-  const id=(fileMenu.value.match(/\/d\/([^/]+)/)||[])[1];
-  frame.src=`https://docs.google.com/spreadsheets/d/${id}/edit#gid=${sheetMenu.value}`;
+else if (d === 2) {
+  text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
 }
+else {
+  text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
+}
+  const span = document.createElement("span");
+  span.textContent = text;
+  noteDynamic.appendChild(span);
+});
 
-function renderStatus(sites){
-  statusList.innerHTML="";
-  sites.forEach(s=>{
-    const d=s.status==="green"?"dot-green":s.status==="yellow"?"dot-yellow":"dot-red";
-    const el=document.createElement("div");
-    el.className="site-item";
-    el.innerHTML=`<span class="site-dot ${d}"></span><b>${s.maCan}</b>`;
-    el.onclick=()=>{
-      sheetMenu.value=s.gid;
+  list.innerHTML = "";
+  if (!sites.length) {
+    bar.style.display = "none";
+    return;
+  }
+
+  sites.forEach(s => {
+    const dot =
+      s.status === "green"  ? "dot-green" :
+      s.status === "yellow" ? "dot-yellow" :
+                              "dot-red";
+
+    const el = document.createElement("div");
+    el.className = "site-item";
+    el.innerHTML = `
+      <span class="site-dot ${dot}"></span>
+      <strong>${s.maCan}</strong>
+    `;
+
+    el.onclick = () => {
+      sheetMenu.value = s.gid;
       updateFrame();
     };
-    statusList.appendChild(el);
+
+    list.appendChild(el);
+  });
+
+  bar.style.display = "block";
+}
+/* ===== B2: BẮT ĐẦU TRÔI KHI LOGO BIẾN MẤT ===== */
+document.addEventListener("dukico-loading-hidden", () => {
+  const note = document.getElementById("statusNoteDynamic");
+  if (!note) return;
+
+  note.classList.remove("paused");
+});
+
+
+
+  const reportBtn = document.getElementById("reportBtn");
+const reportDashboard = document.getElementById("reportDashboard");
+const viewer = document.querySelector(".viewer");
+const monthSelect = document.getElementById("monthSelect");
+const backToViewer = document.getElementById("backToViewer");
+
+let reportData = null;
+let reportChart = null;
+
+reportBtn.onclick = () => {
+  viewer.style.display = "none";
+  reportDashboard.style.display = "block";
+  loadReportData();
+};
+
+backToViewer.onclick = () => {
+  reportDashboard.style.display = "none";
+  viewer.style.display = "block";
+};
+
+async function loadReportData(){
+  try{
+    const res = await fetch(API_URL + "?action=report");
+    reportData = await res.json();
+
+    monthSelect.innerHTML = "";
+    reportData.months.forEach((m,i)=>{
+      const op = document.createElement("option");
+      op.value = i;
+      op.textContent = m;
+      monthSelect.appendChild(op);
+    });
+
+    monthSelect.onchange = ()=>renderReport(+monthSelect.value);
+    renderReport(reportData.months.length - 1);
+  }catch(e){
+    alert("Lỗi tải báo cáo");
+    console.error(e);
+  }
+}
+
+function renderReport(idx){
+  const values = reportData.series[idx] || [];
+  const total = values.reduce((a,b)=>a+b,0);
+  const count = values.length;
+  const avg = count ? (total/count).toFixed(1) : 0;
+
+  document.getElementById("kpiTotal").textContent = total;
+  document.getElementById("kpiCount").textContent = count;
+  document.getElementById("kpiAvg").textContent = avg;
+
+  drawChart(reportData.labels, values, reportData.months[idx]);
+}
+
+function drawChart(labels, data, title){
+  if (reportChart) reportChart.destroy();
+  const ctx = document.getElementById("reportChart").getContext("2d");
+  reportChart = new Chart(ctx,{
+    type:"bar",
+    data:{
+      labels: labels,
+      datasets:[{
+        label: title,
+        data: data
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{ legend:{display:false} }
+    }
   });
 }
 
-async function loadReport(){
-  const res=await fetch(API_URL+"?action=report");
-  const data=await res.json();
-  const labels=data.labels||[];
-  const months=data.months||[];
-  const series=data.series||[];
-  const idx=months.length-1;
-  const vals=series[idx]||[];
-
-  let total=0;
-  vals.forEach(v=>total+=v);
-
-  document.getElementById("kpiTotal").textContent=total;
-  document.getElementById("kpiCount").textContent=labels.length;
-  document.getElementById("kpiAvg").textContent=(labels.length?total/labels.length:0).toFixed(1);
-
-  const list=document.getElementById("reportList");
-  list.innerHTML="";
-  labels.forEach((l,i)=>{
-    const div=document.createElement("div");
-    div.textContent=l+" : "+vals[i];
-    list.appendChild(div);
-  });
-}
-
-fileMenu.onchange=loadSheets;
-sheetMenu.onchange=updateFrame;
-
-loadFiles();
 </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div id="siteStatusBar">
+  <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
+
+  <div class="status-marquee">
+    <div id="statusList" class="status-track"></div>
+  </div>
+<!-- ⭐ DÒNG TRÔI ĐỘNG (THÊM MỚI) -->
+    <div class="status-note">
+  <div class="status-note-track" id="statusNoteDynamic">
+    <!-- JS đổ nội dung mới vào đây -->
+  </div>
+</div>
+
+</div>
 
 </body>
 </html>
