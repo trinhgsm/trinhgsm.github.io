@@ -12,6 +12,28 @@
         href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
 
   <style>
+    #reportDashboard {
+  padding: 12px;
+}
+
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#dashSummary {
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+#reportChart {
+  width: 100%;
+  max-height: 420px;
+}
+
     /* ===== GHI CHÚ MÀU TRẠNG THÁI ===== */
 .status-note {
   position: relative;
@@ -149,66 +171,98 @@
       overflow-x: hidden; /* Không cho kéo ngang cả trang */
     }
 
-    /* ---------- LAYER LOGO ĐANG TẢI DUKICO ---------- */
-    #loadingOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(2,6,23,0.92);
-      display: none; /* bật/tắt bằng JS */
-      align-items: center;
-      justify-content: center;
-      z-index: 9000;
-    }
-    .loading-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .loading-logo {
-      position: relative;
-      width: 90px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .loading-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: 999px;
-      border: 3px solid rgba(148,163,184,0.4);
-      border-top-color: #38bdf8;
-      border-right-color: #22c55e;
-      animation: loading-spin 0.9s linear infinite;
-    }
-    .loading-core {
-      position: relative;
-      width: 60px;
-      height: 60px;
-      border-radius: 14px;
-      background: #020617;
-      border: 1px solid rgba(148,163,184,0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-    .loading-core span {
-      transform: translateX(0.05em);
-    }
-    .loading-text {
-      font-size: 0.75rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: #e5e7eb;
-      opacity: 0.9;
-    }
-    @keyframes loading-spin {
-      to { transform: rotate(360deg); }
-    }
+    /* ===== LOADING OVERLAY ===== */
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* ===== WRAP ===== */
+.loading-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* ===== RING ===== */
+.loading-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(148,163,184,0.35);
+  border-top-color: #38bdf8;
+  border-right-color: #22c55e;
+  animation: loading-spin 1.2s linear infinite;
+}
+
+/* ===== CORE ===== */
+.loading-core {
+  width: 116px;
+  height: 60px;
+  
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* ===== LOGO DUKICO ===== */
+.dukico-logo {
+  font-family: system-ui, "Arial Black", sans-serif;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+
+  color: #6dff4d;
+
+  transform: translateX(3px);
+}
+
+
+/* ===== U + K CHUNG NÉT ===== */
+.dukico-logo .uk {
+  display: inline-block;
+}
+
+.dukico-logo .u {
+  display: inline-block;
+}
+
+.dukico-logo .k {
+  display: inline-block;
+  margin-left: -0.34em;
+  transform: scaleX(1.05);
+}
+
+/* ===== TEXT ===== */
+.loading-text {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  opacity: 0.9;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes loading-spin {
+  to { transform: rotate(360deg); }
+}
 
     /* ---------- LOCK LAYER ---------- */
     #lockScreen {
@@ -418,17 +472,20 @@
   </style>
 </head>
 <body>
-
-<!-- LAYER LOGO ĐANG TẢI DUKICO -->
+<!-- ===== LOADING OVERLAY – CLEAN ===== -->
 <div id="loadingOverlay">
-  <div class="loading-box">
-    <div class="loading-logo">
-      <div class="loading-ring"></div>
-      <div class="loading-core">
-        <span>DUKICO</span>
+  <div class="loading-wrap">
+    <div class="loading-ring"></div>
+
+    <div class="loading-core">
+      <div class="dukico-logo">
+        D<span class="uk">
+          <span class="u">U</span><span class="k">K</span>
+        </span>ICO
       </div>
     </div>
-    <div class="loading-text">Đợi 10 giây...</div>
+
+    <div class="loading-text">ĐANG TẢI…</div>
   </div>
 </div>
 
@@ -468,11 +525,22 @@
       </div>
     </div>
   </div>
+  <div id="reportDashboard" style="display:none">
+  <div class="dash-header">
+    <strong>BÁO CÁO TỔNG CÔNG</strong>
+    <select id="monthSelect"></select>
+  </div>
+
+  <div class="dash-summary" id="dashSummary"></div>
+
+  <canvas id="reportChart"></canvas>
+</div>
+
 </main>
 
 <script>
 /* ===== CONFIG ===== */
-const API_URL = "https://script.google.com/macros/s/AKfycbzZRE8_2j2Tgk5w0QRHmAC2ertSS1G4jeG8U0KoYyo6KdaabekkW7GITgwv9uDaF9X5/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzku27ZdK35VBt8TtqteFflePjqJbZ-NK3z9aP67rjOXMiLl7uVq1CC9WB1trmqtPIxcQ/exec";
 const PASSWORD = "123";
 const AUTH_KEY = "dukico_viewer_auth_v1";
 const BASE_WIDTH = 1200;
@@ -482,9 +550,7 @@ const lockScreen    = document.getElementById("lockScreen");
 const passwordInput = document.getElementById("passwordInput");
 const passwordError = document.getElementById("passwordError");
 const unlockBtn     = document.getElementById("unlockBtn");
-
 const loadingOverlay = document.getElementById("loadingOverlay");
-
 const topBar    = document.getElementById("topBar");
 const fileMenu  = document.getElementById("fileMenu");
 const sheetMenu = document.getElementById("sheetMenu");
@@ -875,6 +941,38 @@ document.addEventListener("dukico-loading-hidden", () => {
 
   note.classList.remove("paused");
 });
+
+
+
+  async function loadReportData() {
+  const res = await fetch(API_URL + "?action=report");
+  const data = await res.json();
+
+  const monthSelect = document.getElementById("monthSelect");
+  const summary = document.getElementById("dashSummary");
+
+  monthSelect.innerHTML = "";
+
+  data.months.forEach((m, i) => {
+    const op = document.createElement("option");
+    op.value = i;
+    op.textContent = m;
+    monthSelect.appendChild(op);
+  });
+
+  function render(idx) {
+    let total = 0;
+    data.series[idx].forEach(v => total += v);
+
+    summary.textContent =
+      "Tổng công: " + total +
+      " | Số căn: " + data.labels.length +
+      " | TB/căn: " + (total / data.labels.length).toFixed(1);
+  }
+
+  monthSelect.onchange = () => render(monthSelect.value);
+  render(0);
+}
 
 </script>
 <div id="siteStatusBar">
