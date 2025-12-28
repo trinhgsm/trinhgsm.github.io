@@ -514,6 +514,8 @@
     <button id="driveBtn" class="small-btn">Drive</button>
     <button id="zoomOutBtn" class="small-btn">−</button>
     <button id="zoomInBtn" class="small-btn">+</button>
+    <button id="reportBtn" class="small-btn">Báo cáo</button>
+
   </div>
 </header>
 
@@ -556,6 +558,8 @@ const fileMenu  = document.getElementById("fileMenu");
 const sheetMenu = document.getElementById("sheetMenu");
 const editBtn   = document.getElementById("editBtn");
 const driveBtn  = document.getElementById("driveBtn");
+  const reportBtn = document.getElementById("reportBtn");
+
 const zoomOutBtn = document.getElementById("zoomOutBtn");
 const zoomInBtn  = document.getElementById("zoomInBtn");
 const frame     = document.getElementById("sheetFrame");
@@ -972,6 +976,35 @@ document.addEventListener("dukico-loading-hidden", () => {
 
   monthSelect.onchange = () => render(monthSelect.value);
   render(0);
+}
+function showReportMode() {
+  document.getElementById("reportDashboard").style.display = "block";
+  document.querySelector(".viewer").style.display = "none";
+  loadReportData();
+}
+
+function showEmbedMode() {
+  document.getElementById("reportDashboard").style.display = "none";
+  document.querySelector(".viewer").style.display = "block";
+}
+reportBtn.onclick = () => {
+  showReportMode();
+};
+async function loadReportData() {
+  try {
+    const res = await fetch(API_URL + "?action=report");
+    const data = await res.json();
+
+    console.log("REPORT DATA:", data);
+
+    // test tạm: kiểm tra dữ liệu có về không
+    alert("Đã tải báo cáo: " + data.labels.length + " căn");
+
+    // bước sau mới vẽ chart
+  } catch (e) {
+    alert("Lỗi tải báo cáo");
+    console.error(e);
+  }
 }
 
 </script>
