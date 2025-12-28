@@ -997,8 +997,37 @@ async function loadReportData() {
 
     console.log("REPORT DATA:", data);
 
-    // test tạm: kiểm tra dữ liệu có về không
-    alert("Đã tải báo cáo: " + data.labels.length + " căn");
+    async function loadReportData() {
+  try {
+    const res = await fetch(API_URL + "?action=report");
+    const data = await res.json();
+
+    // ===== KPI =====
+    const labels = data.labels || [];
+    const months = data.months || [];
+    const series = data.series || [];
+
+    const currentIndex = months.length - 1; // tháng mới nhất
+    const values = series[currentIndex] || [];
+
+    const total = values.reduce((a, b) => a + b, 0);
+    const count = values.length;
+    const avg   = count ? (total / count).toFixed(1) : 0;
+
+    document.getElementById("kpiTotal").textContent = total;
+    document.getElementById("kpiCount").textContent = count;
+    document.getElementById("kpiAvg").textContent   = avg;
+
+    // ===== TẠM LOG (KIỂM TRA) =====
+    console.log("REPORT:", data);
+
+    // bước sau sẽ vẽ chart
+  } catch (e) {
+    console.error(e);
+    alert("Lỗi tải báo cáo");
+  }
+}
+
 
     // bước sau mới vẽ chart
   } catch (e) {
