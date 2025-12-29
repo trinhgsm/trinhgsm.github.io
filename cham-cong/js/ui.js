@@ -185,3 +185,10 @@ else {
 
   bar.style.display = "block";
 }
+/* ===== B2: BẮT ĐẦU TRÔI KHI LOGO BIẾN MẤT ===== */
+document.addEventListener("dukico-loading-hidden", () => {
+  const note = document.getElementById("statusNoteDynamic");
+  if (!note) return;
+
+  note.classList.remove("paused");
+});
