@@ -1,39 +1,38 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard Tiến Độ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>DASHBOARD – TỔNG QUAN CÔNG TRÌNH</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <link rel="stylesheet" href="dashboard.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-  <div class="top">
-    <strong>DASHBOARD TIẾN ĐỘ</strong>
-    <span id="genTime"></span>
+<header class="top">
+  <h1>DASHBOARD TỔNG QUAN</h1>
+  <span id="genTime"></span>
+</header>
+<main id="board">
+
+  <div class="top-row">
+    <section id="projectCard" class="top-card"></section>
+
+    <section id="overviewChart" class="card top-card">
+      <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
+      <div class="chart-wrap">
+        <canvas id="unitOverviewChart"></canvas>
+      </div>
+    </section>
   </div>
 
-  <main id="board">
+  <div id="unitCards"></div>
 
-    <!-- HÀNG TRÊN -->
-    <div class="top-row">
-      <section id="projectCard" class="card top-card"></section>
+</main>
 
-      <section class="card top-card">
-        <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
-        <div class="chart-wrap">
-          <canvas id="unitOverviewChart"></canvas>
-        </div>
-      </section>
-    </div>
-
-    <!-- CARD TỪNG CĂN -->
-    <div id="unitCards"></div>
-
-  </main>
-
-  <script src="dashboard.js"></script>
+<script src="dashboard.js"></script>
 </body>
 </html>
