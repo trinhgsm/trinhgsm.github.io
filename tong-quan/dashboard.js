@@ -1,9 +1,5 @@
 /************************************************************
- * DUKICO – DASHBOARD TIẾN ĐỘ (FULL)
- * - Tổng dự án
- * - Tổng quan tiến độ các căn
- * - Sidebar cảnh báo + legend nâng cấp
- * - Card từng căn có biểu đồ
+ * DUKICO – DASHBOARD TIẾN ĐỘ (FULL – KHÓA)
  ************************************************************/
 
 const API_URL =
@@ -113,10 +109,7 @@ function renderUnitOverview(units) {
         y: {
           beginAtZero: true,
           max: 100,
-          title: {
-            display: true,
-            text: "Tiến độ (%)"
-          }
+          title: { display: true, text: "Tiến độ (%)" }
         },
         x: {
           ticks: {
@@ -180,7 +173,7 @@ function renderLegend(units) {
 }
 
 /* =========================================================
-   CARD TỪNG CĂN (FULL BIỂU ĐỒ)
+   CARD TỪNG CĂN (ĐÚNG 2 DÒNG + BIỂU ĐỒ NGANG)
    ========================================================= */
 function buildUnitCard(u) {
   const card = document.createElement("div");
@@ -189,34 +182,74 @@ function buildUnitCard(u) {
   card.innerHTML = `
     <h2>${u.maCan}</h2>
 
-    <div style="font-size:.8rem">
+    <!-- DÒNG 1: THỜI GIAN -->
+    <div style="
+      font-size:0.75rem;
+      opacity:.85;
+      margin-bottom:4px;
+      white-space:nowrap;
+    ">
+      Bắt đầu: ${fmtDate(u.start)} |
+      Hoàn thành: ${fmtDate(u.end)}
+    </div>
+
+    <!-- DÒNG 2: CÔNG + TRẠNG THÁI -->
+    <div style="
+      font-size:0.8rem;
+      margin-bottom:8px;
+      white-space:nowrap;
+    ">
       Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
+      |
+      <span style="color:${
+        u.status === "red"
+          ? "#ef4444"
+          : u.status === "yellow"
+          ? "#eab308"
+          : "#22c55e"
+      }">
+        ${u.statusText}
+      </span>
     </div>
 
-    <div style="font-size:.75rem;color:${
-      u.status === "red" ? "#ef4444" :
-      u.status === "yellow" ? "#eab308" : "#22c55e"
-    }">
-      ${u.statusText}
-    </div>
+    <!-- HÀNG BIỂU ĐỒ -->
+    <div style="
+      display:flex;
+      gap:12px;
+      align-items:stretch;
+    ">
+      <!-- BIỂU ĐỒ CHI TIÊU -->
+      <div style="flex:1">
+        <div style="font-size:.7rem;margin-bottom:4px">
+          Chi tiêu (VNĐ)
+        </div>
+        <div class="chart-wrap" style="height:140px">
+          <canvas class="costChart"></canvas>
+        </div>
+      </div>
 
-    <!-- BIỂU ĐỒ CÔNG THEO TỔ -->
-    <div class="chart-wrap" style="height:160px;margin-top:6px">
-      <canvas class="teamChart"></canvas>
-    </div>
-
-    <!-- BIỂU ĐỒ CHI PHÍ -->
-    <div style="font-size:.75rem;margin-top:8px">Chi phí (VNĐ)</div>
-    <div class="chart-wrap" style="height:120px">
-      <canvas class="costChart"></canvas>
+      <!-- BIỂU ĐỒ CÔNG -->
+      <div style="flex:1">
+        <div style="font-size:.7rem;margin-bottom:4px">
+          Phân bổ công
+        </div>
+        <div class="chart-wrap" style="height:140px">
+          <canvas class="teamChart"></canvas>
+        </div>
+      </div>
     </div>
   `;
 
-  drawTeamChart(card.querySelector(".teamChart"), u.byTeam);
+  /* VẼ BIỂU ĐỒ */
   drawCostChart(
     card.querySelector(".costChart"),
     u.plannedCost,
     u.actualCost
+  );
+
+  drawTeamChart(
+    card.querySelector(".teamChart"),
+    u.byTeam
   );
 
   return card;
@@ -250,7 +283,7 @@ function drawTeamChart(canvas, byTeam) {
 }
 
 /* =========================================================
-   BIỂU ĐỒ CHI PHÍ
+   BIỂU ĐỒ CHI TIÊU
    ========================================================= */
 function drawCostChart(canvas, planned, actual) {
   if (!canvas) return;
@@ -282,6 +315,15 @@ function drawCostChart(canvas, planned, actual) {
       }
     }
   });
+}
+
+/* =========================================================
+   FORMAT DATE
+   ========================================================= */
+function fmtDate(d) {
+  if (!d) return "?";
+  const [y, m, day] = d.split("-");
+  return `${day}-${m}-${y}`;
 }
 
 /* =========================================================
