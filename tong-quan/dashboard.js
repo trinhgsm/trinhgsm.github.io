@@ -22,21 +22,42 @@ function buildCard(u) {
 
   card.innerHTML = `
     <h2>${u.maCan}</h2>
+
     <div class="meta">
       ${u.start || "?"} → ${u.end || "?"}
     </div>
+
     <div class="meta">
       Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
     </div>
+
     <div class="meta status ${u.status}">
       Trạng thái: ${textStatus(u.status)}
     </div>
-    <canvas height="160"></canvas>
+
+    <!-- BIỂU ĐỒ CÔNG THEO TỔ -->
+    <canvas class="teamChart" height="160"></canvas>
+
+    <!-- ⭐ BIỂU ĐỒ CHI PHÍ -->
+    <div class="meta">
+      Chi phí (VNĐ)
+    </div>
+    <canvas class="costChart" height="120"></canvas>
   `;
 
-  drawChart(card.querySelector("canvas"), u.byTeam);
+  // biểu đồ tổ (cũ)
+  drawChart(card.querySelector(".teamChart"), u.byTeam);
+
+  // ⭐ biểu đồ chi phí (mới)
+  drawCostChart(
+    card.querySelector(".costChart"),
+    u.plannedCost,
+    u.actualCost
+  );
+
   return card;
 }
+
 
 function drawChart(canvas, byTeam) {
   const labels = Object.keys(byTeam);
@@ -102,6 +123,45 @@ function renderProjectCard(p) {
     },
     options: {
       plugins: { legend: { position: "bottom" } }
+    }
+  });
+}
+function drawCostChart(canvas, planned, actual) {
+  if (!canvas) return;
+
+  const over = actual > planned;
+
+  new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: ["Dự tính", "Đã chi"],
+      datasets: [{
+        data: [planned, actual],
+        backgroundColor: [
+          "#38bdf8",
+          over ? "#ef4444" : "#22c55e"
+        ]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx =>
+              ctx.raw.toLocaleString("vi-VN") + " đ"
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: v => v.toLocaleString("vi-VN")
+          }
+        }
+      }
     }
   });
 }
