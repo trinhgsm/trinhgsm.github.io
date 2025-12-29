@@ -1,15 +1,13 @@
 :root {
   --bg: #020617;
   --card: #0f172a;
-  --border: rgba(148,163,184,.4);
+  --border: rgba(148,163,184,.35);
   --green: #22c55e;
   --yellow: #eab308;
   --red: #ef4444;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -18,21 +16,30 @@ body {
   font-family: system-ui, sans-serif;
 }
 
-/* ===== HEADER ===== */
+/* HEADER */
 .top {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--border);
+  height: 56px;
+  padding: 0 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--border);
+  background: #020617;
 }
 
-/* ===== BOARD: CHỈ LÀ CONTAINER ===== */
+.brand {
+  font-weight: 600;
+}
+
+/* GRID CHÍNH */
 #board {
-  padding: 12px;
+  display: grid;
+  grid-template-columns: 1.1fr 2fr 0.9fr;
+  gap: 16px;
+  padding: 16px;
 }
 
-/* ===== CARD CHUNG ===== */
+/* CARD CHUNG */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -42,105 +49,84 @@ body {
 
 .card h2 {
   margin: 0 0 8px;
-  font-size: 1rem;
+  font-size: .95rem;
 }
 
-/* ===== STATUS ===== */
-.status.green { color: var(--green); }
-.status.yellow { color: var(--yellow); }
-.status.red { color: var(--red); }
-
-/* ===== DÒNG THÔNG TIN ===== */
-.line {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
-.line span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.line .date {
-  flex: 1;
-}
-
-.line .work {
-  flex: 1.2;
-}
-
-.line .status {
-  flex: 0 0 auto;
-  font-weight: 600;
-}
-
-/* ===== CẢNH BÁO ===== */
-.warning {
-  font-size: 0.7rem;
-  color: #facc15;
-  margin-top: 4px;
-  white-space: nowrap;
-}
-
-/* =====================================================
-   HÀNG TRÊN (PC): TỔNG DỰ ÁN + TỔNG QUAN TIẾN ĐỘ
-   ===================================================== */
-.top-row {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 16px;
-  margin-bottom: 24px;
-  align-items: stretch;
-}
-
-/* ÉP 2 CARD CAO BẰNG NHAU */
-.top-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 380px;
-}
-
-/* ===== KHUNG BIỂU ĐỒ TỔNG QUAN ===== */
+/* BIỂU ĐỒ */
 .chart-wrap {
   position: relative;
-  flex: 1;
-  min-height: 260px;
+  height: 280px;
 }
 
-/* Canvas LUÔN chiếm trọn khung */
 .chart-wrap canvas {
   position: absolute;
   inset: 0;
-  width: 100% !important;
-  height: 100% !important;
 }
 
-/* =====================================================
-   GRID CARD CÁC CĂN
-   ===================================================== */
-#unitCards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+/* SIDEBAR */
+#rightSidebar {
+  grid-column: 3 / 4;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
-/* =====================================================
-   MOBILE / TABLET
-   ===================================================== */
+/* CẢNH BÁO */
+.warning-widget h2 {
+  color: var(--red);
+}
+
+.warning-item {
+  font-size: .8rem;
+  margin-bottom: 4px;
+}
+
+/* LEGEND */
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .8rem;
+  margin-bottom: 6px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+/* CARD CĂN */
+#unitCards {
+  grid-column: 1 / 3;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* FOOTER */
+.footer {
+  padding: 12px;
+  text-align: center;
+  font-size: .75rem;
+  color: #9ca3af;
+  border-top: 1px solid var(--border);
+}
+
+/* MOBILE */
 @media (max-width: 900px) {
-  .top-row {
+  #board {
     grid-template-columns: 1fr;
   }
 
-  .top-card {
-    min-height: auto;
+  #rightSidebar,
+  #unitCards {
+    grid-column: 1 / -1;
+    grid-row: auto;
   }
 
-  .chart-wrap {
-    min-height: 220px;
+  #unitCards {
+    grid-template-columns: 1fr;
   }
 }
