@@ -94,6 +94,12 @@ function textStatus(s) {
 }
 
 loadDashboard();
+function fmtDate(d) {
+  if (!d) return "?";
+  const [y, m, day] = d.split("-");
+  return `${day}-${m}-${y}`;
+}
+
 function renderProjectCard(p) {
   const box = document.getElementById("projectCard");
   box.innerHTML = `
