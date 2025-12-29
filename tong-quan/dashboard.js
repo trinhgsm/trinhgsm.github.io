@@ -38,9 +38,17 @@ function buildCard(u) {
         Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
       </span>
       <span class="status ${u.status}">
-        Trạng thái: ${textStatus(u.status)}
+        ${u.statusText || textStatus(u.status)}
       </span>
     </div>
+
+    <!-- CẢNH BÁO PHỤ -->
+    ${(u.warnCong || u.warnCost) ? `
+      <div class="warning">
+        ${u.warnCong ? "⚠️ Sắp vượt dự tính công" : ""}
+        ${u.warnCost ? " ⚠️ Sắp vượt dự tính chi phí" : ""}
+      </div>
+    ` : ""}
 
     <!-- BIỂU ĐỒ CÔNG THEO TỔ -->
     <canvas class="teamChart" height="160"></canvas>
@@ -50,10 +58,8 @@ function buildCard(u) {
     <canvas class="costChart" height="120"></canvas>
   `;
 
-  // Biểu đồ công theo tổ
   drawChart(card.querySelector(".teamChart"), u.byTeam);
 
-  // Biểu đồ chi phí
   drawCostChart(
     card.querySelector(".costChart"),
     u.plannedCost,
@@ -62,6 +68,7 @@ function buildCard(u) {
 
   return card;
 }
+
 
 function drawChart(canvas, byTeam) {
   const labels = Object.keys(byTeam);
