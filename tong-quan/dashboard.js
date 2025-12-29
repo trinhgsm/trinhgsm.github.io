@@ -1,6 +1,6 @@
 /************************************************************
  * DUKICO – DASHBOARD TIẾN ĐỘ
- * FULL JS – SIDEBAR ĐỘC LẬP – KHÔNG KÉO MAIN
+ * FULL JS – TÁCH SIDEBAR THEO HÀNG
  ************************************************************/
 
 const API_URL =
@@ -17,34 +17,26 @@ async function loadDashboard() {
   const res = await fetch(API_URL);
   const json = await res.json();
 
-  /* HEADER TIME */
+  /* TIME */
   const gen = document.getElementById("genTime");
   if (gen) {
     gen.textContent =
       "Cập nhật: " + new Date(json.generatedAt).toLocaleString();
   }
 
-  /* ===== MAIN (2 CỘT) ===== */
+  /* ===== HÀNG 1 ===== */
   renderProjectCard(json.project);
   renderUnitOverview(json.units);
+  renderSummaryWarnings(json.units);
 
-  /* ===== SIDEBAR (ĐỘC LẬP) ===== */
-  renderWarnings(json.units);        // cảnh báo tiến độ
-  renderLegend(json.units);          // theo căn (cũ)
-  renderTeamLegend(json.units);      // theo tổ (mới)
-
-  /* ===== CARD TỪNG CĂN ===== */
-  const unitBox = document.getElementById("unitCards");
-  if (unitBox) {
-    unitBox.innerHTML = "";
-    json.units.forEach(u => {
-      unitBox.appendChild(buildUnitCard(u));
-    });
-  }
+  /* ===== HÀNG 2 ===== */
+  renderUnitCards(json.units);
+  renderDetailLegendByUnit(json.units);
+  renderDetailLegendByTeam(json.units);
 }
 
 /* =========================================================
-   TỔNG DỰ ÁN – BIỂU ĐỒ TRÒN
+   HÀNG 1 – TỔNG DỰ ÁN
    ========================================================= */
 function renderProjectCard(p) {
   const box = document.getElementById("projectCard");
@@ -86,7 +78,7 @@ function renderProjectCard(p) {
 }
 
 /* =========================================================
-   TỔNG QUAN TIẾN ĐỘ CÁC CĂN – BIỂU ĐỒ CỘT
+   HÀNG 1 – BIỂU ĐỒ TỔNG QUAN
    ========================================================= */
 function renderUnitOverview(units) {
   const canvas = document.getElementById("unitOverviewChart");
@@ -113,11 +105,7 @@ function renderUnitOverview(units) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: {
-          beginAtZero: true,
-          max: 100,
-          title: { display: true, text: "Tiến độ (%)" }
-        },
+        y: { beginAtZero: true, max: 100 },
         x: {
           ticks: {
             autoSkip: true,
@@ -131,10 +119,10 @@ function renderUnitOverview(units) {
 }
 
 /* =========================================================
-   SIDEBAR – CẢNH BÁO TIẾN ĐỘ
+   HÀNG 1 – SIDEBAR: CẢNH BÁO
    ========================================================= */
-function renderWarnings(units) {
-  const box = document.getElementById("warningList");
+function renderSummaryWarnings(units) {
+  const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
   const risks = units.filter(u => u.status !== "green");
@@ -152,13 +140,24 @@ function renderWarnings(units) {
 }
 
 /* =========================================================
-   SIDEBAR – PHÂN BỔ THEO CĂN (GIỮ NGUYÊN)
+   HÀNG 2 – CARD CÁC CĂN
    ========================================================= */
-function renderLegend(units) {
-  const box = document.getElementById("legendList");
+function renderUnitCards(units) {
+  const box = document.getElementById("unitCards");
   if (!box) return;
 
   box.innerHTML = "";
+  units.forEach(u => box.appendChild(buildUnitCard(u)));
+}
+
+/* =========================================================
+   HÀNG 2 – SIDEBAR: THEO CĂN
+   ========================================================= */
+function renderDetailLegendByUnit(units) {
+  const box = document.getElementById("sidebarDetail");
+  if (!box) return;
+
+  let html = `<h3>PHÂN BỔ THEO CĂN</h3>`;
 
   units.forEach(u => {
     const color =
@@ -166,28 +165,28 @@ function renderLegend(units) {
       u.status === "yellow" ? "#eab308" :
       "#22c55e";
 
-    box.innerHTML += `
+    html += `
       <div class="legend-item">
         <div class="legend-color" style="background:${color}"></div>
         <div>
-          <div><strong>${u.maCan}</strong></div>
-          <div style="font-size:.7rem;opacity:.8">
-            ${u.actualCong} công
-          </div>
+          <strong>${u.maCan}</strong><br>
+          ${u.actualCong} công
         </div>
       </div>
     `;
   });
+
+  box.innerHTML = html;
 }
 
 /* =========================================================
-   SIDEBAR – PHÂN BỔ THEO TỔ (SIDEBAR MỚI)
+   HÀNG 2 – SIDEBAR: THEO TỔ
    ========================================================= */
-function renderTeamLegend(units) {
-  const box = document.getElementById("teamLegendList");
+function renderDetailLegendByTeam(units) {
+  const box = document.getElementById("sidebarDetail");
   if (!box) return;
 
-  box.innerHTML = "";
+  let html = box.innerHTML + `<h3 style="margin-top:8px">PHÂN BỔ THEO TỔ</h3>`;
 
   units.forEach(u => {
     if (!u.byTeam) return;
@@ -196,24 +195,19 @@ function renderTeamLegend(units) {
       const cong = u.byTeam[team];
       if (!cong || cong <= 0) return;
 
-      const color =
-        u.status === "red" ? "#ef4444" :
-        u.status === "yellow" ? "#eab308" :
-        "#22c55e";
-
-      box.innerHTML += `
+      html += `
         <div class="legend-item">
-          <div class="legend-color" style="background:${color}"></div>
+          <div class="legend-color"></div>
           <div>
-            <div><strong>TỔ ${team.toUpperCase()}</strong> – ${u.maCan}</div>
-            <div style="font-size:.7rem;opacity:.8">
-              ${cong} công
-            </div>
+            <strong>TỔ ${team.toUpperCase()}</strong> – ${u.maCan}<br>
+            ${cong} công
           </div>
         </div>
       `;
     });
   });
+
+  box.innerHTML = html;
 }
 
 /* =========================================================
@@ -226,14 +220,12 @@ function buildUnitCard(u) {
   card.innerHTML = `
     <h2>${u.maCan}</h2>
 
-    <!-- DÒNG 1: THỜI GIAN -->
-    <div style="font-size:.75rem;opacity:.85;margin-bottom:4px">
+    <div style="font-size:.75rem;opacity:.85">
       Bắt đầu: ${fmtDate(u.start)} |
       Hoàn thành: ${fmtDate(u.end)}
     </div>
 
-    <!-- DÒNG 2: CÔNG + TRẠNG THÁI -->
-    <div style="font-size:.8rem;margin-bottom:8px">
+    <div style="font-size:.8rem;margin-bottom:6px">
       Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
       |
       <span style="color:${
@@ -245,23 +237,13 @@ function buildUnitCard(u) {
       </span>
     </div>
 
-    <!-- BIỂU ĐỒ NGANG -->
-    <div style="display:flex;gap:12px">
-      <!-- CHI TIÊU -->
+    <div style="display:flex;gap:10px">
       <div style="flex:1">
-        <div style="font-size:.7rem;margin-bottom:4px">
-          Chi tiêu (VNĐ)
-        </div>
         <div class="chart-wrap" style="height:140px">
           <canvas class="costChart"></canvas>
         </div>
       </div>
-
-      <!-- CÔNG -->
       <div style="flex:1">
-        <div style="font-size:.7rem;margin-bottom:4px">
-          Phân bổ công
-        </div>
         <div class="chart-wrap" style="height:140px">
           <canvas class="teamChart"></canvas>
         </div>
@@ -297,7 +279,7 @@ function drawTeamChart(canvas, byTeam) {
         data: Object.values(byTeam),
         backgroundColor: [
           "#38bdf8", "#22c55e", "#eab308",
-          "#ef4444", "#a855f7", "#f97316"
+          "#ef4444", "#a855f7"
         ]
       }]
     },
@@ -332,12 +314,7 @@ function drawCostChart(canvas, planned, actual) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: v => v.toLocaleString("vi-VN")
-          }
-        }
+        y: { beginAtZero: true }
       }
     }
   });
