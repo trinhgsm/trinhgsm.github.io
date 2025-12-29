@@ -2,8 +2,9 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>DUKICO – Dashboard tiến độ</title>
+  <title>DUKICO – Dashboard Tiến Độ & Tài Chính</title>
 
+  <!-- Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- CSS -->
@@ -15,71 +16,67 @@
 
 <body>
 
-  <!-- ================= HEADER ================= -->
+  <!-- ================= TOP BAR ================= -->
   <header class="top">
-    <div>DUKICO – Dashboard tiến độ</div>
-    <div id="genTime">Đang tải…</div>
+    <div class="title">
+      <strong>DUKICO</strong> – Dashboard tổng quan
+    </div>
+    <div id="genTime">Đang tải dữ liệu…</div>
   </header>
 
   <!-- ================= DASHBOARD ================= -->
-  <main class="dashboard">
+  <main id="dashboard" class="dashboard loading">
 
-    <!-- =====================================================
-         HÀNG 1 – SUMMARY
-         2 BIỂU ĐỒ + SIDEBAR WIDGET 1
-    ====================================================== -->
-    <section class="row row-summary">
+    <!-- ========== HÀNG TRÊN: 3 CỘT ========== -->
+    <section class="top-row">
 
-      <!-- TỔNG DỰ ÁN -->
-      <div class="card summary-card" id="projectCard">
+      <!-- CỘT 1: TỔNG DỰ ÁN -->
+      <div class="card top-card" id="projectCard">
         <!-- JS render -->
       </div>
 
-      <!-- TỔNG QUAN TIẾN ĐỘ -->
-      <div class="card summary-card">
+      <!-- CỘT 2: TỔNG QUAN TIẾN ĐỘ CÁC CĂN -->
+      <div class="card top-card">
         <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
         <div class="chart-wrap">
           <canvas id="unitOverviewChart"></canvas>
         </div>
       </div>
 
-      <!-- SIDEBAR – WIDGET 1 -->
-      <aside class="col-sidebar">
-        <div class="card">
-          <h2>CẢNH BÁO TIẾN ĐỘ</h2>
-          <div id="sidebarSummary">
-            <!-- JS render -->
-          </div>
+      <!-- CỘT 3: SIDEBAR CẢNH BÁO -->
+      <div class="card top-card">
+        <h2>CẢNH BÁO TIẾN ĐỘ</h2>
+
+        <!-- Cảnh báo tổng hợp -->
+        <div id="sidebarSummary">
+          <!-- JS render -->
         </div>
-      </aside>
+
+        <hr style="border-color: rgba(255,255,255,.1); margin: 8px 0;">
+
+        <!-- Phân bổ theo tổ -->
+        <div id="sidebarDetail">
+          <!-- JS render -->
+        </div>
+      </div>
 
     </section>
 
-    <!-- =====================================================
-         HÀNG 2 – DETAIL
-         CARD CĂN + SIDEBAR WIDGET 2 & 3
-    ====================================================== -->
-    <section class="row row-detail">
-  <!-- CARD CĂN CHIẾM 2 CỘT -->
-  <div class="col-span-2">
-    <div id="unitCards"></div>
-  </div>
-
-  <!-- SIDEBAR -->
-  <aside class="col-sidebar">
-    <div class="card">
-      <h2>PHÂN BỔ CÔNG THEO CĂN</h2>
-      <div id="sidebarDetail"></div>
-    </div>
-  </aside>
-</section>
-
+    <!-- ========== HÀNG DƯỚI: CARD CÁC CĂN ========== -->
+    <section id="unitCards">
+      <!-- JS render -->
+    </section>
 
   </main>
 
   <!-- ================= FOOTER ================= -->
-  <footer>
-    DUKICO Dashboard © 2025
+  <footer style="
+    text-align:center;
+    font-size:0.7rem;
+    opacity:.6;
+    padding:8px 0;
+  ">
+    © DUKICO – Dashboard nội bộ
   </footer>
 
   <!-- ================= JS ================= -->
