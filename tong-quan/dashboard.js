@@ -1,7 +1,7 @@
 const API_URL =
   "https://script.google.com/macros/s/AKfycbzIAc6J2sYYj5GRmdGGAAVvXewyuwHVMQHMk_5kiCKaDU37MjNzu643FGOZDp80Q0oBEw/exec?action=dashboard";
 
-/* ================= GLOBAL CHART ================= */
+/* ================= GLOBAL ================= */
 let unitOverviewChart = null;
 let projectChart = null;
 
@@ -13,21 +13,21 @@ async function loadDashboard() {
   document.getElementById("genTime").textContent =
     "Cập nhật: " + new Date(json.generatedAt).toLocaleString();
 
-  /* 1. CARD TỔNG */
+  // 1. Card tổng dự án
   renderProjectCard(json.project);
 
-  /* 2. BIỂU ĐỒ TỔNG QUAN (1 LẦN) */
-  setTimeout(() => {
-    renderUnitOverview(json.units);
-  }, 0);
-
-  /* 3. CARD TỪNG CĂN */
+  // 2. Card từng căn
   const cardsBox = document.getElementById("unitCards");
   cardsBox.innerHTML = "";
 
-  json.units.forEach(unit => {
-    cardsBox.appendChild(buildCard(unit));
+  json.units.forEach(u => {
+    cardsBox.appendChild(buildCard(u));
   });
+
+  // 3. Biểu đồ tổng quan (vẽ 1 lần, sau cùng)
+  setTimeout(() => {
+    renderUnitOverview(json.units);
+  }, 0);
 }
 
 /* ================= BUILD CARD ================= */
@@ -48,7 +48,7 @@ function buildCard(u) {
         Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
       </span>
       <span class="status ${u.status}">
-        ${u.statusText}
+        ${u.statusText || textStatus(u.status)}
       </span>
     </div>
 
@@ -142,30 +142,20 @@ function renderUnitOverview(units) {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false, // ⬅️ QUAN TRỌNG
       plugins: { legend: { display: false } },
       scales: {
         y: { beginAtZero: true, max: 100 },
         x: {
-          ticks: { autoSkip: false, maxRotation: 45, minRotation: 30 }
+          ticks: {
+            autoSkip: true,
+            maxRotation: 45,
+            minRotation: 30
+          }
         }
       }
     }
   });
-}
-options: {
-  responsive: true,
-  maintainAspectRatio: false, // ⬅️ BẮT BUỘC
-  plugins: { legend: { display: false } },
-  scales: {
-    y: { beginAtZero: true, max: 100 },
-    x: {
-      ticks: {
-        autoSkip: true,        // ⬅️ tự skip khi nhiều căn
-        maxRotation: 45,
-        minRotation: 30
-      }
-    }
-  }
 }
 
 /* ================= CARD TỔNG DỰ ÁN ================= */
