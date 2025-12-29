@@ -182,3 +182,56 @@ function drawCostChart(canvas, planned, actual) {
     }
   });
 }
+function renderUnitOverview(units) {
+  const ctx = document.getElementById("unitOverviewChart");
+  if (!ctx) return;
+
+  const labels = units.map(u => u.maCan);
+  const values = units.map(u => u.percent);
+
+  const colors = units.map(u => {
+    if (u.status === "red") return "#ef4444";     // Không đạt tiến độ
+    if (u.status === "yellow") return "#eab308";  // Chậm tiến độ
+    return "#22c55e";                             // Đang thi công
+  });
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Tiến độ (%)",
+        data: values,
+        backgroundColor: colors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.raw}%`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: {
+            display: true,
+            text: "Phần trăm tiến độ"
+          }
+        },
+        x: {
+          ticks: {
+            autoSkip: false,
+            maxRotation: 45,
+            minRotation: 30
+          }
+        }
+      }
+    }
+  });
+}
