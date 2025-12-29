@@ -154,23 +154,35 @@ function renderLegend(units) {
   box.innerHTML = "";
 
   units.forEach(u => {
-    const color =
-      u.status === "red" ? "#ef4444" :
-      u.status === "yellow" ? "#eab308" : "#22c55e";
+    if (!u.byTeam) return;
 
-    box.innerHTML += `
-      <div class="legend-item">
-        <div class="legend-color" style="background:${color}"></div>
-        <div>
-          <div><strong>${u.maCan}</strong></div>
-          <div style="font-size:.7rem;opacity:.8">
-            ${u.actualCong} công
+    Object.keys(u.byTeam).forEach(team => {
+      const cong = u.byTeam[team];
+
+      // Bỏ các tổ 0 công
+      if (!cong || cong <= 0) return;
+
+      // Màu theo trạng thái căn
+      const color =
+        u.status === "red" ? "#ef4444" :
+        u.status === "yellow" ? "#eab308" :
+        "#22c55e";
+
+      box.innerHTML += `
+        <div class="legend-item">
+          <div class="legend-color" style="background:${color}"></div>
+          <div>
+            <div><strong>TỔ ${team.toUpperCase()}</strong> – ${u.maCan}</div>
+            <div style="font-size:.7rem;opacity:.8">
+              ${cong} công
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `;
+    });
   });
 }
+
 
 /* =========================================================
    CARD TỪNG CĂN (ĐÚNG 2 DÒNG + BIỂU ĐỒ NGANG)
