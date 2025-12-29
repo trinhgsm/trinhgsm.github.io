@@ -217,6 +217,7 @@ function renderDetailLegendByUnit(units) {
 
   box.innerHTML = html;
 }
+
 /* =========================================================
    HÀNG 2 – SIDEBAR: THEO TỔ
    ========================================================= */
