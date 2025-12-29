@@ -1,11 +1,9 @@
 const API_URL =
   "https://script.google.com/macros/s/AKfycbzIAc6J2sYYj5GRmdGGAAVvXewyuwHVMQHMk_5kiCKaDU37MjNzu643FGOZDp80Q0oBEw/exec?action=dashboard";
 
-/* ================= GLOBAL ================= */
 let unitOverviewChart = null;
-let projectChart = null;
 
-/* ================= LOAD DASHBOARD ================= */
+/* LOAD */
 async function loadDashboard() {
   const res = await fetch(API_URL);
   const json = await res.json();
@@ -13,24 +11,17 @@ async function loadDashboard() {
   document.getElementById("genTime").textContent =
     "Cập nhật: " + new Date(json.generatedAt).toLocaleString();
 
-  // 1. Card tổng dự án
   renderProjectCard(json.project);
 
-  // 2. Card từng căn
-  const cardsBox = document.getElementById("unitCards");
-  cardsBox.innerHTML = "";
+  const box = document.getElementById("unitCards");
+  box.innerHTML = "";
 
-  json.units.forEach(u => {
-    cardsBox.appendChild(buildCard(u));
-  });
+  json.units.forEach(u => box.appendChild(buildCard(u)));
 
-  // 3. Biểu đồ tổng quan (vẽ 1 lần, sau cùng)
-  setTimeout(() => {
-    renderUnitOverview(json.units);
-  }, 0);
+  setTimeout(() => renderUnitOverview(json.units), 0);
 }
 
-/* ================= BUILD CARD ================= */
+/* CARD CĂN */
 function buildCard(u) {
   const card = document.createElement("div");
   card.className = "card";
@@ -39,178 +30,125 @@ function buildCard(u) {
     <h2>${u.maCan}</h2>
 
     <div class="line">
-      <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
-      <span class="date">Hoàn thành ${fmtDate(u.end)}</span>
+      <span>Bắt đầu ${fmtDate(u.start)}</span>
+      <span>Hoàn thành ${fmtDate(u.end)}</span>
     </div>
 
     <div class="line">
-      <span class="work">
-        Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
-      </span>
-      <span class="status ${u.status}">
-        ${u.statusText || textStatus(u.status)}
-      </span>
+      <span>Công: ${u.actualCong}/${u.plannedCong} (${u.percent}%)</span>
+      <span class="status ${u.status}">${u.statusText}</span>
     </div>
 
-    ${(u.warnCong || u.warnCost) ? `
-      <div class="warning">
-        ${u.warnCong ? "⚠️ Sắp vượt dự tính công" : ""}
-        ${u.warnCost ? " ⚠️ Sắp vượt dự tính chi phí" : ""}
-      </div>
-    ` : ""}
-
-    <canvas class="teamChart" height="160"></canvas>
-
-    <div class="meta">Chi phí (VNĐ)</div>
-    <canvas class="costChart" height="120"></canvas>
+    <div class="unit-layout">
+      <div class="unit-alerts"></div>
+      <div class="unit-chart"><canvas></canvas></div>
+      <div class="unit-legend"></div>
+    </div>
   `;
 
-  drawTeamChart(card.querySelector(".teamChart"), u.byTeam);
-  drawCostChart(card.querySelector(".costChart"), u.plannedCost, u.actualCost);
+  renderAlerts(card, u);
+  drawTeamChart(
+    card.querySelector("canvas"),
+    u.byTeam,
+    card.querySelector(".unit-legend")
+  );
 
   return card;
 }
 
-/* ================= BIỂU ĐỒ THEO TỔ ================= */
-function drawTeamChart(canvas, byTeam) {
-  if (!canvas) return;
+/* ALERT */
+function renderAlerts(card, u) {
+  const arr = [];
+  if (u.status === "yellow") arr.push("⚠ Rủi ro tiến độ");
+  if (u.status === "red") arr.push("⛔ Không đạt tiến độ");
+  if (u.warnCong) arr.push("⚠ Sắp vượt công");
+  if (u.warnCost) arr.push("⚠ Sắp vượt chi phí");
+
+  card.querySelector(".unit-alerts").innerHTML =
+    arr.length ? arr.map(a => `<div>${a}</div>`).join("") :
+    "<div style='opacity:.4'>Không có cảnh báo</div>";
+}
+
+/* COLOR */
+function genColors(n) {
+  return Array.from({ length: n }, (_, i) =>
+    `hsl(${Math.round(i * 360 / n)},70%,55%)`
+  );
+}
+
+/* DOUGHNUT */
+function drawTeamChart(canvas, byTeam, legendBox) {
+  const labels = Object.keys(byTeam);
+  const values = Object.values(byTeam);
+  const colors = genColors(labels.length);
 
   new Chart(canvas, {
     type: "doughnut",
     data: {
-      labels: Object.keys(byTeam),
-      datasets: [{
-        data: Object.values(byTeam),
-        backgroundColor: [
-          "#38bdf8", "#22c55e", "#eab308", "#ef4444", "#a855f7"
-        ]
-      }]
+      labels,
+      datasets: [{ data: values, backgroundColor: colors }]
     },
     options: {
-      responsive: true,
-      plugins: { legend: { position: "bottom" } }
+      plugins: { legend: { display: false } }
     }
+  });
+
+  legendBox.innerHTML = "";
+  labels.forEach((n, i) => {
+    legendBox.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-color" style="background:${colors[i]}"></div>
+        <div class="legend-text">${n}<br>${values[i]} công</div>
+      </div>
+    `;
   });
 }
 
-/* ================= BIỂU ĐỒ CHI PHÍ ================= */
-function drawCostChart(canvas, planned, actual) {
-  if (!canvas) return;
-
-  new Chart(canvas, {
-    type: "bar",
-    data: {
-      labels: ["Dự tính", "Đã chi"],
-      datasets: [{
-        data: [planned, actual],
-        backgroundColor: [
-          "#38bdf8",
-          actual > planned ? "#ef4444" : "#22c55e"
-        ]
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-}
-
-/* ================= BIỂU ĐỒ TỔNG QUAN ================= */
+/* OVERVIEW */
 function renderUnitOverview(units) {
-  const canvas = document.getElementById("unitOverviewChart");
-  if (!canvas) return;
+  const c = document.getElementById("unitOverviewChart");
+  if (unitOverviewChart) unitOverviewChart.destroy();
 
-  if (unitOverviewChart) {
-    unitOverviewChart.destroy();
-  }
-
-  unitOverviewChart = new Chart(canvas, {
+  unitOverviewChart = new Chart(c, {
     type: "bar",
     data: {
       labels: units.map(u => u.maCan),
       datasets: [{
-        label: "Tiến độ (%)",
         data: units.map(u => u.percent),
-        backgroundColor: units.map(u => {
-          if (u.status === "red") return "#ef4444";
-          if (u.status === "yellow") return "#eab308";
-          return "#22c55e";
-        })
+        backgroundColor: units.map(u =>
+          u.status === "red" ? "#ef4444" :
+          u.status === "yellow" ? "#eab308" : "#22c55e"
+        )
       }]
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false, // ⬅️ QUAN TRỌNG
+      maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, max: 100 },
-        x: {
-          ticks: {
-            autoSkip: true,
-            maxRotation: 45,
-            minRotation: 30
-          }
-        }
-      }
+      scales: { y: { beginAtZero: true, max: 100 } }
     }
   });
 }
 
-/* ================= CARD TỔNG DỰ ÁN ================= */
+/* PROJECT */
 function renderProjectCard(p) {
-  const box = document.getElementById("projectCard");
-  box.innerHTML = `
-    <div class="card">
-      <h2>TỔNG DỰ ÁN</h2>
-      <div class="meta">
-        Công: ${p.actualCong} / ${p.plannedCong} (${p.percent}%)
-      </div>
-      <div class="meta status ${p.status}">
-        ${textStatus(p.status)}
-      </div>
-      <canvas id="projectChart" height="180"></canvas>
-    </div>
+  document.getElementById("projectCard").innerHTML = `
+    <h2>TỔNG DỰ ÁN</h2>
+    <div class="line">Công: ${p.actualCong}/${p.plannedCong} (${p.percent}%)</div>
+    <div class="status ${p.status}">${textStatus(p.status)}</div>
+    <canvas id="projectChart"></canvas>
   `;
-
-  if (projectChart) projectChart.destroy();
-
-  projectChart = new Chart(
-    document.getElementById("projectChart"),
-    {
-      type: "doughnut",
-      data: {
-        labels: ["Đã làm", "Còn lại"],
-        datasets: [{
-          data: [
-            p.actualCong,
-            Math.max(0, p.plannedCong - p.actualCong)
-          ],
-          backgroundColor: [
-            p.status === "red" ? "#ef4444" :
-            p.status === "yellow" ? "#eab308" : "#22c55e",
-            "#1f2937"
-          ]
-        }]
-      },
-      options: { plugins: { legend: { position: "bottom" } } }
-    }
-  );
 }
 
-/* ================= HELPER ================= */
+/* UTIL */
 function fmtDate(d) {
   if (!d) return "?";
-  const [y, m, day] = d.split("-");
-  return `${day}-${m}-${y}`;
+  const [y,m,dd] = d.split("-");
+  return `${dd}-${m}-${y}`;
 }
-
 function textStatus(s) {
-  if (s === "red") return "Không đạt tiến độ";
-  if (s === "yellow") return "Chậm tiến độ";
-  return "Đang thi công";
+  return s === "red" ? "Không đạt" :
+         s === "yellow" ? "Chậm" : "Đang làm";
 }
 
-/* ================= START ================= */
 loadDashboard();
