@@ -148,3 +148,7 @@ footer {
     max-height: none;
   }
 }
+/* cho phần chiếm 2 cột */
+.col-span-2 {
+  grid-column: span 2;
+}
