@@ -7,7 +7,9 @@
   --red: #ef4444;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -16,6 +18,7 @@ body {
   font-family: system-ui, sans-serif;
 }
 
+/* ===== HEADER ===== */
 .top {
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
@@ -24,13 +27,12 @@ body {
   align-items: center;
 }
 
+/* ===== BOARD: CHỈ LÀ CONTAINER ===== */
 #board {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px,1fr));
-  gap: 12px;
   padding: 12px;
 }
 
+/* ===== CARD CHUNG ===== */
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -39,26 +41,16 @@ body {
 }
 
 .card h2 {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   font-size: 1rem;
 }
 
-.meta {
-  font-size: .75rem;
-  opacity: .8;
-  margin-bottom: 6px;
-}
-
+/* ===== STATUS ===== */
 .status.green { color: var(--green); }
 .status.yellow { color: var(--yellow); }
 .status.red { color: var(--red); }
 
-/* MOBILE: 1 card / màn */
-@media (max-width: 768px) {
-  #board {
-    grid-template-columns: 1fr;
-  }
-}
+/* ===== DÒNG THÔNG TIN ===== */
 .line {
   display: flex;
   align-items: center;
@@ -85,13 +77,18 @@ body {
   flex: 0 0 auto;
   font-weight: 600;
 }
+
+/* ===== CẢNH BÁO ===== */
 .warning {
   font-size: 0.7rem;
   color: #facc15;
-  margin-top: 2px;
+  margin-top: 4px;
   white-space: nowrap;
 }
-/* ===== HÀNG TRÊN PC ===== */
+
+/* =====================================================
+   HÀNG TRÊN (PC): TỔNG DỰ ÁN + TỔNG QUAN TIẾN ĐỘ
+   ===================================================== */
 .top-row {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -100,21 +97,21 @@ body {
   align-items: stretch;
 }
 
-/* ===== CARD TRÊN ===== */
+/* ÉP 2 CARD CAO BẰNG NHAU */
 .top-card {
   display: flex;
   flex-direction: column;
-  min-height: 360px;   /* ⬅️ QUYẾT ĐỊNH */
+  min-height: 380px;
 }
 
-/* ===== KHUNG BIỂU ĐỒ ===== */
+/* ===== KHUNG BIỂU ĐỒ TỔNG QUAN ===== */
 .chart-wrap {
   position: relative;
   flex: 1;
-  min-height: 260px;   /* ⬅️ QUYẾT ĐỊNH */
+  min-height: 260px;
 }
 
-/* canvas phải ăn full khung */
+/* Canvas LUÔN chiếm trọn khung */
 .chart-wrap canvas {
   position: absolute;
   inset: 0;
@@ -122,7 +119,18 @@ body {
   height: 100% !important;
 }
 
-/* ===== MOBILE ===== */
+/* =====================================================
+   GRID CARD CÁC CĂN
+   ===================================================== */
+#unitCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+}
+
+/* =====================================================
+   MOBILE / TABLET
+   ===================================================== */
 @media (max-width: 900px) {
   .top-row {
     grid-template-columns: 1fr;
