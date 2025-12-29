@@ -190,7 +190,10 @@ function renderUnitCards(units) {
 function renderDetailLegendByUnit(units) {
   const box = document.getElementById("sidebarDetail");
   if (!box) return;
-units.forEach(u => {
+
+  let html = `<h3>PHÂN BỔ THEO CĂN</h3>`;
+
+  units.forEach(u => {
     const color =
       u.status === "red" ? "#ef4444" :
       u.status === "yellow" ? "#eab308" :
