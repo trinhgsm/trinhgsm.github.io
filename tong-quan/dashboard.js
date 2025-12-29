@@ -152,6 +152,21 @@ function renderUnitOverview(units) {
     }
   });
 }
+options: {
+  responsive: true,
+  maintainAspectRatio: false, // ⬅️ BẮT BUỘC
+  plugins: { legend: { display: false } },
+  scales: {
+    y: { beginAtZero: true, max: 100 },
+    x: {
+      ticks: {
+        autoSkip: true,        // ⬅️ tự skip khi nhiều căn
+        maxRotation: 45,
+        minRotation: 30
+      }
+    }
+  }
+}
 
 /* ================= CARD TỔNG DỰ ÁN ================= */
 function renderProjectCard(p) {
