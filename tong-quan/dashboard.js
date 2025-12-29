@@ -1,46 +1,56 @@
 /************************************************************
- * DUKICO – DASHBOARD TIẾN ĐỘ
- * FULL JS – TÁCH SIDEBAR THEO HÀNG
+ * DUKICO DASHBOARD – JS RESET SẠCH
+ * An toàn – không chết JS – dễ mở rộng
  ************************************************************/
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbzIAc6J2sYYj5GRmdGGAAVvXewyuwHVMQHMk_5kiCKaDU37MjNzu643FGOZDp80Q0oBEw/exec?action=dashboard";
 
-/* ===== GLOBAL CHART ===== */
 let projectChart = null;
 let unitOverviewChart = null;
 
 /* =========================================================
-   LOAD DASHBOARD
+   LOAD
    ========================================================= */
 async function loadDashboard() {
-  const res = await fetch(API_URL);
-  const json = await res.json();
+  try {
+    const res = await fetch(API_URL);
+    const data = await res.json();
 
-  /* TIME */
-  const gen = document.getElementById("genTime");
-  if (gen) {
-    gen.textContent =
-      "Cập nhật: " + new Date(json.generatedAt).toLocaleString();
+    if (!data || !data.units) {
+      console.error("Không có dữ liệu units");
+      return;
+    }
+
+    updateTime(data.generatedAt);
+
+    renderProject(data.project);
+    renderOverviewChart(data.units);
+    renderWarnings(data.units);
+    renderUnitCards(data.units);
+    renderSidebarDetail(data.units);
+
+  } catch (e) {
+    console.error("Lỗi loadDashboard:", e);
   }
-
-  /* ===== HÀNG 1 ===== */
-  renderProjectCard(json.project);
-  renderUnitOverview(json.units);
-  renderSummaryWarnings(json.units);
-
-  /* ===== HÀNG 2 ===== */
-  renderUnitCards(json.units);
-  renderDetailLegendByUnit(json.units);
-  renderDetailLegendByTeam(json.units);
 }
 
 /* =========================================================
-   HÀNG 1 – TỔNG DỰ ÁN
+   TIME
    ========================================================= */
-function renderProjectCard(p) {
+function updateTime(ts) {
+  const el = document.getElementById("genTime");
+  if (el) {
+    el.textContent = "Cập nhật: " + new Date(ts).toLocaleString();
+  }
+}
+
+/* =========================================================
+   PROJECT CARD
+   ========================================================= */
+function renderProject(p) {
   const box = document.getElementById("projectCard");
-  if (!box) return;
+  if (!box || !p) return;
 
   box.innerHTML = `
     <h2>TỔNG DỰ ÁN</h2>
@@ -52,35 +62,35 @@ function renderProjectCard(p) {
     </div>
   `;
 
+  const canvas = document.getElementById("projectChart");
+  if (!canvas) return;
+
   if (projectChart) projectChart.destroy();
 
-  projectChart = new Chart(
-    document.getElementById("projectChart"),
-    {
-      type: "doughnut",
-      data: {
-        labels: ["Đã làm", "Còn lại"],
-        datasets: [{
-          data: [
-            p.actualCong,
-            Math.max(0, p.plannedCong - p.actualCong)
-          ],
-          backgroundColor: ["#22c55e", "#1f2937"]
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { position: "bottom" } }
-      }
+  projectChart = new Chart(canvas, {
+    type: "doughnut",
+    data: {
+      labels: ["Đã làm", "Còn lại"],
+      datasets: [{
+        data: [
+          p.actualCong || 0,
+          Math.max(0, (p.plannedCong || 0) - (p.actualCong || 0))
+        ],
+        backgroundColor: ["#22c55e", "#1f2937"]
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: "bottom" } }
     }
-  );
+  });
 }
 
 /* =========================================================
-   HÀNG 1 – BIỂU ĐỒ TỔNG QUAN
+   OVERVIEW BAR CHART
    ========================================================= */
-function renderUnitOverview(units) {
+function renderOverviewChart(units) {
   const canvas = document.getElementById("unitOverviewChart");
   if (!canvas) return;
 
@@ -91,8 +101,7 @@ function renderUnitOverview(units) {
     data: {
       labels: units.map(u => u.maCan),
       datasets: [{
-        label: "Tiến độ (%)",
-        data: units.map(u => u.percent),
+        data: units.map(u => u.percent || 0),
         backgroundColor: units.map(u =>
           u.status === "red" ? "#ef4444" :
           u.status === "yellow" ? "#eab308" :
@@ -106,97 +115,93 @@ function renderUnitOverview(units) {
       plugins: { legend: { display: false } },
       scales: {
         y: { beginAtZero: true, max: 100 },
-        x: {
-          ticks: {
-            autoSkip: true,
-            maxRotation: 45,
-            minRotation: 30
-          }
-        }
+        x: { ticks: { autoSkip: true, maxRotation: 45 } }
       }
     }
   });
 }
 
 /* =========================================================
-   HÀNG 1 – SIDEBAR: CẢNH BÁO
+   WARNINGS (RED → YELLOW → GREEN)
    ========================================================= */
-function renderSummaryWarnings(units) {
+function renderWarnings(units) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  // phân nhóm theo màu
-  const red = [];
-  const yellow = [];
-  const green = [];
+  const order = { red: 3, yellow: 2, green: 1 };
 
-  units.forEach(u => {
-    if (u.status === "red") red.push(u);
-    else if (u.status === "yellow") yellow.push(u);
-    else green.push(u);
+  const list = [...units].sort((a, b) => {
+    const r = order[b.status] - order[a.status];
+    if (r !== 0) return r;
+    return (a.percent || 0) - (b.percent || 0);
   });
 
-  // sắp xếp trong từng nhóm (nguy hiểm hơn trước)
-  const sortRisk = (a, b) => a.percent - b.percent;
-  red.sort(sortRisk);
-  yellow.sort(sortRisk);
-  green.sort(sortRisk);
-
-  const ordered = [...red, ...yellow, ...green];
-
   const MAX = 5;
-  const rows = [];
-
-  for (let i = 0; i < ordered.length && rows.length < MAX; i++) {
-    const u = ordered[i];
-    rows.push(`
-      <div class="warning-item ${u.status}">
-        • <strong>${u.maCan}</strong> – ${u.statusText}
-      </div>
-    `);
-  }
-
-  box.innerHTML = rows.join("");
+  box.innerHTML = list.slice(0, MAX).map(u => `
+    <div class="warning-item ${u.status}">
+      • <strong>${u.maCan}</strong> – ${u.statusText || ""}
+    </div>
+  `).join("");
 }
-
-
-  // nếu vẫn thiếu dòng → đổ thêm căn bình thường
-  if (rows.length < MAX) {
-    units.forEach(u => {
-      if (rows.length >= MAX) return;
-      if (list.includes(u)) return;
-
-      rows.push(`
-        <div class="warning-item green">
-          • <strong>${u.maCan}</strong> – Đang thi công
-        </div>
-      `);
-    });
-  }
-
-  box.innerHTML = rows.join("");
-}
-
 
 /* =========================================================
-   HÀNG 2 – CARD CÁC CĂN
+   UNIT CARDS
    ========================================================= */
 function renderUnitCards(units) {
   const box = document.getElementById("unitCards");
   if (!box) return;
 
   box.innerHTML = "";
-  units.forEach(u => box.appendChild(buildUnitCard(u)));
+
+  units.forEach(u => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <h2>${u.maCan}</h2>
+
+      <div style="font-size:.75rem;opacity:.85">
+        Bắt đầu: ${fmtDate(u.start)} |
+        Hoàn thành: ${fmtDate(u.end)}
+      </div>
+
+      <div style="font-size:.8rem;margin-bottom:6px">
+        Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
+        |
+        <span class="status ${u.status}">
+          ${u.statusText || ""}
+        </span>
+      </div>
+
+      <div style="display:flex;gap:10px">
+        <div style="flex:1">
+          <div class="chart-wrap" style="height:140px">
+            <canvas class="costChart"></canvas>
+          </div>
+        </div>
+        <div style="flex:1">
+          <div class="chart-wrap" style="height:140px">
+            <canvas class="teamChart"></canvas>
+          </div>
+        </div>
+      </div>
+    `;
+
+    box.appendChild(card);
+
+    drawCostChart(card.querySelector(".costChart"), u.plannedCost, u.actualCost);
+    drawTeamChart(card.querySelector(".teamChart"), u.byTeam);
+  });
 }
 
 /* =========================================================
-   HÀNG 2 – SIDEBAR: THEO CĂN
+   SIDEBAR DETAIL – 1 HÀM DUY NHẤT
    ========================================================= */
-function renderDetailLegendByUnit(units) {
+function renderSidebarDetail(units) {
   const box = document.getElementById("sidebarDetail");
   if (!box) return;
 
-  let html = `<h3>PHÂN BỔ THEO CĂN</h3>`;
+  let html = "";
 
   units.forEach(u => {
     const color =
@@ -213,99 +218,29 @@ function renderDetailLegendByUnit(units) {
         </div>
       </div>
     `;
-  });
 
-  box.innerHTML = html;
-}
+    if (u.byTeam) {
+      Object.keys(u.byTeam).forEach(team => {
+        const cong = u.byTeam[team];
+        if (!cong) return;
 
-/* =========================================================
-   HÀNG 2 – SIDEBAR: THEO TỔ
-   ========================================================= */
-function renderDetailLegendByTeam(units) {
-  const box = document.getElementById("sidebarDetail");
-  if (!box) return;
-
-  let html = box.innerHTML + `<h3 style="margin-top:8px">PHÂN BỔ THEO TỔ</h3>`;
-
-  units.forEach(u => {
-    if (!u.byTeam) return;
-
-    Object.keys(u.byTeam).forEach(team => {
-      const cong = u.byTeam[team];
-      if (!cong || cong <= 0) return;
-
-      html += `
-        <div class="legend-item">
-          <div class="legend-color"></div>
-          <div>
-            <strong>TỔ ${team.toUpperCase()}</strong> – ${u.maCan}<br>
-            ${cong} công
+        html += `
+          <div class="legend-item" style="opacity:.7;padding-left:14px">
+            <div class="legend-color"></div>
+            <div>
+              Tổ ${team.toUpperCase()} – ${cong} công
+            </div>
           </div>
-        </div>
-      `;
-    });
+        `;
+      });
+    }
   });
 
   box.innerHTML = html;
 }
 
 /* =========================================================
-   CARD TỪNG CĂN
-   ========================================================= */
-function buildUnitCard(u) {
-  const card = document.createElement("div");
-  card.className = "card";
-
-  card.innerHTML = `
-    <h2>${u.maCan}</h2>
-
-    <div style="font-size:.75rem;opacity:.85">
-      Bắt đầu: ${fmtDate(u.start)} |
-      Hoàn thành: ${fmtDate(u.end)}
-    </div>
-
-    <div style="font-size:.8rem;margin-bottom:6px">
-      Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
-      |
-      <span style="color:${
-        u.status === "red" ? "#ef4444" :
-        u.status === "yellow" ? "#eab308" :
-        "#22c55e"
-      }">
-        ${u.statusText}
-      </span>
-    </div>
-
-    <div style="display:flex;gap:10px">
-      <div style="flex:1">
-        <div class="chart-wrap" style="height:140px">
-          <canvas class="costChart"></canvas>
-        </div>
-      </div>
-      <div style="flex:1">
-        <div class="chart-wrap" style="height:140px">
-          <canvas class="teamChart"></canvas>
-        </div>
-      </div>
-    </div>
-  `;
-
-  drawCostChart(
-    card.querySelector(".costChart"),
-    u.plannedCost,
-    u.actualCost
-  );
-
-  drawTeamChart(
-    card.querySelector(".teamChart"),
-    u.byTeam
-  );
-
-  return card;
-}
-
-/* =========================================================
-   BIỂU ĐỒ THEO TỔ
+   CHART HELPERS
    ========================================================= */
 function drawTeamChart(canvas, byTeam) {
   if (!canvas || !byTeam) return;
@@ -330,9 +265,6 @@ function drawTeamChart(canvas, byTeam) {
   });
 }
 
-/* =========================================================
-   BIỂU ĐỒ CHI TIÊU
-   ========================================================= */
 function drawCostChart(canvas, planned, actual) {
   if (!canvas) return;
 
@@ -341,7 +273,7 @@ function drawCostChart(canvas, planned, actual) {
     data: {
       labels: ["Dự tính", "Đã chi"],
       datasets: [{
-        data: [planned, actual],
+        data: [planned || 0, actual || 0],
         backgroundColor: [
           "#38bdf8",
           actual > planned ? "#ef4444" : "#22c55e"
@@ -352,15 +284,13 @@ function drawCostChart(canvas, planned, actual) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true }
-      }
+      scales: { y: { beginAtZero: true } }
     }
   });
 }
 
 /* =========================================================
-   FORMAT DATE
+   UTIL
    ========================================================= */
 function fmtDate(d) {
   if (!d) return "?";
