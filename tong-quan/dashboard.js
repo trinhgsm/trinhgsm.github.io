@@ -15,7 +15,6 @@ async function loadDashboard() {
     board.appendChild(buildCard(unit));
   });
 }
-
 function buildCard(u) {
   const card = document.createElement("div");
   card.className = "card";
@@ -23,32 +22,38 @@ function buildCard(u) {
   card.innerHTML = `
     <h2>${u.maCan}</h2>
 
-    <div class="meta">
-      ${u.start || "?"} → ${u.end || "?"}
+    <!-- DÒNG 1: THỜI GIAN -->
+    <div class="line">
+      <span class="date">
+        Ngày bắt đầu ${fmtDate(u.start)}
+      </span>
+      <span class="date">
+        Ngày hoàn thành ${fmtDate(u.end)}
+      </span>
     </div>
 
-    <div class="meta">
-      Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
-    </div>
-
-    <div class="meta status ${u.status}">
-      Trạng thái: ${textStatus(u.status)}
+    <!-- DÒNG 2: CÔNG + TRẠNG THÁI -->
+    <div class="line">
+      <span class="work">
+        Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
+      </span>
+      <span class="status ${u.status}">
+        Trạng thái: ${textStatus(u.status)}
+      </span>
     </div>
 
     <!-- BIỂU ĐỒ CÔNG THEO TỔ -->
     <canvas class="teamChart" height="160"></canvas>
 
-    <!-- ⭐ BIỂU ĐỒ CHI PHÍ -->
-    <div class="meta">
-      Chi phí (VNĐ)
-    </div>
+    <!-- BIỂU ĐỒ CHI PHÍ -->
+    <div class="meta">Chi phí (VNĐ)</div>
     <canvas class="costChart" height="120"></canvas>
   `;
 
-  // biểu đồ tổ (cũ)
+  // Biểu đồ công theo tổ
   drawChart(card.querySelector(".teamChart"), u.byTeam);
 
-  // ⭐ biểu đồ chi phí (mới)
+  // Biểu đồ chi phí
   drawCostChart(
     card.querySelector(".costChart"),
     u.plannedCost,
@@ -57,7 +62,6 @@ function buildCard(u) {
 
   return card;
 }
-
 
 function drawChart(canvas, byTeam) {
   const labels = Object.keys(byTeam);
