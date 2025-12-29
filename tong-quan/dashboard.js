@@ -2,9 +2,8 @@ const API_URL =
   "https://script.google.com/macros/s/AKfycbzIAc6J2sYYj5GRmdGGAAVvXewyuwHVMQHMk_5kiCKaDU37MjNzu643FGOZDp80Q0oBEw/exec?action=dashboard";
 
 let unitOverviewChart = null;
-let projectChart = null;
 
-/* LOAD DASHBOARD */
+/* LOAD */
 async function loadDashboard() {
   const res = await fetch(API_URL);
   const json = await res.json();
@@ -14,19 +13,15 @@ async function loadDashboard() {
 
   renderProjectCard(json.project);
 
-  const cardsBox = document.getElementById("unitCards");
-  cardsBox.innerHTML = "";
+  const box = document.getElementById("unitCards");
+  box.innerHTML = "";
 
-  json.units.forEach(u => {
-    cardsBox.appendChild(buildCard(u));
-  });
+  json.units.forEach(u => box.appendChild(buildCard(u)));
 
-  setTimeout(() => {
-    renderUnitOverview(json.units);
-  }, 0);
+  setTimeout(() => renderUnitOverview(json.units), 0);
 }
 
-/* BUILD CARD */
+/* CARD CĂN */
 function buildCard(u) {
   const card = document.createElement("div");
   card.className = "card";
@@ -40,28 +35,20 @@ function buildCard(u) {
     </div>
 
     <div class="line">
-      <span>
-        Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
-      </span>
-      <span class="status ${u.status}">
-        ${u.statusText}
-      </span>
+      <span>Công: ${u.actualCong}/${u.plannedCong} (${u.percent}%)</span>
+      <span class="status ${u.status}">${u.statusText}</span>
     </div>
 
     <div class="unit-layout">
       <div class="unit-alerts"></div>
-
-      <div class="unit-chart">
-        <canvas></canvas>
-      </div>
-
+      <div class="unit-chart"><canvas></canvas></div>
       <div class="unit-legend"></div>
     </div>
   `;
 
   renderAlerts(card, u);
   drawTeamChart(
-    card.querySelector(".unit-chart canvas"),
+    card.querySelector("canvas"),
     u.byTeam,
     card.querySelector(".unit-legend")
   );
@@ -69,28 +56,27 @@ function buildCard(u) {
   return card;
 }
 
-/* ALERTS */
+/* ALERT */
 function renderAlerts(card, u) {
-  const alerts = [];
-  if (u.status === "yellow") alerts.push("⚠ Rủi ro tiến độ");
-  if (u.status === "red") alerts.push("⛔ Không đạt tiến độ");
-  if (u.warnCong) alerts.push("⚠ Sắp vượt dự tính công");
-  if (u.warnCost) alerts.push("⚠ Sắp vượt dự tính chi phí");
+  const arr = [];
+  if (u.status === "yellow") arr.push("⚠ Rủi ro tiến độ");
+  if (u.status === "red") arr.push("⛔ Không đạt tiến độ");
+  if (u.warnCong) arr.push("⚠ Sắp vượt công");
+  if (u.warnCost) arr.push("⚠ Sắp vượt chi phí");
 
-  const box = card.querySelector(".unit-alerts");
-  box.innerHTML = alerts.length
-    ? alerts.map(a => `<div>${a}</div>`).join("")
-    : "<div style='opacity:.4'>Không có cảnh báo</div>";
+  card.querySelector(".unit-alerts").innerHTML =
+    arr.length ? arr.map(a => `<div>${a}</div>`).join("") :
+    "<div style='opacity:.4'>Không có cảnh báo</div>";
 }
 
-/* COLOR GEN */
+/* COLOR */
 function genColors(n) {
   return Array.from({ length: n }, (_, i) =>
     `hsl(${Math.round(i * 360 / n)},70%,55%)`
   );
 }
 
-/* DOUGHNUT + LEGEND */
+/* DOUGHNUT */
 function drawTeamChart(canvas, byTeam, legendBox) {
   const labels = Object.keys(byTeam);
   const values = Object.values(byTeam);
@@ -100,10 +86,7 @@ function drawTeamChart(canvas, byTeam, legendBox) {
     type: "doughnut",
     data: {
       labels,
-      datasets: [{
-        data: values,
-        backgroundColor: colors
-      }]
+      datasets: [{ data: values, backgroundColor: colors }]
     },
     options: {
       plugins: { legend: { display: false } }
@@ -111,26 +94,22 @@ function drawTeamChart(canvas, byTeam, legendBox) {
   });
 
   legendBox.innerHTML = "";
-  labels.forEach((name, i) => {
+  labels.forEach((n, i) => {
     legendBox.innerHTML += `
       <div class="legend-item">
         <div class="legend-color" style="background:${colors[i]}"></div>
-        <div class="legend-text">
-          ${name}<br>${values[i]} công
-        </div>
+        <div class="legend-text">${n}<br>${values[i]} công</div>
       </div>
     `;
   });
 }
 
-/* OVERVIEW BAR */
+/* OVERVIEW */
 function renderUnitOverview(units) {
-  const canvas = document.getElementById("unitOverviewChart");
-  if (!canvas) return;
-
+  const c = document.getElementById("unitOverviewChart");
   if (unitOverviewChart) unitOverviewChart.destroy();
 
-  unitOverviewChart = new Chart(canvas, {
+  unitOverviewChart = new Chart(c, {
     type: "bar",
     data: {
       labels: units.map(u => u.maCan),
@@ -151,49 +130,25 @@ function renderUnitOverview(units) {
   });
 }
 
-/* PROJECT CARD */
+/* PROJECT */
 function renderProjectCard(p) {
-  const box = document.getElementById("projectCard");
-  box.innerHTML = `
+  document.getElementById("projectCard").innerHTML = `
     <h2>TỔNG DỰ ÁN</h2>
-    <div class="line">
-      Công: ${p.actualCong} / ${p.plannedCong} (${p.percent}%)
-    </div>
-    <div class="status ${p.status}">
-      ${textStatus(p.status)}
-    </div>
+    <div class="line">Công: ${p.actualCong}/${p.plannedCong} (${p.percent}%)</div>
+    <div class="status ${p.status}">${textStatus(p.status)}</div>
     <canvas id="projectChart"></canvas>
   `;
-
-  if (projectChart) projectChart.destroy();
-
-  projectChart = new Chart(
-    document.getElementById("projectChart"),
-    {
-      type: "doughnut",
-      data: {
-        datasets: [{
-          data: [p.actualCong, p.plannedCong - p.actualCong],
-          backgroundColor: ["#22c55e", "#1f2937"]
-        }]
-      },
-      options: { plugins: { legend: { display: false } } }
-    }
-  );
 }
 
-/* HELPERS */
+/* UTIL */
 function fmtDate(d) {
   if (!d) return "?";
-  const [y, m, day] = d.split("-");
-  return `${day}-${m}-${y}`;
+  const [y,m,dd] = d.split("-");
+  return `${dd}-${m}-${y}`;
 }
-
 function textStatus(s) {
-  if (s === "red") return "Không đạt tiến độ";
-  if (s === "yellow") return "Chậm tiến độ";
-  return "Đang thi công";
+  return s === "red" ? "Không đạt" :
+         s === "yellow" ? "Chậm" : "Đang làm";
 }
 
-/* START */
 loadDashboard();
