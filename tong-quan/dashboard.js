@@ -1,11 +1,12 @@
 /************************************************************
- * DUKICO – DASHBOARD TIẾN ĐỘ (FULL – KHÓA)
+ * DUKICO – DASHBOARD TIẾN ĐỘ
+ * FULL JS – SIDEBAR ĐỘC LẬP – KHÔNG KÉO MAIN
  ************************************************************/
 
 const API_URL =
   "https://script.google.com/macros/s/AKfycbzIAc6J2sYYj5GRmdGGAAVvXewyuwHVMQHMk_5kiCKaDU37MjNzu643FGOZDp80Q0oBEw/exec?action=dashboard";
 
-/* ===== GLOBAL CHART INSTANCE ===== */
+/* ===== GLOBAL CHART ===== */
 let projectChart = null;
 let unitOverviewChart = null;
 
@@ -17,30 +18,37 @@ async function loadDashboard() {
   const json = await res.json();
 
   /* HEADER TIME */
-  document.getElementById("genTime").textContent =
-    "Cập nhật: " + new Date(json.generatedAt).toLocaleString();
+  const gen = document.getElementById("genTime");
+  if (gen) {
+    gen.textContent =
+      "Cập nhật: " + new Date(json.generatedAt).toLocaleString();
+  }
 
-  /* SUMMARY */
+  /* ===== MAIN (2 CỘT) ===== */
   renderProjectCard(json.project);
   renderUnitOverview(json.units);
 
-  /* SIDEBAR */
-  renderWarnings(json.units);
-  renderLegend(json.units);
+  /* ===== SIDEBAR (ĐỘC LẬP) ===== */
+  renderWarnings(json.units);        // cảnh báo tiến độ
+  renderLegend(json.units);          // theo căn (cũ)
+  renderTeamLegend(json.units);      // theo tổ (mới)
 
-  /* UNIT CARDS */
+  /* ===== CARD TỪNG CĂN ===== */
   const unitBox = document.getElementById("unitCards");
-  unitBox.innerHTML = "";
-  json.units.forEach(u => {
-    unitBox.appendChild(buildUnitCard(u));
-  });
+  if (unitBox) {
+    unitBox.innerHTML = "";
+    json.units.forEach(u => {
+      unitBox.appendChild(buildUnitCard(u));
+    });
+  }
 }
 
 /* =========================================================
-   TỔNG DỰ ÁN
+   TỔNG DỰ ÁN – BIỂU ĐỒ TRÒN
    ========================================================= */
 function renderProjectCard(p) {
   const box = document.getElementById("projectCard");
+  if (!box) return;
 
   box.innerHTML = `
     <h2>TỔNG DỰ ÁN</h2>
@@ -70,16 +78,15 @@ function renderProjectCard(p) {
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: { position: "bottom" }
-        }
+        maintainAspectRatio: false,
+        plugins: { legend: { position: "bottom" } }
       }
     }
   );
 }
 
 /* =========================================================
-   TỔNG QUAN TIẾN ĐỘ CÁC CĂN
+   TỔNG QUAN TIẾN ĐỘ CÁC CĂN – BIỂU ĐỒ CỘT
    ========================================================= */
 function renderUnitOverview(units) {
   const canvas = document.getElementById("unitOverviewChart");
@@ -96,15 +103,15 @@ function renderUnitOverview(units) {
         data: units.map(u => u.percent),
         backgroundColor: units.map(u =>
           u.status === "red" ? "#ef4444" :
-          u.status === "yellow" ? "#eab308" : "#22c55e"
+          u.status === "yellow" ? "#eab308" :
+          "#22c55e"
         )
       }]
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: false }
-      },
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
       scales: {
         y: {
           beginAtZero: true,
@@ -124,7 +131,7 @@ function renderUnitOverview(units) {
 }
 
 /* =========================================================
-   SIDEBAR – CẢNH BÁO
+   SIDEBAR – CẢNH BÁO TIẾN ĐỘ
    ========================================================= */
 function renderWarnings(units) {
   const box = document.getElementById("warningList");
@@ -145,10 +152,39 @@ function renderWarnings(units) {
 }
 
 /* =========================================================
-   SIDEBAR – LEGEND NÂNG CẤP
+   SIDEBAR – PHÂN BỔ THEO CĂN (GIỮ NGUYÊN)
    ========================================================= */
 function renderLegend(units) {
   const box = document.getElementById("legendList");
+  if (!box) return;
+
+  box.innerHTML = "";
+
+  units.forEach(u => {
+    const color =
+      u.status === "red" ? "#ef4444" :
+      u.status === "yellow" ? "#eab308" :
+      "#22c55e";
+
+    box.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-color" style="background:${color}"></div>
+        <div>
+          <div><strong>${u.maCan}</strong></div>
+          <div style="font-size:.7rem;opacity:.8">
+            ${u.actualCong} công
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+/* =========================================================
+   SIDEBAR – PHÂN BỔ THEO TỔ (SIDEBAR MỚI)
+   ========================================================= */
+function renderTeamLegend(units) {
+  const box = document.getElementById("teamLegendList");
   if (!box) return;
 
   box.innerHTML = "";
@@ -158,11 +194,8 @@ function renderLegend(units) {
 
     Object.keys(u.byTeam).forEach(team => {
       const cong = u.byTeam[team];
-
-      // Bỏ các tổ 0 công
       if (!cong || cong <= 0) return;
 
-      // Màu theo trạng thái căn
       const color =
         u.status === "red" ? "#ef4444" :
         u.status === "yellow" ? "#eab308" :
@@ -183,9 +216,8 @@ function renderLegend(units) {
   });
 }
 
-
 /* =========================================================
-   CARD TỪNG CĂN (ĐÚNG 2 DÒNG + BIỂU ĐỒ NGANG)
+   CARD TỪNG CĂN
    ========================================================= */
 function buildUnitCard(u) {
   const card = document.createElement("div");
@@ -195,42 +227,27 @@ function buildUnitCard(u) {
     <h2>${u.maCan}</h2>
 
     <!-- DÒNG 1: THỜI GIAN -->
-    <div style="
-      font-size:0.75rem;
-      opacity:.85;
-      margin-bottom:4px;
-      white-space:nowrap;
-    ">
+    <div style="font-size:.75rem;opacity:.85;margin-bottom:4px">
       Bắt đầu: ${fmtDate(u.start)} |
       Hoàn thành: ${fmtDate(u.end)}
     </div>
 
     <!-- DÒNG 2: CÔNG + TRẠNG THÁI -->
-    <div style="
-      font-size:0.8rem;
-      margin-bottom:8px;
-      white-space:nowrap;
-    ">
+    <div style="font-size:.8rem;margin-bottom:8px">
       Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
       |
       <span style="color:${
-        u.status === "red"
-          ? "#ef4444"
-          : u.status === "yellow"
-          ? "#eab308"
-          : "#22c55e"
+        u.status === "red" ? "#ef4444" :
+        u.status === "yellow" ? "#eab308" :
+        "#22c55e"
       }">
         ${u.statusText}
       </span>
     </div>
 
-    <!-- HÀNG BIỂU ĐỒ -->
-    <div style="
-      display:flex;
-      gap:12px;
-      align-items:stretch;
-    ">
-      <!-- BIỂU ĐỒ CHI TIÊU -->
+    <!-- BIỂU ĐỒ NGANG -->
+    <div style="display:flex;gap:12px">
+      <!-- CHI TIÊU -->
       <div style="flex:1">
         <div style="font-size:.7rem;margin-bottom:4px">
           Chi tiêu (VNĐ)
@@ -240,7 +257,7 @@ function buildUnitCard(u) {
         </div>
       </div>
 
-      <!-- BIỂU ĐỒ CÔNG -->
+      <!-- CÔNG -->
       <div style="flex:1">
         <div style="font-size:.7rem;margin-bottom:4px">
           Phân bổ công
@@ -252,7 +269,6 @@ function buildUnitCard(u) {
     </div>
   `;
 
-  /* VẼ BIỂU ĐỒ */
   drawCostChart(
     card.querySelector(".costChart"),
     u.plannedCost,
@@ -268,7 +284,7 @@ function buildUnitCard(u) {
 }
 
 /* =========================================================
-   BIỂU ĐỒ CÔNG THEO TỔ
+   BIỂU ĐỒ THEO TỔ
    ========================================================= */
 function drawTeamChart(canvas, byTeam) {
   if (!canvas || !byTeam) return;
@@ -287,9 +303,8 @@ function drawTeamChart(canvas, byTeam) {
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: false }
-      }
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } }
     }
   });
 }
@@ -314,9 +329,8 @@ function drawCostChart(canvas, planned, actual) {
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: false }
-      },
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
       scales: {
         y: {
           beginAtZero: true,
