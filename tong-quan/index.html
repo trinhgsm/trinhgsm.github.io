@@ -16,18 +16,24 @@
   <h1>DASHBOARD TỔNG QUAN</h1>
   <span id="genTime"></span>
 </header>
-
 <main id="board">
-  <section id="projectCard"></section>
 
-  <section id="overviewChart" class="card">
-    <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
-    <canvas id="unitOverviewChart" height="220"></canvas>
-  </section>
+  <!-- HÀNG TỔNG QUAN -->
+  <div class="top-row">
+    <section id="projectCard" class="top-card"></section>
 
+    <section id="overviewChart" class="card top-card">
+      <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
+      <div class="chart-wrap">
+        <canvas id="unitOverviewChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <!-- CARD TỪNG CĂN -->
   <div id="unitCards"></div>
-</main>
 
+</main>
 
 <script src="dashboard.js"></script>
 </body>
