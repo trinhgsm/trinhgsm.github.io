@@ -192,37 +192,31 @@ function renderUnitCards(units) {
 /* =========================================================
    HÀNG 2 – SIDEBAR: THEO CĂN
    ========================================================= */
-function renderDetailLegendByTeam(units) {
+function renderDetailLegendByUnit(units) {
   const box = document.getElementById("sidebarDetail");
   if (!box) return;
 
-  let html = `<div class="team-group">`;
+  let html = `<h3>PHÂN BỔ THEO CĂN</h3>`;
 
   units.forEach(u => {
-    if (!u.byTeam) return;
+    const color =
+      u.status === "red" ? "#ef4444" :
+      u.status === "yellow" ? "#eab308" :
+      "#22c55e";
 
-    Object.keys(u.byTeam).forEach(team => {
-      const cong = u.byTeam[team];
-      if (!cong || cong <= 0) return;
-
-      html += `
-        <div class="legend-item">
-          <div class="legend-color"></div>
-          <div>
-            <strong>TỔ ${team.toUpperCase()}</strong> – ${u.maCan}<br>
-            ${cong} công
-          </div>
+    html += `
+      <div class="legend-item">
+        <div class="legend-color" style="background:${color}"></div>
+        <div>
+          <strong>${u.maCan}</strong><br>
+          ${u.actualCong} công
         </div>
-      `;
-    });
+      </div>
+    `;
   });
 
-  html += `</div>`;
-
-  box.insertAdjacentHTML("beforeend", html);
+  box.innerHTML = html;
 }
-
-
 /* =========================================================
    HÀNG 2 – SIDEBAR: THEO TỔ
    ========================================================= */
