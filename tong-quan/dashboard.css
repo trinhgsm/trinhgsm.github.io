@@ -91,3 +91,50 @@ body {
   margin-top: 2px;
   white-space: nowrap;
 }
+/* ===== HÀNG TRÊN CÙNG ===== */
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr; /* tổng dự án nhỏ hơn */
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+
+/* ép 2 card cao bằng nhau */
+.top-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ===== GIỚI HẠN CHIỀU CAO BIỂU ĐỒ ===== */
+.chart-wrap {
+  flex: 1;
+  position: relative;
+  min-height: 220px;
+  max-height: 260px;
+}
+
+/* canvas luôn co trong khung */
+.chart-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ===== CARD CHUNG ===== */
+.card {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+@media (max-width: 900px) {
+  .top-row {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-wrap {
+    min-height: 200px;
+  }
+}
