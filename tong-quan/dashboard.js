@@ -25,10 +25,10 @@ function buildCard(u) {
     <!-- DÒNG 1: THỜI GIAN -->
     <div class="line">
       <span class="date">
-        Ngày bắt đầu ${fmtDate(u.start)}
+        Bắt đầu ${fmtDate(u.start)}
       </span>
       <span class="date">
-        Ngày hoàn thành ${fmtDate(u.end)}
+        Hoàn thành ${fmtDate(u.end)}
       </span>
     </div>
 
