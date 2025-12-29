@@ -196,7 +196,7 @@ function renderDetailLegendByUnit(units) {
   const box = document.getElementById("sidebarDetail");
   if (!box) return;
 
-  let html = `<h3>PHÂN BỔ THEO CĂN</h3>`;
+  let html = ``;
 
   units.forEach(u => {
     const color =
