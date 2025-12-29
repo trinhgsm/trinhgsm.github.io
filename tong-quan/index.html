@@ -2,61 +2,99 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>DUKICO | Dashboard Tiến Độ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DUKICO – Dashboard tiến độ</title>
 
-  <link rel="stylesheet" href="dashboard.css">
+  <!-- Responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="dashboard.css" />
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
-<!-- HEADER -->
-<header class="top">
-  <div class="brand">DUKICO | Dashboard Tiến độ</div>
-  <div id="genTime"></div>
-</header>
+  <!-- ================= HEADER ================= -->
+  <header class="top">
+    <h1>DUKICO – Dashboard tiến độ</h1>
+    <div id="genTime">Đang tải...</div>
+  </header>
 
-<!-- MAIN GRID -->
-<main id="board">
+  <!-- ================= DASHBOARD ================= -->
+  <div class="dashboard-layout">
 
-  <!-- SUMMARY: CỘT 1 -->
-  <section id="projectCard" class="card"></section>
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="dashboard-main">
 
-  <!-- SUMMARY: CỘT 2 -->
-  <section id="overviewChart" class="card">
-    <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
-    <div class="chart-wrap">
-      <canvas id="unitOverviewChart"></canvas>
-    </div>
-  </section>
+      <!-- ===== SUMMARY ROW (2 BIỂU ĐỒ) ===== -->
+      <section class="summary-row">
 
-  <!-- SIDEBAR: CỘT 3 (KÉO DÀI) -->
-  <aside id="rightSidebar">
+        <!-- TỔNG DỰ ÁN -->
+        <div class="card" id="projectCard">
+          <!-- JS render -->
+        </div>
 
-    <!-- WIDGET CẢNH BÁO -->
-    <div class="card warning-widget">
-      <h2>⚠️ CẢNH BÁO TIẾN ĐỘ</h2>
-      <div id="warningList"></div>
-    </div>
+        <!-- TỔNG QUAN TIẾN ĐỘ CÁC CĂN -->
+        <div class="card">
+          <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
+          <div class="chart-wrap">
+            <canvas id="unitOverviewChart"></canvas>
+          </div>
+        </div>
 
-    <!-- LEGEND NÂNG CẤP -->
-    <div class="card">
-      <h2>PHÂN BỔ CÔNG</h2>
-      <div id="legendList"></div>
-    </div>
+      </section>
 
-  </aside>
+      <!-- ===== CARD TỪNG CĂN ===== -->
+      <section id="unitCards">
+        <!-- JS render -->
+      </section>
 
-  <!-- DETAIL ZONE -->
-  <section id="unitCards"></section>
+    </main>
 
-</main>
+    <!-- ============ SIDEBAR (ĐỘC LẬP) ============ -->
+    <aside class="dashboard-sidebar">
 
-<!-- FOOTER -->
-<footer class="footer">
-  © 2025 DUKICO · Dashboard Tiến độ · v1.0
-</footer>
+      <!-- ===== SIDEBAR TOP (KHÔNG CUỘN) ===== -->
+      <div class="sidebar-top">
 
-<script src="dashboard.js"></script>
+        <!-- CẢNH BÁO -->
+        <div class="card">
+          <h2>CẢNH BÁO TIẾN ĐỘ</h2>
+          <div id="warningList"></div>
+        </div>
+
+      </div>
+
+      <!-- ===== SIDEBAR SCROLL ===== -->
+      <div class="sidebar-scroll">
+
+        <!-- PHÂN BỔ THEO CĂN (CŨ) -->
+        <div class="card">
+          <h2>PHÂN BỔ CÔNG THEO CĂN</h2>
+          <div id="legendList"></div>
+        </div>
+
+        <!-- PHÂN BỔ THEO TỔ (MỚI) -->
+        <div class="card">
+          <h2>PHÂN BỔ CÔNG THEO TỔ</h2>
+          <div id="teamLegendList"></div>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer>
+    DUKICO Dashboard © 2025 – Internal system
+  </footer>
+
+  <!-- ================= JS ================= -->
+  <script src="dashboard.js"></script>
+
 </body>
 </html>
