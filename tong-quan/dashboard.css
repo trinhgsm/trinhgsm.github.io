@@ -59,3 +59,29 @@ body {
     grid-template-columns: 1fr;
   }
 }
+.line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.line span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line .date {
+  flex: 1;
+}
+
+.line .work {
+  flex: 1.2;
+}
+
+.line .status {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
