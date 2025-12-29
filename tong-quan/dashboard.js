@@ -125,19 +125,53 @@ function renderSummaryWarnings(units) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  const risks = units.filter(u => u.status !== "green");
+  // clone mảng để không ảnh hưởng nơi khác
+  const list = [...units];
 
-  if (!risks.length) {
-    box.innerHTML = "✅ Không có rủi ro tiến độ";
-    return;
+  // sắp xếp theo mức độ rủi ro
+  list.sort((a, b) => {
+    // ưu tiên trạng thái
+    const rank = s =>
+      s === "red" ? 3 :
+      s === "yellow" ? 2 : 1;
+
+    const r = rank(b.status) - rank(a.status);
+    if (r !== 0) return r;
+
+    // nếu cùng trạng thái → % công thấp hơn nguy hiểm hơn
+    return a.percent - b.percent;
+  });
+
+  // lấy tối đa 5 dòng cho đẹp
+  const MAX = 5;
+  const rows = [];
+
+  for (let i = 0; i < list.length && rows.length < MAX; i++) {
+    const u = list[i];
+    rows.push(`
+      <div class="warning-item ${u.status}">
+        • <strong>${u.maCan}</strong> – ${u.statusText}
+      </div>
+    `);
   }
 
-  box.innerHTML = risks.map(u => `
-    <div class="warning-item">
-      • <strong>${u.maCan}</strong> – ${u.statusText}
-    </div>
-  `).join("");
+  // nếu vẫn thiếu dòng → đổ thêm căn bình thường
+  if (rows.length < MAX) {
+    units.forEach(u => {
+      if (rows.length >= MAX) return;
+      if (list.includes(u)) return;
+
+      rows.push(`
+        <div class="warning-item green">
+          • <strong>${u.maCan}</strong> – Đang thi công
+        </div>
+      `);
+    });
+  }
+
+  box.innerHTML = rows.join("");
 }
+
 
 /* =========================================================
    HÀNG 2 – CARD CÁC CĂN
