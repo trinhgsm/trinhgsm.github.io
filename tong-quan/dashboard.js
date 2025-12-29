@@ -12,8 +12,12 @@ async function loadDashboard() {
   board.innerHTML = "";
 
   json.units.forEach(unit => {
-    board.appendChild(buildCard(unit));
-  });
+  board.appendChild(buildCard(unit));
+});
+
+// ✅ VẼ BIỂU ĐỒ TỔNG QUAN 1 LẦN DUY NHẤT
+renderUnitOverview(json.units);
+
 }
 function buildCard(u) {
   const card = document.createElement("div");
