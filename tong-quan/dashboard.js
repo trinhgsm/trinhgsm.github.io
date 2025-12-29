@@ -1,6 +1,6 @@
 /************************************************************
- * DUKICO DASHBOARD – JS RESET SẠCH
- * An toàn – không chết JS – dễ mở rộng
+ * DUKICO DASHBOARD – FRONTEND JS
+ * Tương thích backend _handleDashboard_ (4 level)
  ************************************************************/
 
 const API_URL =
@@ -10,9 +10,12 @@ let projectChart = null;
 let unitOverviewChart = null;
 
 /* =========================================================
-   LOAD
+   LOAD DASHBOARD
    ========================================================= */
 async function loadDashboard() {
+  const dash = document.getElementById("dashboard");
+  if (dash) dash.classList.add("loading");
+
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
@@ -24,14 +27,16 @@ async function loadDashboard() {
 
     updateTime(data.generatedAt);
 
-    renderProject(data.project);
-    renderOverviewChart(data.units);
+    renderProjectCard(data.project);
+    renderUnitOverview(data.units);
     renderWarnings(data.units);
     renderUnitCards(data.units);
     renderSidebarDetail(data.units);
 
-  } catch (e) {
-    console.error("Lỗi loadDashboard:", e);
+  } catch (err) {
+    console.error("Lỗi loadDashboard:", err);
+  } finally {
+    if (dash) dash.classList.remove("loading");
   }
 }
 
@@ -46,9 +51,9 @@ function updateTime(ts) {
 }
 
 /* =========================================================
-   PROJECT CARD
+   PROJECT CARD (BIỂU ĐỒ TRÒN)
    ========================================================= */
-function renderProject(p) {
+function renderProjectCard(p) {
   const box = document.getElementById("projectCard");
   if (!box || !p) return;
 
@@ -57,7 +62,7 @@ function renderProject(p) {
     <div class="chart-wrap">
       <canvas id="projectChart"></canvas>
     </div>
-    <div style="font-size:.8rem;margin-top:6px">
+    <div class="meta">
       Công: ${p.actualCong} / ${p.plannedCong} (${p.percent}%)
     </div>
   `;
@@ -88,9 +93,9 @@ function renderProject(p) {
 }
 
 /* =========================================================
-   OVERVIEW BAR CHART
+   OVERVIEW BAR CHART – TỔNG QUAN CÁC CĂN
    ========================================================= */
-function renderOverviewChart(units) {
+function renderUnitOverview(units) {
   const canvas = document.getElementById("unitOverviewChart");
   if (!canvas) return;
 
@@ -101,12 +106,14 @@ function renderOverviewChart(units) {
     data: {
       labels: units.map(u => u.maCan),
       datasets: [{
+        label: "Tiến độ (%)",
         data: units.map(u => u.percent || 0),
-        backgroundColor: units.map(u =>
-          u.status === "red" ? "#ef4444" :
-          u.status === "yellow" ? "#eab308" :
-          "#22c55e"
-        )
+        backgroundColor: units.map(u => {
+          if (u.status === "red-blink") return "#ef4444";
+          if (u.status === "red") return "#ef4444";
+          if (u.status === "yellow") return "#eab308";
+          return "#22c55e";
+        })
       }]
     },
     options: {
@@ -122,30 +129,28 @@ function renderOverviewChart(units) {
 }
 
 /* =========================================================
-   WARNINGS (RED → YELLOW → GREEN)
+   SIDEBAR – CẢNH BÁO TIẾN ĐỘ (4 MỨC)
    ========================================================= */
 function renderWarnings(units) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  const order = { red: 3, yellow: 2, green: 1 };
+  const list = [...units].sort((a, b) => b.level - a.level);
 
-  const list = [...units].sort((a, b) => {
-    const r = order[b.status] - order[a.status];
-    if (r !== 0) return r;
-    return (a.percent || 0) - (b.percent || 0);
-  });
-
-  const MAX = 5;
-  box.innerHTML = list.slice(0, MAX).map(u => `
-    <div class="warning-item ${u.status}">
-      • <strong>${u.maCan}</strong> – ${u.statusText || ""}
+  box.innerHTML = list.map(u => `
+    <div class="warning-item warning-${u.status}">
+      <span class="dot"></span>
+      <div class="text">
+        <strong>${u.maCan}</strong><br>
+        ${u.statusText}
+        ${u.debt > 0 ? `<br><span class="mini">Nợ: ${fmtMoney(u.debt)}</span>` : ""}
+      </div>
     </div>
   `).join("");
 }
 
 /* =========================================================
-   UNIT CARDS
+   CARD MỖI CĂN (2 BIỂU ĐỒ NGANG)
    ========================================================= */
 function renderUnitCards(units) {
   const box = document.getElementById("unitCards");
@@ -160,29 +165,41 @@ function renderUnitCards(units) {
     card.innerHTML = `
       <h2>${u.maCan}</h2>
 
-      <div style="font-size:.75rem;opacity:.85">
-        Bắt đầu: ${fmtDate(u.start)} |
-        Hoàn thành: ${fmtDate(u.end)}
+      <div class="line">
+        <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
+        <span class="date">Hoàn thành ${fmtDate(u.end)}</span>
       </div>
 
-      <div style="font-size:.8rem;margin-bottom:6px">
-        Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
-        |
+      <div class="line">
+        <span class="work">
+          Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
+        </span>
         <span class="status ${u.status}">
-          ${u.statusText || ""}
+          ${u.statusText}
         </span>
       </div>
 
-      <div style="display:flex;gap:10px">
-        <div style="flex:1">
-          <div class="chart-wrap" style="height:140px">
-            <canvas class="costChart"></canvas>
-          </div>
+      <div class="finance">
+        <div>
+          <span class="label">Đã chi:</span>
+          <span class="value">${fmtMoney(u.actualCost)}</span>
         </div>
-        <div style="flex:1">
-          <div class="chart-wrap" style="height:140px">
-            <canvas class="teamChart"></canvas>
-          </div>
+        <div>
+          <span class="label">Đang nợ:</span>
+          <span class="value debt">${fmtMoney(u.debt)}</span>
+        </div>
+        <div>
+          <span class="label">Đã ứng CĐT:</span>
+          <span class="value advance">${fmtMoney(u.advance)}</span>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-wrap">
+          <canvas class="costChart"></canvas>
+        </div>
+        <div class="chart-wrap">
+          <canvas class="teamChart"></canvas>
         </div>
       </div>
     `;
@@ -195,7 +212,7 @@ function renderUnitCards(units) {
 }
 
 /* =========================================================
-   SIDEBAR DETAIL – 1 HÀM DUY NHẤT
+   SIDEBAR DETAIL – PHÂN BỔ THEO TỔ
    ========================================================= */
 function renderSidebarDetail(units) {
   const box = document.getElementById("sidebarDetail");
@@ -204,32 +221,17 @@ function renderSidebarDetail(units) {
   let html = "";
 
   units.forEach(u => {
-    const color =
-      u.status === "red" ? "#ef4444" :
-      u.status === "yellow" ? "#eab308" :
-      "#22c55e";
-
     html += `
       <div class="legend-item">
-        <div class="legend-color" style="background:${color}"></div>
-        <div>
-          <strong>${u.maCan}</strong><br>
-          ${u.actualCong} công
-        </div>
+        <strong>${u.maCan}</strong> – ${u.actualCong} công
       </div>
     `;
 
     if (u.byTeam) {
       Object.keys(u.byTeam).forEach(team => {
-        const cong = u.byTeam[team];
-        if (!cong) return;
-
         html += `
-          <div class="legend-item" style="opacity:.7;padding-left:14px">
-            <div class="legend-color"></div>
-            <div>
-              Tổ ${team.toUpperCase()} – ${cong} công
-            </div>
+          <div class="legend-sub">
+            Tổ ${team.toUpperCase()}: ${u.byTeam[team]} công
           </div>
         `;
       });
@@ -296,6 +298,10 @@ function fmtDate(d) {
   if (!d) return "?";
   const [y, m, day] = d.split("-");
   return `${day}-${m}-${y}`;
+}
+
+function fmtMoney(n) {
+  return (Number(n) || 0).toLocaleString("vi-VN") + " đ";
 }
 
 /* =========================================================
