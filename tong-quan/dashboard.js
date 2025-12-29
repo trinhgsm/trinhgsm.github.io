@@ -69,3 +69,39 @@ function textStatus(s) {
 }
 
 loadDashboard();
+function renderProjectCard(p) {
+  const box = document.getElementById("projectCard");
+  box.innerHTML = `
+    <div class="card">
+      <h2>TỔNG DỰ ÁN</h2>
+      <div class="meta">
+        Công: ${p.actualCong} / ${p.plannedCong} (${p.percent}%)
+      </div>
+      <div class="meta status ${p.status}">
+        Trạng thái: ${textStatus(p.status)}
+      </div>
+      <canvas id="projectChart" height="180"></canvas>
+    </div>
+  `;
+
+  new Chart(document.getElementById("projectChart"), {
+    type: "doughnut",
+    data: {
+      labels: ["Đã làm", "Còn lại"],
+      datasets: [{
+        data: [
+          p.actualCong,
+          Math.max(0, p.plannedCong - p.actualCong)
+        ],
+        backgroundColor: [
+          p.status === "red" ? "#ef4444" :
+          p.status === "yellow" ? "#eab308" : "#22c55e",
+          "#1f2937"
+        ]
+      }]
+    },
+    options: {
+      plugins: { legend: { position: "bottom" } }
+    }
+  });
+}
