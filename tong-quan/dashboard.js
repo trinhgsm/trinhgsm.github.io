@@ -125,35 +125,40 @@ function renderSummaryWarnings(units) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  // clone mảng để không ảnh hưởng nơi khác
-  const list = [...units];
+  // phân nhóm theo màu
+  const red = [];
+  const yellow = [];
+  const green = [];
 
-  // sắp xếp theo mức độ rủi ro
-  list.sort((a, b) => {
-    // ưu tiên trạng thái
-    const rank = s =>
-      s === "red" ? 3 :
-      s === "yellow" ? 2 : 1;
-
-    const r = rank(b.status) - rank(a.status);
-    if (r !== 0) return r;
-
-    // nếu cùng trạng thái → % công thấp hơn nguy hiểm hơn
-    return a.percent - b.percent;
+  units.forEach(u => {
+    if (u.status === "red") red.push(u);
+    else if (u.status === "yellow") yellow.push(u);
+    else green.push(u);
   });
 
-  // lấy tối đa 5 dòng cho đẹp
+  // sắp xếp trong từng nhóm (nguy hiểm hơn trước)
+  const sortRisk = (a, b) => a.percent - b.percent;
+  red.sort(sortRisk);
+  yellow.sort(sortRisk);
+  green.sort(sortRisk);
+
+  const ordered = [...red, ...yellow, ...green];
+
   const MAX = 5;
   const rows = [];
 
-  for (let i = 0; i < list.length && rows.length < MAX; i++) {
-    const u = list[i];
+  for (let i = 0; i < ordered.length && rows.length < MAX; i++) {
+    const u = ordered[i];
     rows.push(`
       <div class="warning-item ${u.status}">
         • <strong>${u.maCan}</strong> – ${u.statusText}
       </div>
     `);
   }
+
+  box.innerHTML = rows.join("");
+}
+
 
   // nếu vẫn thiếu dòng → đổ thêm căn bình thường
   if (rows.length < MAX) {
