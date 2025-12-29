@@ -102,3 +102,86 @@ function changeZoom(delta) {
 
 zoomOutBtn.onclick = () => changeZoom(-0.1);
 zoomInBtn.onclick  = () => changeZoom(+0.1);
+function renderSiteStatus(sites) {
+  const bar  = document.getElementById("siteStatusBar");
+  const list = document.getElementById("statusList");
+/* ===== ĐỔ SUMMARY VÀO DÒNG TRÔI ===== */
+const noteDynamic = document.getElementById("statusNoteDynamic");
+if (!noteDynamic) return;
+noteDynamic.innerHTML = "";
+noteDynamic.classList.add("paused"); // ⭐ THÊM DÒNG NÀY
+sites.forEach(s => {
+  let d = s.diffDays;
+  let text = "";
+
+  let toText = s.summary
+    ? s.summary.replace(/,\s*/g, " | ")
+    : "";
+
+  if (typeof d !== "number") {
+  text = "🔴 " + s.maCan + ": không xác định ngày thi công";
+}
+else if (d === 0 || d === 1) {
+  const whenText = (d === 0) ? "Hôm nay" : "Hôm qua";
+
+  if (toText) {
+    // Chuẩn hoá: "nề 3c | thợ sơn 2c"
+    // → "Tổ nề 3 công | Tổ thợ sơn 2 công"
+    const toReadable = toText
+      .split("|")
+      .map(item => {
+        const m = item.trim().match(/^(.+?)\s+(\d+(?:\.\d+)?)c$/i);
+        if (!m) return item.trim();
+        return "Tổ " + m[1].trim() + " " + m[2] + " công";
+      })
+      .join(" | ");
+
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công gồm: " + toReadable;
+  } else {
+    text = "🟢 " + s.maCan +
+           " – " + whenText +
+           " có thi công";
+  }
+}
+else if (d === 2) {
+  text = "🟡 " + s.maCan + ": nghỉ thi công 1 ngày";
+}
+else {
+  text = "🔴 " + s.maCan + ": " + d + " ngày không thi công";
+}
+  const span = document.createElement("span");
+  span.textContent = text;
+  noteDynamic.appendChild(span);
+});
+
+  list.innerHTML = "";
+  if (!sites.length) {
+    bar.style.display = "none";
+    return;
+  }
+
+  sites.forEach(s => {
+    const dot =
+      s.status === "green"  ? "dot-green" :
+      s.status === "yellow" ? "dot-yellow" :
+                              "dot-red";
+
+    const el = document.createElement("div");
+    el.className = "site-item";
+    el.innerHTML = `
+      <span class="site-dot ${dot}"></span>
+      <strong>${s.maCan}</strong>
+    `;
+
+    el.onclick = () => {
+      sheetMenu.value = s.gid;
+      updateFrame();
+    };
+
+    list.appendChild(el);
+  });
+
+  bar.style.display = "block";
+}
