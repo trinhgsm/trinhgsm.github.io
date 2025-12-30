@@ -27,47 +27,49 @@
   <!-- ================= DASHBOARD ================= -->
   <main id="dashboard" class="dashboard loading">
 
-    <!-- ========== HÀNG TRÊN: 3 CỘT ========== -->
-    <section class="top-row">
+  <!-- ===== HÀNG TRÊN ===== -->
+  <section class="top-row">
+    <!-- Tổng dự án -->
+    <div class="card">
+      <div id="projectCard"></div>
+    </div>
 
-      <!-- CỘT 1: TỔNG DỰ ÁN -->
-      <div class="card top-card" id="projectCard">
-        <!-- JS render -->
+    <!-- Tổng quan tiến độ -->
+    <div class="card">
+      <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
+      <div class="chart-wrap">
+        <canvas id="unitOverviewChart"></canvas>
       </div>
+    </div>
+  </section>
 
-      <!-- CỘT 2: TỔNG QUAN TIẾN ĐỘ CÁC CĂN -->
-      <div class="card top-card">
-        <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
-        <div class="chart-wrap">
-          <canvas id="unitOverviewChart"></canvas>
-        </div>
-      </div>
+  <!-- ===== HÀNG DƯỚI ===== -->
+  <section class="bottom-row">
 
-      <!-- CỘT 3: SIDEBAR CẢNH BÁO -->
-      <div class="card top-card">
+    <!-- CARD CÁC CĂN -->
+    <div id="unitCards"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Widget 1: Cảnh báo -->
+      <div class="card sidebar-widget">
         <h2>CẢNH BÁO TIẾN ĐỘ</h2>
-
-        <!-- Cảnh báo tổng hợp -->
-        <div id="sidebarSummary">
-          <!-- JS render -->
-        </div>
-
-        <hr style="border-color: rgba(255,255,255,.1); margin: 8px 0;">
-
-        <!-- Phân bổ theo tổ -->
-        <div id="sidebarDetail">
-          <!-- JS render -->
-        </div>
+        <div class="widget-body" id="sidebarSummary"></div>
       </div>
 
-    </section>
+      <!-- Widget 2: Phân bổ theo tổ -->
+      <div class="card sidebar-widget">
+        <h2>PHÂN BỔ THEO TỔ</h2>
+        <div class="widget-body" id="sidebarDetail"></div>
+      </div>
 
-    <!-- ========== HÀNG DƯỚI: CARD CÁC CĂN ========== -->
-    <section id="unitCards">
-      <!-- JS render -->
-    </section>
+    </aside>
 
-  </main>
+  </section>
+
+</main>
+
 
   <!-- ================= FOOTER ================= -->
   <footer style="
