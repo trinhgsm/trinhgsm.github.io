@@ -27,7 +27,8 @@ async function loadDashboard() {
 
     updateTime(data.generatedAt);
 
-    renderProjectCard(data.project);
+    renderProjectCardFromUnits(data.units);
+
     renderUnitOverview(data.units);
     renderWarnings(data.units);
     renderUnitCards(data.units);
@@ -53,44 +54,66 @@ function updateTime(ts) {
 /* =========================================================
    PROJECT CARD (BIỂU ĐỒ TRÒN)
    ========================================================= */
-function renderProjectCard(p) {
+function renderProjectCardFromUnits(units) {
   const box = document.getElementById("projectCard");
-  if (!box || !p) return;
+  if (!box || !units || !units.length) return;
 
   box.innerHTML = `
     <h2>TỔNG DỰ ÁN</h2>
     <div class="chart-wrap">
       <canvas id="projectChart"></canvas>
     </div>
-    <div class="meta">
-      Công: ${p.actualCong} / ${p.plannedCong} (${p.percent}%)
-    </div>
   `;
 
-  const canvas = document.getElementById("projectChart");
-  if (!canvas) return;
+  const labels = units.map(u => u.maCan);
 
-  if (projectChart) projectChart.destroy();
+  // Lấy quy mô dự án (dùng plannedCong để lát to nhỏ hợp lý)
+  const data = units.map(u => u.plannedCong || 0);
 
-  projectChart = new Chart(canvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Đã làm", "Còn lại"],
-      datasets: [{
-        data: [
-          p.actualCong || 0,
-          Math.max(0, (p.plannedCong || 0) - (p.actualCong || 0))
-        ],
-        backgroundColor: ["#22c55e", "#1f2937"]
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom" } }
-    }
+  // Màu theo trạng thái
+  const colors = units.map(u => {
+    if (u.status === "red-blink") return "#ef4444";
+    if (u.status === "red")       return "#ef4444";
+    if (u.status === "yellow")    return "#eab308";
+    return "#22c55e";
   });
+
+  if (window.projectChart) {
+    window.projectChart.destroy();
+  }
+
+  window.projectChart = new Chart(
+    document.getElementById("projectChart"),
+    {
+      type: "doughnut",
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: colors
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "bottom"
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => {
+                const u = units[ctx.dataIndex];
+                return `${u.maCan}: ${u.actualCong}/${u.plannedCong} công – ${u.statusText}`;
+              }
+            }
+          }
+        }
+      }
+    }
+  );
 }
+
 
 /* =========================================================
    OVERVIEW BAR CHART – TỔNG QUAN CÁC CĂN
