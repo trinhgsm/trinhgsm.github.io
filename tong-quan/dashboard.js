@@ -1,6 +1,6 @@
 /************************************************************
- * DUKICO DASHBOARD â€“ FRONTEND JS (UPDATED)
- * TÆ°Æ¡ng thĂ­ch backend _handleDashboard_ (MĂ” HĂŒNH C)
+ * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
+ * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
  ************************************************************/
 
 const API_URL =
@@ -21,7 +21,7 @@ async function loadDashboard() {
     const data = await res.json();
 
     if (!data || !data.units) {
-      console.error("KhĂ´ng cĂ³ dá»¯ liá»‡u units");
+      console.error("Không có dữ liệu units");
       return;
     }
 
@@ -34,7 +34,7 @@ async function loadDashboard() {
     renderSidebarDetail(data.units);
 
   } catch (err) {
-    console.error("Lá»—i loadDashboard:", err);
+    console.error("Lỗi loadDashboard:", err);
   } finally {
     if (dash) dash.classList.remove("loading");
   }
@@ -45,27 +45,27 @@ async function loadDashboard() {
    ========================================================= */
 function updateTime(ts) {
   const el = document.getElementById("genTime");
-  if (el) el.textContent = "Cáº­p nháº­t: " + new Date(ts).toLocaleString();
+  if (el) el.textContent = "Cập nhật: " + new Date(ts).toLocaleString();
 }
 
 /* =========================================================
-   PROJECT CARD (CĂ”NG + TĂ€I CHĂNH)
+   PROJECT CARD (CÔNG + TÀI CHÍNH)
    ========================================================= */
 function renderProjectCard(p) {
   const box = document.getElementById("projectCard");
   if (!box || !p) return;
 
   box.innerHTML = `
-    <h2>Tá»”NG Dá»° ĂN</h2>
+    <h2>TỔNG DỰ ÁN</h2>
     <div class="chart-wrap">
       <canvas id="projectChart"></canvas>
     </div>
     <div class="meta">
-      <div>LĂ£i / lá»—: <b class="${p.profit < 0 ? "debt" : ""}">
+      <div>Lãi / lỗ: <b class="${p.profit < 0 ? "debt" : ""}">
         ${fmtShortMoney(p.profit)}</b></div>
-      <div>DĂ²ng tiá»n: <b class="${p.cashFlow < 0 ? "debt" : ""}">
+      <div>Dòng tiền: <b class="${p.cashFlow < 0 ? "debt" : ""}">
         ${fmtShortMoney(p.cashFlow)}</b></div>
-      <div>CÄT cĂ²n ná»£: ${fmtShortMoney(p.debtCDT)}</div>
+      <div>CĐT còn nợ: ${fmtShortMoney(p.debtCDT)}</div>
     </div>
   `;
 
@@ -77,7 +77,7 @@ function renderProjectCard(p) {
   projectChart = new Chart(canvas, {
     type: "doughnut",
     data: {
-      labels: ["ÄĂ£ chi", "CĂ²n láº¡i"],
+      labels: ["Đã chi", "Còn lại"],
       datasets: [{
         data: [
           p.totalCost || 0,
@@ -95,7 +95,7 @@ function renderProjectCard(p) {
 }
 
 /* =========================================================
-   OVERVIEW BAR CHART â€“ TIáº¾N Äá»˜ %
+   OVERVIEW BAR CHART – TIẾN ĐỘ %
    ========================================================= */
 function renderUnitOverview(units) {
   const canvas = document.getElementById("unitOverviewChart");
@@ -108,7 +108,7 @@ function renderUnitOverview(units) {
     data: {
       labels: units.map(u => u.maCan),
       datasets: [{
-        label: "Tiáº¿n Ä‘á»™ (%)",
+        label: "Tiến độ (%)",
         data: units.map(u => u.percent || 0),
         backgroundColor: units.map(u => {
           if (u.status === "red-blink") return "#ef4444";
@@ -131,7 +131,7 @@ function renderUnitOverview(units) {
 }
 
 /* =========================================================
-   SIDEBAR â€“ Cáº¢NH BĂO (TIáº¾N Äá»˜ + TIá»€N)
+   SIDEBAR – CẢNH BÁO (TIẾN ĐỘ + TIỀN)
    ========================================================= */
 function renderWarnings(units) {
   const box = document.getElementById("sidebarSummary");
@@ -145,15 +145,15 @@ function renderWarnings(units) {
       <div class="text">
         <strong>${u.maCan}</strong><br>
         ${u.statusText}
-        ${u.cashFlow < 0 ? `<br><span class="mini">Thiáº¿u tiá»n: ${fmtShortMoney(u.cashFlow)}</span>` : ""}
-        ${u.debtCDT > 0 ? `<br><span class="mini">CÄT ná»£: ${fmtShortMoney(u.debtCDT)}</span>` : ""}
+        ${u.cashFlow < 0 ? `<br><span class="mini">Thiếu tiền: ${fmtShortMoney(u.cashFlow)}</span>` : ""}
+        ${u.debtCDT > 0 ? `<br><span class="mini">CĐT nợ: ${fmtShortMoney(u.debtCDT)}</span>` : ""}
       </div>
     </div>
   `).join("");
 }
 
 /* =========================================================
-   CARD Má»–I CÄ‚N
+   CARD MỖI CĂN
    ========================================================= */
 function renderUnitCards(units) {
   const box = document.getElementById("unitCards");
@@ -169,13 +169,13 @@ function renderUnitCards(units) {
       <h2>${u.maCan}</h2>
 
       <div class="line">
-        <span class="date">Báº¯t Ä‘áº§u ${fmtDate(u.start)}</span>
-        <span class="date">HoĂ n thĂ nh ${fmtDate(u.end)}</span>
+        <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
+        <span class="date">Hoàn thành ${fmtDate(u.end)}</span>
       </div>
 
       <div class="line">
         <span class="work">
-          CĂ´ng: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
+          Công: ${u.actualCong} / ${u.plannedCong} (${u.percent}%)
         </span>
         <span class="status ${u.status}">
           ${u.statusText}
@@ -184,21 +184,21 @@ function renderUnitCards(units) {
 
       <div class="finance">
         <div>
-          <span class="label">LĂ£i / lá»—:</span>
+          <span class="label">Lãi / lỗ:</span>
           <span class="value ${u.profit < 0 ? "debt" : ""}">
             ${fmtShortMoney(u.profit)}
           </span>
         </div>
 
         <div>
-          <span class="label">DĂ²ng tiá»n:</span>
+          <span class="label">Dòng tiền:</span>
           <span class="value ${u.cashFlow < 0 ? "debt" : ""}">
             ${fmtShortMoney(u.cashFlow)}
           </span>
         </div>
 
         <div>
-          <span class="label">CÄT cĂ²n ná»£:</span>
+          <span class="label">CĐT còn nợ:</span>
           <span class="value">
             ${fmtShortMoney(u.debtCDT)}
           </span>
@@ -230,7 +230,7 @@ function renderUnitCards(units) {
 }
 
 /* =========================================================
-   SIDEBAR DETAIL â€“ Tá»” Äá»˜I
+   SIDEBAR DETAIL – TỔ ĐỘI
    ========================================================= */
 function renderSidebarDetail(units) {
   const box = document.getElementById("sidebarDetail");
@@ -241,7 +241,7 @@ function renderSidebarDetail(units) {
   units.forEach(u => {
     html += `
       <div class="legend-item">
-        <strong>${u.maCan}</strong> â€“ ${u.actualCong} cĂ´ng
+        <strong>${u.maCan}</strong> – ${u.actualCong} công
       </div>
     `;
 
@@ -249,7 +249,7 @@ function renderSidebarDetail(units) {
       Object.keys(u.byTeam).forEach(team => {
         html += `
           <div class="legend-sub">
-            Tá»• ${team.toUpperCase()}: ${u.byTeam[team]} cĂ´ng
+            Tổ ${team.toUpperCase()}: ${u.byTeam[team]} công
           </div>
         `;
       });
@@ -291,29 +291,29 @@ function drawCostChart(canvas, totalPlan, paidCost, debtNCC) {
   new Chart(canvas, {
     type: "bar",
     data: {
-      labels: ["Tá»•ng dá»± tĂ­nh", "Chi phĂ­"],
+      labels: ["Tổng dự tính", "Chi phí"],
       datasets: [
 
-        // ===== Tá»”NG Dá»° TĂNH (THAM CHIáº¾U) =====
+        // ===== TỔNG DỰ TÍNH (THAM CHIẾU) =====
         {
-          label: "Tá»•ng dá»± tĂ­nh",
+          label: "Tổng dự tính",
           data: [totalPlan || 0, null],
           backgroundColor: "#38bdf8",
           barThickness: 22
         },
 
-        // ===== ÄĂƒ CHI (TIá»€N ÄI RA) =====
+        // ===== ĐÃ CHI (TIỀN ĐI RA) =====
         {
-          label: "ÄĂ£ chi",
+          label: "Đã chi",
           data: [null, paidCost || 0],
           backgroundColor: "#22c55e",
           stack: "cost",
           barThickness: 22
         },
 
-        // ===== Ná»¢ NCC (CÅ¨NG LĂ€ CHI PHĂ) =====
+        // ===== NỢ NCC (CŨNG LÀ CHI PHÍ) =====
         {
-          label: "Ná»£ NCC",
+          label: "Nợ NCC",
           data: [null, debtNCC || 0],
           backgroundColor: "#ef4444",
           stack: "cost",
@@ -359,8 +359,8 @@ function fmtDate(d) {
 
 function fmtShortMoney(n) {
   n = Number(n) || 0;
-  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1).replace(".0","") + " tá»·";
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(".0","") + " triá»‡u";
+  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1).replace(".0","") + " tỷ";
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(".0","") + " triệu";
   if (n >= 1_000) return (n / 1_000).toFixed(0) + " k";
   return n.toString();
 }
