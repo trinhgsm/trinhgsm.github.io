@@ -187,11 +187,11 @@ function renderUnitCards(units) {
         </div>
         <div>
           <span class="label">Đang nợ:</span>
-          <span class="value debt">${fmtMoney(u.debt)}</span>
+          <span class="value debt">${fmtShortMoney(u.debt)}</span>
         </div>
         <div>
           <span class="label">Đã ứng CĐT:</span>
-          <span class="value advance">${fmtMoney(u.advance)}</span>
+          <span class="value advance">${fmtShortMoney(u.advance)}</span>
         </div>
       </div>
 
