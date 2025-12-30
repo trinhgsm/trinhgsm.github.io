@@ -182,7 +182,8 @@ function renderUnitCards(units) {
       <div class="finance">
         <div>
           <span class="label">Đã chi:</span>
-          <span class="value">${fmtMoney(u.actualCost)}</span>
+          <span class="value">${fmtShortMoney(u.actualCost)}</span>
+
         </div>
         <div>
           <span class="label">Đang nợ:</span>
@@ -275,19 +276,38 @@ function drawCostChart(canvas, planned, actual) {
     data: {
       labels: ["Dự tính", "Đã chi"],
       datasets: [{
-        data: [planned || 0, actual || 0],
-        backgroundColor: [
-          "#38bdf8",
-          actual > planned ? "#ef4444" : "#22c55e"
-        ]
-      }]
+  data: [planned || 0, actual || 0],
+  backgroundColor: [
+    "#38bdf8",
+    actual > planned ? "#ef4444" : "#22c55e"
+  ],
+  barThickness: 22,        // 👈 độ rộng cố định
+  maxBarThickness: 26,     // 👈 không cho to quá
+  categoryPercentage: 0.6 // 👈 khoảng cách giữa nhóm
+}]
+
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
+   options: {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label: ctx => fmtShortMoney(ctx.raw)
+      }
     }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      ticks: {
+        callback: v => fmtShortMoney(v)
+      }
+    }
+  }
+}
+
   });
 }
 
@@ -302,6 +322,23 @@ function fmtDate(d) {
 
 function fmtMoney(n) {
   return (Number(n) || 0).toLocaleString("vi-VN") + " đ";
+}
+function fmtShortMoney(n) {
+  n = Number(n) || 0;
+
+  if (n >= 1_000_000_000) {
+    return (n / 1_000_000_000).toFixed(1).replace(".0","") + " tỷ";
+  }
+
+  if (n >= 1_000_000) {
+    return (n / 1_000_000).toFixed(1).replace(".0","") + " triệu";
+  }
+
+  if (n >= 1_000) {
+    return (n / 1_000).toFixed(0) + " k";
+  }
+
+  return n.toString();
 }
 
 /* =========================================================
