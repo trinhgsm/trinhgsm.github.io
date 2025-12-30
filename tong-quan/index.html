@@ -9,36 +9,12 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="dashboard.css" />
-  <link rel="stylesheet" href="css/style.css">
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-<!-- ===== LOADING OVERLAY ===== -->
-<div id="loadingOverlay">
-  <div class="loading-wrap">
-    <div class="loading-ring"></div>
-    <div class="loading-core">
-      <div class="dukico-logo">
-        D<span class="uk"><span class="u">U</span><span class="k">K</span></span>ICO
-      </div>
-    </div>
-    <div class="loading-text">ĐANG TẢI…</div>
-  </div>
-</div>
-
-<!-- ===== PASS SCREEN ===== -->
-<div id="lockScreen">
-  <div id="lockBox">
-    <h2>Mật khẩu</h2>
-    <p>Nhập mật khẩu để truy cập.</p>
-    <input id="passwordInput" type="password" placeholder="Mật khẩu…" />
-    <div id="passwordError"></div>
-    <button id="unlockBtn">MỞ</button>
-  </div>
-</div>
 
   <!-- ================= TOP BAR ================= -->
   <header class="top">
@@ -117,27 +93,7 @@
   </footer>
 
   <!-- ================= JS ================= -->
-  <script src="js/config.js"></script>
-<script src="js/dom.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/api.js"></script>
-
-<script src="dashboard.js"></script>
-
-<script src="js/main.js"></script>
-
-<!-- ===== STATUS BAR ===== -->
-<div id="siteStatusBar" style="display:none;">
-  <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
-
-  <div class="status-marquee">
-    <div id="statusList" class="status-track"></div>
-  </div>
-
-  <div class="status-note">
-    <div class="status-note-track paused" id="statusNoteDynamic"></div>
-  </div>
-</div>
+  <script src="dashboard.js"></script>
 
 </body>
 </html>
