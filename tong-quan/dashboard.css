@@ -270,3 +270,44 @@ body {
     grid-template-columns: 1fr;
   }
 }
+.bottom-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  padding: 0 12px 16px;
+  align-items: start;
+}
+#unitCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sidebar-widget {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-widget .widget-body {
+  overflow-y: auto;
+  max-height: 260px; /* 👈 chỉnh tuỳ bạn */
+  padding-right: 4px;
+}
+@media (max-width: 1024px) {
+  .bottom-row {
+    grid-template-columns: 1fr;
+  }
+
+  #unitCards {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-widget .widget-body {
+    max-height: none;
+  }
+}
