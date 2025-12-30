@@ -27,8 +27,9 @@ async function loadDashboard() {
 
     updateTime(data.generatedAt);
 
-    renderProjectCard(data.project);
     renderUnitOverview(data.units);
+    renderProjectStatusChart(data.units);
+
     renderWarnings(data.units);
     renderUnitCards(data.units);
     renderSidebarDetail(data.units);
@@ -80,6 +81,113 @@ function renderUnitOverview(units) {
       scales: {
         y: { beginAtZero: true, max: 100 },
         x: { ticks: { autoSkip: true, maxRotation: 45 } }
+      }
+    }
+  });
+}
+/* =========================================================
+   PROJECT STATUS CHART – BAR + MULTI LINE
+   ========================================================= */
+function renderProjectStatusChart(units) {
+  const canvas = document.getElementById("projectStatusChart");
+  if (!canvas || !units || !units.length) return;
+
+  const labels = units.map(u => u.maCan);
+
+  // ===== BAR: trạng thái căn =====
+  const barData = units.map(() => 1);
+  const barColors = units.map(u => {
+    if (u.status === "red" || u.status === "red-blink") return "#ef4444";
+    if (u.status === "yellow") return "#eab308";
+    return "#22c55e";
+  });
+
+  // ===== LINE 1: TIẾN ĐỘ =====
+  const lineProgress = units.map(u => u.level ?? 1);
+
+  // ===== LINE 2: NỢ NCC =====
+  const lineDebtNCC = units.map(u => {
+    if (!u.totalPlan) return 0;
+    const r = u.debtNCC / u.totalPlan;
+    if (r >= 0.7) return 4;
+    if (r >= 0.5) return 3;
+    if (r >= 0.3) return 2;
+    if (r >= 0.1) return 1;
+    return 0;
+  });
+
+  // ===== LINE 3: CĐT NỢ =====
+  const lineDebtCDT = units.map(u => {
+    if (!u.totalPlan) return 0;
+    const r = u.debtCDT / u.totalPlan;
+    if (r >= 0.8) return 4;
+    if (r >= 0.6) return 3;
+    if (r >= 0.4) return 2;
+    if (r >= 0.2) return 1;
+    return 0;
+  });
+
+  new Chart(canvas, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Trạng thái căn",
+          data: barData,
+          backgroundColor: barColors,
+          barThickness: 16
+        },
+        {
+          type: "line",
+          label: "Tiến độ",
+          data: lineProgress,
+          borderColor: "#60a5fa",
+          borderWidth: 1.5,
+          tension: 0.35,
+          pointRadius: 2,
+          yAxisID: "yInd"
+        },
+        {
+          type: "line",
+          label: "Nợ NCC",
+          data: lineDebtNCC,
+          borderColor: "#f97316",
+          borderWidth: 1.5,
+          tension: 0.35,
+          pointRadius: 2,
+          yAxisID: "yInd"
+        },
+        {
+          type: "line",
+          label: "CĐT nợ",
+          data: lineDebtCDT,
+          borderColor: "#a855f7",
+          borderWidth: 1.5,
+          tension: 0.35,
+          pointRadius: 2,
+          yAxisID: "yInd"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom" }
+      },
+      scales: {
+        y: { display: false },
+        yInd: {
+          position: "right",
+          min: 0,
+          max: 4,
+          ticks: {
+            stepSize: 1,
+            callback: v => ["OK", "Nhẹ", "TB", "Cao", "Rất cao"][v]
+          },
+          grid: { drawOnChartArea: false }
+        }
       }
     }
   });
