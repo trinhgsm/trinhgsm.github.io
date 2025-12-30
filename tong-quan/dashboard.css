@@ -286,6 +286,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  height: 100%;
 }
 .sidebar-widget {
   display: flex;
@@ -310,4 +311,18 @@ body {
   .sidebar-widget .widget-body {
     max-height: none;
   }
+}
+.sidebar-widget--stretch {
+  flex: 1;                /* 👈 ăn hết chiều cao còn lại */
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-widget--stretch .widget-body {
+  flex: 1;
+  overflow-y: auto;       /* 👈 chỉ cuộn khi quá dài */
+  min-height: 0;          /* 👈 BẮT BUỘC cho flex scroll */
+}
+.sidebar-widget:not(.sidebar-widget--stretch) .widget-body {
+  overflow: visible;
 }
