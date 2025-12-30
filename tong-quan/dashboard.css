@@ -44,7 +44,7 @@ body {
 }
 
 /* =========================================================
-   DASHBOARD GRID
+   DASHBOARD
    ========================================================= */
 #dashboard {
   display: flex;
@@ -52,20 +52,19 @@ body {
   gap: 12px;
 }
 
-/* Ẩn dashboard khi đang load */
 #dashboard.loading {
   display: none;
 }
 
 /* =========================================================
-   ROW TRÊN: 3 CỘT ĐỘC LẬP
+   ROW TRÊN – 3 CỘT THẬT
    ========================================================= */
 .top-row {
   display: grid;
   grid-template-columns: 1.1fr 2.2fr 1fr;
   gap: 12px;
   padding: 12px;
-  align-items: start; /* QUAN TRỌNG: không kéo giãn */
+  align-items: stretch; /* 👈 cao bằng nhau */
 }
 
 /* =========================================================
@@ -76,6 +75,9 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 12px;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .card h2 {
@@ -83,13 +85,19 @@ body {
   font-size: 0.95rem;
 }
 
+/* Card cần giãn theo chiều cao */
+.card--stretch {
+  flex: 1;
+}
+
 /* =========================================================
-   BIỂU ĐỒ – KHUNG CHUẨN
+   BIỂU ĐỒ
    ========================================================= */
 .chart-wrap {
   position: relative;
   width: 100%;
-  height: 220px;
+  flex: 1;              /* 👈 ăn hết chiều cao còn lại */
+  min-height: 220px;
 }
 
 .chart-wrap canvas {
@@ -98,15 +106,18 @@ body {
 }
 
 /* =========================================================
-   SIDEBAR CẢNH BÁO (CỘT 3)
+   WIDGET BODY (SIDEBAR / CẢNH BÁO)
    ========================================================= */
-#sidebarSummary {
-  max-height: calc(100vh - 160px);
-  overflow-y: auto;
+.widget-body {
+  flex: 1;
+  overflow-y: auto;     /* 👈 chỉ cuộn khi thiếu */
+  min-height: 0;        /* 👈 BẮT BUỘC cho flex scroll */
   padding-right: 4px;
 }
 
-/* Cảnh báo từng item */
+/* =========================================================
+   CẢNH BÁO TIẾN ĐỘ
+   ========================================================= */
 .warning-item {
   display: flex;
   gap: 8px;
@@ -129,16 +140,14 @@ body {
   line-height: 1.35;
 }
 
-/* ===== 4 MỨC MÀU ===== */
 .warning-green .dot { background: var(--green); }
 .warning-yellow .dot { background: var(--yellow); }
-.warning-red .dot { background: var(--red); }
+.warning-red .dot,
 .warning-red-blink .dot { background: var(--red); }
 
-/* Nhấp nháy cho quá hạn */
 @keyframes blinkDanger {
-  0% { background-color: rgba(239,68,68,.15); }
-  50% { background-color: rgba(239,68,68,.45); }
+  0%   { background-color: rgba(239,68,68,.15); }
+  50%  { background-color: rgba(239,68,68,.45); }
   100% { background-color: rgba(239,68,68,.15); }
 }
 
@@ -153,13 +162,23 @@ body {
 }
 
 /* =========================================================
-   ROW DƯỚI – CARD CÁC CĂN
+   ROW DƯỚI
+   ========================================================= */
+.bottom-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  padding: 0 12px 16px;
+  align-items: stretch;
+}
+
+/* =========================================================
+   CARD CÁC CĂN
    ========================================================= */
 #unitCards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-  padding: 0 12px 16px;
 }
 
 /* =========================================================
@@ -179,27 +198,20 @@ body {
   text-overflow: ellipsis;
 }
 
-.line .date {
-  flex: 1;
-}
-
-.line .work {
-  flex: 1.2;
-}
-
+.line .date { flex: 1; }
+.line .work { flex: 1.2; }
 .line .status {
   flex: 0 0 auto;
   font-weight: 600;
 }
 
-/* Status text */
-.status.green { color: var(--green); }
+.status.green  { color: var(--green); }
 .status.yellow { color: var(--yellow); }
-.status.red { color: var(--red); }
+.status.red,
 .status.red-blink { color: var(--red); }
 
 /* =========================================================
-   KHỐI TÀI CHÍNH
+   TÀI CHÍNH
    ========================================================= */
 .finance {
   display: grid;
@@ -209,21 +221,10 @@ body {
   margin: 6px 0;
 }
 
-.finance .label {
-  opacity: .7;
-}
-
-.finance .value {
-  font-weight: 600;
-}
-
-.finance .debt {
-  color: var(--red);
-}
-
-.finance .advance {
-  color: var(--blue);
-}
+.finance .label { opacity: .7; }
+.finance .value { font-weight: 600; }
+.finance .debt { color: var(--red); }
+.finance .advance { color: var(--blue); }
 
 /* =========================================================
    2 BIỂU ĐỒ NGANG TRONG CARD
@@ -234,19 +235,12 @@ body {
 }
 
 .chart-row .chart-wrap {
-  height: 140px;
-  flex: 1;
+  min-height: 140px;
 }
 
 /* =========================================================
-   SIDEBAR DETAIL (PHÂN BỔ THEO TỔ)
+   SIDEBAR DETAIL
    ========================================================= */
-#sidebarDetail {
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-  font-size: 0.75rem;
-}
-
 .legend-item {
   padding: 4px 0;
   font-weight: 600;
@@ -266,40 +260,6 @@ body {
     grid-template-columns: 1fr;
   }
 
-  #unitCards {
-    grid-template-columns: 1fr;
-  }
-}
-.bottom-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 12px;
-  padding: 0 12px 16px;
-  align-items: start;
-}
-#unitCards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-.sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  height: 100%;
-}
-.sidebar-widget {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.sidebar-widget .widget-body {
-  overflow-y: auto;
-  max-height: 260px; /* 👈 chỉnh tuỳ bạn */
-  padding-right: 4px;
-}
-@media (max-width: 1024px) {
   .bottom-row {
     grid-template-columns: 1fr;
   }
@@ -307,22 +267,4 @@ body {
   #unitCards {
     grid-template-columns: 1fr;
   }
-
-  .sidebar-widget .widget-body {
-    max-height: none;
-  }
-}
-.sidebar-widget--stretch {
-  flex: 1;                /* 👈 ăn hết chiều cao còn lại */
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-widget--stretch .widget-body {
-  flex: 1;
-  overflow-y: auto;       /* 👈 chỉ cuộn khi quá dài */
-  min-height: 0;          /* 👈 BẮT BUỘC cho flex scroll */
-}
-.sidebar-widget:not(.sidebar-widget--stretch) .widget-body {
-  overflow: visible;
 }
