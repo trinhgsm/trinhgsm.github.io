@@ -66,6 +66,12 @@ body {
   padding: 12px;
   align-items: stretch; /* 👈 cao bằng nhau */
 }
+/* ===== CHỈ ÁP DỤNG CHO MÀN LỚN ===== */
+@media (min-width: 1280px) {
+  .top-row {
+    grid-template-columns: 1fr 1fr 300px;
+  }
+}
 
 /* =========================================================
    CARD CHUNG
