@@ -15,6 +15,29 @@
 </head>
 
 <body>
+<!-- ===== LOADING OVERLAY ===== -->
+<div id="loadingOverlay">
+  <div class="loading-wrap">
+    <div class="loading-ring"></div>
+    <div class="loading-core">
+      <div class="dukico-logo">
+        D<span class="uk"><span class="u">U</span><span class="k">K</span></span>ICO
+      </div>
+    </div>
+    <div class="loading-text">ĐANG TẢI…</div>
+  </div>
+</div>
+
+<!-- ===== PASS SCREEN ===== -->
+<div id="lockScreen">
+  <div id="lockBox">
+    <h2>Mật khẩu</h2>
+    <p>Nhập mật khẩu để truy cập.</p>
+    <input id="passwordInput" type="password" placeholder="Mật khẩu…" />
+    <div id="passwordError"></div>
+    <button id="unlockBtn">MỞ</button>
+  </div>
+</div>
 
   <!-- ================= TOP BAR ================= -->
   <header class="top">
@@ -94,6 +117,18 @@
 
   <!-- ================= JS ================= -->
   <script src="dashboard.js"></script>
+<!-- ===== STATUS BAR ===== -->
+<div id="siteStatusBar" style="display:none;">
+  <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
+
+  <div class="status-marquee">
+    <div id="statusList" class="status-track"></div>
+  </div>
+
+  <div class="status-note">
+    <div class="status-note-track paused" id="statusNoteDynamic"></div>
+  </div>
+</div>
 
 </body>
 </html>
