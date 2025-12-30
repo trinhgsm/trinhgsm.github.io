@@ -218,11 +218,12 @@ function renderUnitCards(units) {
     box.appendChild(card);
 
     drawCostChart(
-      card.querySelector(".costChart"),
-      u.totalPlan,
-      u.totalCost,
-      u.debtCDT
-    );
+  card.querySelector(".costChart"),
+  u.totalPlan,
+  u.paidCost,
+  u.debtNCC
+);
+
 
     drawTeamChart(card.querySelector(".teamChart"), u.byTeam);
   });
@@ -284,32 +285,38 @@ function drawTeamChart(canvas, byTeam) {
   });
 }
 
-function drawCostChart(canvas, totalPlan, totalCost, debtCDT) {
+function drawCostChart(canvas, totalPlan, paidCost, debtNCC) {
   if (!canvas) return;
 
   new Chart(canvas, {
     type: "bar",
     data: {
-      labels: ["Tổng dự tính", "Đã chi"],
+      labels: ["Tổng dự tính", "Chi phí"],
       datasets: [
+
+        // ===== TỔNG DỰ TÍNH (THAM CHIẾU) =====
         {
           label: "Tổng dự tính",
           data: [totalPlan || 0, null],
           backgroundColor: "#38bdf8",
           barThickness: 22
         },
+
+        // ===== ĐÃ CHI (TIỀN ĐI RA) =====
         {
           label: "Đã chi",
-          data: [null, totalCost || 0],
+          data: [null, paidCost || 0],
           backgroundColor: "#22c55e",
-          stack: "chi",
+          stack: "cost",
           barThickness: 22
         },
+
+        // ===== NỢ NCC (CŨNG LÀ CHI PHÍ) =====
         {
-          label: "CĐT còn nợ",
-          data: [null, debtCDT || 0],
+          label: "Nợ NCC",
+          data: [null, debtNCC || 0],
           backgroundColor: "#ef4444",
-          stack: "chi",
+          stack: "cost",
           barThickness: 22
         }
       ]
@@ -339,6 +346,7 @@ function drawCostChart(canvas, totalPlan, totalCost, debtCDT) {
     }
   });
 }
+
 
 /* =========================================================
    UTIL
