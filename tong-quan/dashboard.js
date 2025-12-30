@@ -207,7 +207,13 @@ function renderUnitCards(units) {
 
     box.appendChild(card);
 
-    drawCostChart(card.querySelector(".costChart"), u.plannedCost, u.actualCost);
+    drawCostChart(
+  card.querySelector(".costChart"),
+  u.plannedCost,
+  u.actualCost,
+  u.debt
+);
+
     drawTeamChart(card.querySelector(".teamChart"), u.byTeam);
   });
 }
@@ -268,46 +274,80 @@ function drawTeamChart(canvas, byTeam) {
   });
 }
 
-function drawCostChart(canvas, planned, actual) {
+function drawCostChart(canvas, planned, actual, debt = 0) {
   if (!canvas) return;
 
   new Chart(canvas, {
     type: "bar",
     data: {
       labels: ["Dự tính", "Đã chi"],
-      datasets: [{
-  data: [planned || 0, actual || 0],
-  backgroundColor: [
-    "#38bdf8",
-    actual > planned ? "#ef4444" : "#22c55e"
-  ],
-  barThickness: 22,        // 👈 độ rộng cố định
-  maxBarThickness: 26,     // 👈 không cho to quá
-  categoryPercentage: 0.6 // 👈 khoảng cách giữa nhóm
-}]
+      datasets: [
 
+        // ===== CỘT DỰ TÍNH =====
+        {
+          label: "Dự tính",
+          data: [planned || 0, null],
+          backgroundColor: "#38bdf8",
+          barThickness: 22,
+          maxBarThickness: 26
+        },
+
+        // ===== PHẦN ĐÃ TRẢ (XANH) =====
+        {
+          label: "Đã chi",
+          data: [null, actual || 0],
+          backgroundColor: "#22c55e",
+          stack: "chi",
+          barThickness: 22,
+          maxBarThickness: 26
+        },
+
+        // ===== PHẦN ĐANG NỢ (ĐỎ) =====
+        {
+          label: "Đang nợ",
+          data: [null, debt || 0],
+          backgroundColor: "#ef4444",
+          stack: "chi",
+          barThickness: 22,
+          maxBarThickness: 26
+        }
+      ]
     },
-   options: {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      callbacks: {
-        label: ctx => fmtShortMoney(ctx.raw)
-      }
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      ticks: {
-        callback: v => fmtShortMoney(v)
-      }
-    }
-  }
-}
 
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+
+      plugins: {
+        legend: {
+          display: true,
+          labels: {
+            boxWidth: 10,
+            font: { size: 10 }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx =>
+              `${ctx.dataset.label}: ${fmtShortMoney(ctx.raw)}`
+          }
+        }
+      },
+
+      scales: {
+        x: {
+          stacked: true,
+          categoryPercentage: 0.6
+        },
+        y: {
+          stacked: true,
+          beginAtZero: true,
+          ticks: {
+            callback: v => fmtShortMoney(v)
+          }
+        }
+      }
+    }
   });
 }
 
