@@ -48,51 +48,6 @@ function updateTime(ts) {
   if (el) el.textContent = "Cập nhật: " + new Date(ts).toLocaleString();
 }
 
-/* =========================================================
-   PROJECT CARD (CÔNG + TÀI CHÍNH)
-   ========================================================= */
-function renderProjectCard(p) {
-  const box = document.getElementById("projectCard");
-  if (!box || !p) return;
-
-  box.innerHTML = `
-    <h2>TỔNG DỰ ÁN</h2>
-    <div class="chart-wrap">
-      <canvas id="projectChart"></canvas>
-    </div>
-    <div class="meta">
-      <div>Lãi / lỗ: <b class="${p.profit < 0 ? "debt" : ""}">
-        ${fmtShortMoney(p.profit)}</b></div>
-      <div>Dòng tiền: <b class="${p.cashFlow < 0 ? "debt" : ""}">
-        ${fmtShortMoney(p.cashFlow)}</b></div>
-      <div>CĐT còn nợ: ${fmtShortMoney(p.debtCDT)}</div>
-    </div>
-  `;
-
-  const canvas = document.getElementById("projectChart");
-  if (!canvas) return;
-
-  if (projectChart) projectChart.destroy();
-
-  projectChart = new Chart(canvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Đã chi", "Còn lại"],
-      datasets: [{
-        data: [
-          p.totalCost || 0,
-          Math.max(0, (p.totalPlan || 0) - (p.totalCost || 0))
-        ],
-        backgroundColor: ["#22c55e", "#1f2937"]
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom" } }
-    }
-  });
-}
 
 /* =========================================================
    OVERVIEW BAR CHART – TIẾN ĐỘ %
