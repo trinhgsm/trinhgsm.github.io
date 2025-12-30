@@ -29,19 +29,28 @@
 
   <!-- ===== HÀNG TRÊN ===== -->
   <section class="top-row">
-    <!-- Tổng dự án -->
-    <div class="card">
-      <div id="projectCard"></div>
-    </div>
 
-    <!-- Tổng quan tiến độ -->
-    <div class="card">
-      <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
-      <div class="chart-wrap">
-        <canvas id="unitOverviewChart"></canvas>
-      </div>
+  <!-- Cột 1: Tổng dự án -->
+  <div class="card">
+    <div id="projectCard"></div>
+  </div>
+
+  <!-- Cột 2: Tổng quan tiến độ -->
+  <div class="card card--stretch">
+    <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
+    <div class="chart-wrap">
+      <canvas id="unitOverviewChart"></canvas>
     </div>
-  </section>
+  </div>
+
+  <!-- Cột 3: Sidebar cảnh báo nhanh -->
+  <div class="card card--stretch">
+    <h2>CẢNH BÁO TIẾN ĐỘ</h2>
+    <div class="widget-body" id="sidebarSummary"></div>
+  </div>
+
+</section>
+
 
   <!-- ===== HÀNG DƯỚI ===== -->
   <section class="bottom-row">
