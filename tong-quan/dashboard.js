@@ -1,6 +1,6 @@
 /************************************************************
- * DUKICO DASHBOARD – FRONTEND JS
- * Tương thích backend _handleDashboard_ (4 level)
+ * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
+ * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
  ************************************************************/
 
 const API_URL =
@@ -45,13 +45,11 @@ async function loadDashboard() {
    ========================================================= */
 function updateTime(ts) {
   const el = document.getElementById("genTime");
-  if (el) {
-    el.textContent = "Cập nhật: " + new Date(ts).toLocaleString();
-  }
+  if (el) el.textContent = "Cập nhật: " + new Date(ts).toLocaleString();
 }
 
 /* =========================================================
-   PROJECT CARD (BIỂU ĐỒ TRÒN)
+   PROJECT CARD (CÔNG + TÀI CHÍNH)
    ========================================================= */
 function renderProjectCard(p) {
   const box = document.getElementById("projectCard");
@@ -63,7 +61,11 @@ function renderProjectCard(p) {
       <canvas id="projectChart"></canvas>
     </div>
     <div class="meta">
-      Công: ${p.actualCong} / ${p.plannedCong} (${p.percent}%)
+      <div>Lãi / lỗ: <b class="${p.profit < 0 ? "debt" : ""}">
+        ${fmtShortMoney(p.profit)}</b></div>
+      <div>Dòng tiền: <b class="${p.cashFlow < 0 ? "debt" : ""}">
+        ${fmtShortMoney(p.cashFlow)}</b></div>
+      <div>CĐT còn nợ: ${fmtShortMoney(p.debtCDT)}</div>
     </div>
   `;
 
@@ -75,11 +77,11 @@ function renderProjectCard(p) {
   projectChart = new Chart(canvas, {
     type: "doughnut",
     data: {
-      labels: ["Đã làm", "Còn lại"],
+      labels: ["Đã chi", "Còn lại"],
       datasets: [{
         data: [
-          p.actualCong || 0,
-          Math.max(0, (p.plannedCong || 0) - (p.actualCong || 0))
+          p.totalCost || 0,
+          Math.max(0, (p.totalPlan || 0) - (p.totalCost || 0))
         ],
         backgroundColor: ["#22c55e", "#1f2937"]
       }]
@@ -93,7 +95,7 @@ function renderProjectCard(p) {
 }
 
 /* =========================================================
-   OVERVIEW BAR CHART – TỔNG QUAN CÁC CĂN
+   OVERVIEW BAR CHART – TIẾN ĐỘ %
    ========================================================= */
 function renderUnitOverview(units) {
   const canvas = document.getElementById("unitOverviewChart");
@@ -129,7 +131,7 @@ function renderUnitOverview(units) {
 }
 
 /* =========================================================
-   SIDEBAR – CẢNH BÁO TIẾN ĐỘ (4 MỨC)
+   SIDEBAR – CẢNH BÁO (TIẾN ĐỘ + TIỀN)
    ========================================================= */
 function renderWarnings(units) {
   const box = document.getElementById("sidebarSummary");
@@ -143,14 +145,15 @@ function renderWarnings(units) {
       <div class="text">
         <strong>${u.maCan}</strong><br>
         ${u.statusText}
-        ${u.debt > 0 ? `<br><span class="mini">Nợ: ${fmtShortMoney(u.debt)}</span>` : ""}
+        ${u.cashFlow < 0 ? `<br><span class="mini">Thiếu tiền: ${fmtShortMoney(u.cashFlow)}</span>` : ""}
+        ${u.debtCDT > 0 ? `<br><span class="mini">CĐT nợ: ${fmtShortMoney(u.debtCDT)}</span>` : ""}
       </div>
     </div>
   `).join("");
 }
 
 /* =========================================================
-   CARD MỖI CĂN (2 BIỂU ĐỒ NGANG)
+   CARD MỖI CĂN
    ========================================================= */
 function renderUnitCards(units) {
   const box = document.getElementById("unitCards");
@@ -181,17 +184,24 @@ function renderUnitCards(units) {
 
       <div class="finance">
         <div>
-          <span class="label">Đã chi:</span>
-          <span class="value">${fmtShortMoney(u.actualCost)}</span>
+          <span class="label">Lãi / lỗ:</span>
+          <span class="value ${u.profit < 0 ? "debt" : ""}">
+            ${fmtShortMoney(u.profit)}
+          </span>
+        </div>
 
-        </div>
         <div>
-          <span class="label">Đang nợ:</span>
-          <span class="value debt">${fmtShortMoney(u.debt)}</span>
+          <span class="label">Dòng tiền:</span>
+          <span class="value ${u.cashFlow < 0 ? "debt" : ""}">
+            ${fmtShortMoney(u.cashFlow)}
+          </span>
         </div>
+
         <div>
-          <span class="label">Đã ứng CĐT:</span>
-          <span class="value advance">${fmtShortMoney(u.advance)}</span>
+          <span class="label">CĐT còn nợ:</span>
+          <span class="value">
+            ${fmtShortMoney(u.debtCDT)}
+          </span>
         </div>
       </div>
 
@@ -208,18 +218,18 @@ function renderUnitCards(units) {
     box.appendChild(card);
 
     drawCostChart(
-  card.querySelector(".costChart"),
-  u.plannedCost,
-  u.actualCost,
-  u.debt
-);
+      card.querySelector(".costChart"),
+      u.totalPlan,
+      u.totalCost,
+      u.debtCDT
+    );
 
     drawTeamChart(card.querySelector(".teamChart"), u.byTeam);
   });
 }
 
 /* =========================================================
-   SIDEBAR DETAIL – PHÂN BỔ THEO TỔ
+   SIDEBAR DETAIL – TỔ ĐỘI
    ========================================================= */
 function renderSidebarDetail(units) {
   const box = document.getElementById("sidebarDetail");
@@ -274,57 +284,42 @@ function drawTeamChart(canvas, byTeam) {
   });
 }
 
-function drawCostChart(canvas, planned, actual, debt = 0) {
+function drawCostChart(canvas, totalPlan, totalCost, debtCDT) {
   if (!canvas) return;
 
   new Chart(canvas, {
     type: "bar",
     data: {
-      labels: ["Dự tính", "Đã chi"],
+      labels: ["Tổng dự tính", "Đã chi"],
       datasets: [
-
-        // ===== CỘT DỰ TÍNH =====
         {
-          label: "Dự tính",
-          data: [planned || 0, null],
+          label: "Tổng dự tính",
+          data: [totalPlan || 0, null],
           backgroundColor: "#38bdf8",
-          barThickness: 22,
-          maxBarThickness: 26
+          barThickness: 22
         },
-
-        // ===== PHẦN ĐÃ TRẢ (XANH) =====
         {
           label: "Đã chi",
-          data: [null, actual || 0],
+          data: [null, totalCost || 0],
           backgroundColor: "#22c55e",
           stack: "chi",
-          barThickness: 22,
-          maxBarThickness: 26
+          barThickness: 22
         },
-
-        // ===== PHẦN ĐANG NỢ (ĐỎ) =====
         {
-          label: "Đang nợ",
-          data: [null, debt || 0],
+          label: "CĐT còn nợ",
+          data: [null, debtCDT || 0],
           backgroundColor: "#ef4444",
           stack: "chi",
-          barThickness: 22,
-          maxBarThickness: 26
+          barThickness: 22
         }
       ]
     },
-
     options: {
       responsive: true,
       maintainAspectRatio: false,
-
       plugins: {
         legend: {
-          display: true,
-          labels: {
-            boxWidth: 10,
-            font: { size: 10 }
-          }
+          labels: { boxWidth: 10, font: { size: 10 } }
         },
         tooltip: {
           callbacks: {
@@ -333,18 +328,12 @@ function drawCostChart(canvas, planned, actual, debt = 0) {
           }
         }
       },
-
       scales: {
-        x: {
-          stacked: true,
-          categoryPercentage: 0.6
-        },
+        x: { stacked: true },
         y: {
           stacked: true,
           beginAtZero: true,
-          ticks: {
-            callback: v => fmtShortMoney(v)
-          }
+          ticks: { callback: v => fmtShortMoney(v) }
         }
       }
     }
@@ -360,24 +349,11 @@ function fmtDate(d) {
   return `${day}-${m}-${y}`;
 }
 
-function fmtMoney(n) {
-  return (Number(n) || 0).toLocaleString("vi-VN") + " đ";
-}
 function fmtShortMoney(n) {
   n = Number(n) || 0;
-
-  if (n >= 1_000_000_000) {
-    return (n / 1_000_000_000).toFixed(1).replace(".0","") + " tỷ";
-  }
-
-  if (n >= 1_000_000) {
-    return (n / 1_000_000).toFixed(1).replace(".0","") + " triệu";
-  }
-
-  if (n >= 1_000) {
-    return (n / 1_000).toFixed(0) + " k";
-  }
-
+  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1).replace(".0","") + " tỷ";
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1).replace(".0","") + " triệu";
+  if (n >= 1_000) return (n / 1_000).toFixed(0) + " k";
   return n.toString();
 }
 
