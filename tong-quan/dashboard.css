@@ -274,25 +274,3 @@ body {
     grid-template-columns: 1fr;
   }
 }
-/* ===== FIX DỨT ĐIỂM CHIỀU CAO BIỂU ĐỒ ===== */
-
-/* Mỗi card phải có chiều cao tối thiểu */
-.card {
-  min-height: 280px;
-}
-
-/* Card tổng dự án */
-#projectCard {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Khung biểu đồ luôn có height */
-.chart-wrap {
-  min-height: 220px;
-}
-
-/* Biểu đồ nhỏ trong card */
-.chart-row .chart-wrap {
-  min-height: 140px;
-}
