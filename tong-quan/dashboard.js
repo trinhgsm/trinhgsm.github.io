@@ -143,7 +143,7 @@ function renderWarnings(units) {
       <div class="text">
         <strong>${u.maCan}</strong><br>
         ${u.statusText}
-        ${u.debt > 0 ? `<br><span class="mini">Nợ: ${fmtMoney(u.debt)}</span>` : ""}
+        ${u.debt > 0 ? `<br><span class="mini">Nợ: ${fmtShortMoney(u.debt)}</span>` : ""}
       </div>
     </div>
   `).join("");
