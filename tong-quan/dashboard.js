@@ -49,52 +49,6 @@ function updateTime(ts) {
 }
 
 /* =========================================================
-   PROJECT CARD (CÔNG + TÀI CHÍNH)
-   ========================================================= */
-function renderProjectCard(p) {
-  const box = document.getElementById("projectCard");
-  if (!box || !p) return;
-
-  box.innerHTML = `
-    <h2>TỔNG DỰ ÁN</h2>
-    <div class="chart-wrap">
-      <canvas id="projectChart"></canvas>
-    </div>
-    <div class="meta">
-      <div>Lãi / lỗ: <b class="${p.profit < 0 ? "debt" : ""}">
-        ${fmtShortMoney(p.profit)}</b></div>
-      <div>Dòng tiền: <b class="${p.cashFlow < 0 ? "debt" : ""}">
-        ${fmtShortMoney(p.cashFlow)}</b></div>
-      <div>CĐT còn nợ: ${fmtShortMoney(p.debtCDT)}</div>
-    </div>
-  `;
-
-  const canvas = document.getElementById("projectChart");
-  if (!canvas) return;
-
-  if (projectChart) projectChart.destroy();
-
-  projectChart = new Chart(canvas, {
-    type: "doughnut",
-    data: {
-      labels: ["Đã chi", "Còn lại"],
-      datasets: [{
-        data: [
-          p.totalCost || 0,
-          Math.max(0, (p.totalPlan || 0) - (p.totalCost || 0))
-        ],
-        backgroundColor: ["#22c55e", "#1f2937"]
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: "bottom" } }
-    }
-  });
-}
-
-/* =========================================================
    OVERVIEW BAR CHART – TIẾN ĐỘ %
    ========================================================= */
 function renderUnitOverview(units) {
@@ -368,4 +322,116 @@ function fmtShortMoney(n) {
 /* =========================================================
    START
    ========================================================= */
+function renderProjectStatusChart(canvas, units) {
+  if (!canvas || !units || !units.length) return;
+
+  const labels = units.map(u => u.maCan);
+
+  /* ===== BAR: nền trạng thái ===== */
+  const barData = units.map(() => 1);
+  const barColors = units.map(u => {
+    if (u.status === "red" || u.status === "red-blink") return "#ef4444";
+    if (u.status === "yellow") return "#eab308";
+    return "#22c55e";
+  });
+
+  /* ===== LINE 1: TIẾN ĐỘ ===== */
+  const lineProgress = units.map(u => u.level ?? 1);
+
+  /* ===== LINE 2: NỢ NCC (chuẩn hoá 0–4) ===== */
+  const lineDebtNCC = units.map(u => {
+    if (!u.totalPlan) return 0;
+    const r = u.debtNCC / u.totalPlan;
+    if (r >= 0.7) return 4;
+    if (r >= 0.5) return 3;
+    if (r >= 0.3) return 2;
+    if (r >= 0.1) return 1;
+    return 0;
+  });
+
+  /* ===== LINE 3: CĐT NỢ (chuẩn hoá 0–4) ===== */
+  const lineDebtCDT = units.map(u => {
+    if (!u.totalPlan) return 0;
+    const r = u.debtCDT / u.totalPlan;
+    if (r >= 0.8) return 4;
+    if (r >= 0.6) return 3;
+    if (r >= 0.4) return 2;
+    if (r >= 0.2) return 1;
+    return 0;
+  });
+
+  new Chart(canvas, {
+    data: {
+      labels,
+      datasets: [
+        {
+          type: "bar",
+          label: "Trạng thái căn",
+          data: barData,
+          backgroundColor: barColors,
+          barThickness: 16
+        },
+        {
+          type: "line",
+          label: "Tiến độ",
+          data: lineProgress,
+          borderColor: "#60a5fa",
+          borderWidth: 1.5,
+          tension: 0.35,
+          pointRadius: 2,
+          yAxisID: "yInd"
+        },
+        {
+          type: "line",
+          label: "Nợ NCC",
+          data: lineDebtNCC,
+          borderColor: "#f97316",
+          borderWidth: 1.5,
+          tension: 0.35,
+          pointRadius: 2,
+          yAxisID: "yInd"
+        },
+        {
+          type: "line",
+          label: "CĐT nợ",
+          data: lineDebtCDT,
+          borderColor: "#a855f7",
+          borderWidth: 1.5,
+          tension: 0.35,
+          pointRadius: 2,
+          yAxisID: "yInd"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom" }
+      },
+      scales: {
+        y: {
+          display: false
+        },
+        yInd: {
+          position: "right",
+          min: 0,
+          max: 4,
+          ticks: {
+            stepSize: 1,
+            callback: v => ["OK", "Nhẹ", "TB", "Cao", "Rất cao"][v]
+          },
+          grid: {
+            drawOnChartArea: false
+          }
+        }
+      }
+    }
+  });
+}
+renderProjectStatusChart(
+  document.getElementById("projectStatusChart"),
+  data.units
+);
+
 loadDashboard();
