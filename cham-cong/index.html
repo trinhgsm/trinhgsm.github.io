@@ -100,5 +100,30 @@
    title="Danh sách chấm công">
   Xem biểu đồ
 </a>
+<script>
+(function () {
+  // 🔒 Chuỗi bí mật – bạn có thể đổi
+  const SECRET = "dukico@2025";
+
+  // Sinh key theo NGÀY
+  function buildKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+
+    // VD: dukico@202520250122
+    return md5(SECRET + y + m + day);
+  }
+
+  const btn = document.getElementById("dsFloatBtn");
+  if (!btn) return;
+
+  const key = buildKey();
+
+  // ⭐ GHI ĐÈ LINK
+  btn.href = "/cham-cong/ds.html?key=" + key;
+})();
+</script>
 </body>
 </html>
