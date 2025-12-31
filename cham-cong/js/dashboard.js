@@ -431,4 +431,49 @@ function fmtShortMoney(n) {
 /* =========================================================
    START
    ========================================================= */
+(function () {
+  const SECRET = "dukico@2025"; // 🔒 đổi nếu muốn
+
+  function buildTodayKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return md5(SECRET + y + m + day);
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const key = params.get("key");
+
+  if (!key || key !== buildTodayKey()) {
+    document.body.innerHTML = `
+      <div style="
+        height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#020617;
+        color:#ef4444;
+        font-family:system-ui;
+        font-size:18px;
+        letter-spacing:0.08em;
+      ">
+        ⛔ BỊ CẤM TRUY CẬP
+      </div>
+    `;
+    throw new Error("Access denied");
+  }
+})();
+function buildDSLink() {
+  const SECRET = "dukico@2025";
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+
+  const key = md5(SECRET + y + m + day);
+
+  return "https://trinhgsm.github.io/cham-cong/ds.html?key=" + key;
+}
+
 loadDashboard();
