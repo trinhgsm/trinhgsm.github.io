@@ -192,14 +192,3 @@ document.addEventListener("dukico-loading-hidden", () => {
 
   note.classList.remove("paused");
 });
-function buildDSLink() {
-  const SECRET = "dukico@2025";
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-
-  const key = md5(SECRET + y + m + day);
-
-  return "https://trinhgsm.github.io/cham-cong/ds.html?key=" + key;
-}
