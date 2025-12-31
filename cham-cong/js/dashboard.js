@@ -458,7 +458,7 @@ function fmtShortMoney(n) {
         font-size:18px;
         letter-spacing:0.08em;
       ">
-        ⛔ BỊ CẤM TRUY CẬP
+        ⛔ BẠN BỊ CẤM TRUY CẬP KO PHẢI NV DUKICO
       </div>
     `;
     throw new Error("Access denied");
