@@ -104,12 +104,26 @@ document.getElementById("dsLink").href = buildDSLink();
 <script src="js/api.js"></script>
 <script src="js/main.js"></script>
 <!-- NÚT DS – NỔI NHẸ -->
-<a href="/cham-cong/ds.html"
-   target="_blank"
-   id="dsFloatBtn"
-   title="Danh sách chấm công">
-  Xem biểu đồ
-</a>
+<script>
+(function () {
+  const SECRET = "dukico@2025"; // 🔒 PHẢI GIỐNG ds.html
+
+  function buildKey() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return md5(SECRET + y + m + day);
+  }
+
+  const btn = document.getElementById("dsFloatBtn");
+  if (!btn) return;
+
+  const key = buildKey();
+  btn.href = "/cham-cong/ds.html?key=" + key;
+})();
+</script>
+
 
 </body>
 </html>
