@@ -475,5 +475,6 @@ function buildDSLink() {
 
   return "https://trinhgsm.github.io/cham-cong/ds.html?key=" + key;
 }
+document.getElementById("dsLink").href = buildDSLink();
 
 loadDashboard();
