@@ -241,6 +241,14 @@ function renderUnitCards(units) {
 
     card.innerHTML = `
       <h2>${u.maCan}</h2>
+${site ? `
+  <div class="site-status site-${site.status}">
+    ${site.diffDays === 0
+      ? "Hôm nay có thi công"
+      : site.diffDays + " ngày chưa thi công"}
+    ${site.summary ? " – " + site.summary : ""}
+  </div>
+` : ""}
 
       <div class="line">
         <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
