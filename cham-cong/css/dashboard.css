@@ -442,24 +442,3 @@ header.top #genTime {
   0%,100% { opacity: 1 }
   50% { opacity: 0.4 }
 }
-.trend {
-  font-size: 14px;
-  margin-left: 6px;
-  vertical-align: middle;
-}
-
-.trend-up {
-  color: #22c55e;
-}
-
-.trend-warn {
-  color: #eab308;
-}
-
-.trend-down {
-  color: #ef4444;
-}
-
-.trend-flat {
-  color: #94a3b8;
-}
