@@ -8,6 +8,7 @@ const API_URL =
 
 let projectChart = null;
 let unitOverviewChart = null;
+let siteMap = {}; // map maCan -> site
 
 /* =========================================================
    LOAD DASHBOARD
@@ -17,21 +18,37 @@ async function loadDashboard() {
   if (dash) dash.classList.add("loading");
 
   try {
-    const res = await fetch(API_URL);
-    const data = await res.json();
-    // ===== MAP ACTIVITY BY MA CAN =====
-const siteMap = {};
-if (data.sites && Array.isArray(data.sites)) {
-  data.sites.forEach(s => {
-    siteMap[s.maCan] = s;
-  });
-}
+    // ===== 1. LOAD DASHBOARD (units) =====
+    const resDash = await fetch(
+      "https://script.google.com/macros/s/AKfycbyhRG5uIQ1Vr12XaZ_Cj5hApls09brgnTJjrv5cuJgHJ-ppYOREHdmfNWmE4fcbdKZa/exec?action=dashboard"
+    );
+    const data = await resDash.json();
 
     if (!data || !data.units) {
       console.error("Không có dữ liệu units");
       return;
     }
 
+    // ===== 2. LẤY FILE THÁNG (GIỐNG HTML CŨ) =====
+    const fileUrl = document.getElementById("dsLink")?.href;
+    const fileId = extractSheetId(fileUrl);
+
+    // ===== 3. LOAD SITES =====
+    siteMap = {};
+    if (fileId) {
+      const resSite = await fetch(
+        "https://script.google.com/macros/s/AKfycbyhRG5uIQ1Vr12XaZ_Cj5hApls09brgnTJjrv5cuJgHJ-ppYOREHdmfNWmE4fcbdKZa/exec?action=sheets&fileId=" + fileId
+      );
+      const siteData = await resSite.json();
+
+      if (siteData.sites) {
+        siteData.sites.forEach(s => {
+          siteMap[s.maCan] = s;
+        });
+      }
+    }
+
+    // ===== 4. RENDER =====
     updateTime(data.generatedAt);
 
     renderUnitOverview(data.units);
@@ -40,7 +57,6 @@ if (data.sites && Array.isArray(data.sites)) {
     renderWarnings(data.units, siteMap);
     renderUnitCards(data.units, siteMap);
     renderSidebarDetail(data.units);
-    renderActivityTicker(data.units, siteMap);
 
   } catch (err) {
     console.error("Lỗi loadDashboard:", err);
@@ -234,28 +250,27 @@ function renderUnitCards(units, siteMap) {
 
   units.forEach(u => {
     // ===== ACTIVITY STATUS (HOẠT ĐỘNG THI CÔNG) =====
-const site = siteMap[u.maCan] || {};
-const diffDays = Number(site.diffDays ?? 0);
+const site = siteMap[u.maCan];
 
-let actLevel = 0;
-let actText = "";
+let siteText = "";
+let siteClass = "";
 
-if (diffDays === 0) {
-  actLevel = 0;
-  actText = "🟢 Đang thi công hôm nay";
+if (site) {
+  if (site.diffDays === 0) {
+    siteText = "Hôm nay thi công";
+    siteClass = "green";
+  } else if (site.diffDays === 1) {
+    siteText = "Hôm qua có thi công";
+    siteClass = "green";
+  } else if (site.diffDays === 2) {
+    siteText = "2 ngày chưa thi công";
+    siteClass = "yellow";
+  } else if (site.diffDays >= 3) {
+    siteText = site.diffDays + " ngày chưa thi công";
+    siteClass = "red";
+  }
 }
-else if (diffDays === 1) {
-  actLevel = 1;
-  actText = "🟡 1 ngày chưa thi công";
-}
-else if (diffDays === 2) {
-  actLevel = 2;
-  actText = "🔴 2 ngày không thi công";
-}
-else {
-  actLevel = 3;
-  actText = `⚠️ ${diffDays} ngày không thi công – CẦN XỬ LÝ`;
-}
+
 
     const card = document.createElement("div");
     card.className = "card";
