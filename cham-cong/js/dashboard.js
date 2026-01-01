@@ -22,7 +22,8 @@ async function loadDashboard() {
     const res = await fetch(API_URL);
     const data = await res.json();
     // ================== LOAD SITE (NHẬT KÝ) ==================
-let siteMap = {};
+siteMap = {}; // reset dữ liệu mỗi lần load
+
 
 // ⚠️ fileId lấy từ URL file tháng mà dashboard đang dùng
 // Nếu bạn đã có biến lưu link file tháng → dùng lại
