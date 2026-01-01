@@ -19,6 +19,13 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
+    // ===== MAP ACTIVITY BY MA CAN =====
+const siteMap = {};
+if (data.sites && Array.isArray(data.sites)) {
+  data.sites.forEach(s => {
+    siteMap[s.maCan] = s;
+  });
+}
 
     if (!data || !data.units) {
       console.error("Không có dữ liệu units");
@@ -33,6 +40,7 @@ async function loadDashboard() {
     renderWarnings(data.units);
     renderUnitCards(data.units);
     renderSidebarDetail(data.units);
+    renderActivityTicker(data.units, siteMap);
 
   } catch (err) {
     console.error("Lỗi loadDashboard:", err);
@@ -218,13 +226,37 @@ function renderWarnings(units) {
 /* =========================================================
    CARD MỖI CĂN
    ========================================================= */
-function renderUnitCards(units) {
+function renderUnitCards(units, siteMap) {
   const box = document.getElementById("unitCards");
   if (!box) return;
 
   box.innerHTML = "";
 
   units.forEach(u => {
+    // ===== ACTIVITY STATUS (HOẠT ĐỘNG THI CÔNG) =====
+const site = siteMap[u.maCan] || {};
+const diffDays = Number(site.diffDays ?? 0);
+
+let actLevel = 0;
+let actText = "";
+
+if (diffDays === 0) {
+  actLevel = 0;
+  actText = "🟢 Đang thi công hôm nay";
+}
+else if (diffDays === 1) {
+  actLevel = 1;
+  actText = "🟡 1 ngày chưa thi công";
+}
+else if (diffDays === 2) {
+  actLevel = 2;
+  actText = "🔴 2 ngày không thi công";
+}
+else {
+  actLevel = 3;
+  actText = `⚠️ ${diffDays} ngày không thi công – CẦN XỬ LÝ`;
+}
+
     const card = document.createElement("div");
     card.className = "card";
 
@@ -242,6 +274,13 @@ function renderUnitCards(units) {
         </span>
         <span class="status ${u.status}">
           ${u.statusText}
+          <div class="activity">
+  <div class="activity-text level-${actLevel}">
+    ${actText}
+  </div>
+  <canvas class="activity-sparkline"></canvas>
+</div>
+
         </span>
       </div>
 
@@ -464,5 +503,27 @@ function fmtShortMoney(n) {
     throw new Error("Access denied");
   }
 })();
+function renderActivityTicker(units, siteMap) {
+  const box = document.getElementById("activityTicker");
+  if (!box) return;
+
+  const msgs = [];
+
+  units.forEach(u => {
+    const s = siteMap[u.maCan];
+    if (!s) return;
+
+    const d = Number(s.diffDays ?? 0);
+    if (d >= 1) {
+      msgs.push(`${u.maCan}: ${d} ngày không thi công`);
+    }
+  });
+
+  if (msgs.length === 0) {
+    box.innerHTML = `<span>🟢 Tất cả công trình đang thi công bình thường</span>`;
+  } else {
+    box.innerHTML = `<span>⚠️ ${msgs.join(" • ")}</span>`;
+  }
+}
 
 loadDashboard();
