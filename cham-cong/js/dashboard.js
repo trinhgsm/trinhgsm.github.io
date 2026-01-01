@@ -207,23 +207,34 @@ function renderProjectStatusChart(units) {
 /* =========================================================
    SIDEBAR – CẢNH BÁO (TIẾN ĐỘ + TIỀN)
    ========================================================= */
-function renderWarnings(units) {
+function renderWarnings(units, siteMap) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
   const list = [...units].sort((a, b) => b.level - a.level);
 
-  box.innerHTML = list.map(u => `
-    <div class="warning-item warning-${u.status}">
-      <span class="dot"></span>
-      <div class="text">
-        <strong>${u.maCan}</strong><br>
-        ${u.statusText}
-        ${u.cashFlow < 0 ? `<br><span class="mini">Thiếu tiền: ${fmtShortMoney(u.cashFlow)}</span>` : ""}
-        ${u.debtCDT > 0 ? `<br><span class="mini">CĐT nợ: ${fmtShortMoney(u.debtCDT)}</span>` : ""}
+  box.innerHTML = list.map(u => {
+    const site = siteMap ? siteMap[u.maCan] : null;
+
+    return `
+      <div class="warning-item warning-${u.status}">
+        <span class="dot"></span>
+        <div class="text">
+          <strong>${u.maCan}</strong><br>
+          ${u.statusText}
+
+          ${site ? `
+            <div class="mini site-${site.status}">
+              ${site.diffDays === 0
+                ? "Hôm nay có thi công"
+                : site.diffDays + " ngày chưa thi công"}
+              ${site.summary ? " – " + site.summary : ""}
+            </div>
+          ` : ""}
+        </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 /* =========================================================
