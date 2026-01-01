@@ -472,6 +472,8 @@ function fmtShortMoney(n) {
   }
 })();
 function renderSiteStatusExtension(units) {
+  console.log("🔥 renderSiteStatusExtension CALLED", units.length);
+
   if (!units || !units.length) return;
   if (!SITE_MAP) return;
 
