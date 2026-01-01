@@ -21,7 +21,8 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-    const siteMap = data.sites || {};
+    siteMap = data.sites || {};
+
 
     // ================== LOAD SITE (NHẬT KÝ) ==================
 siteMap = {}; // reset dữ liệu mỗi lần load
