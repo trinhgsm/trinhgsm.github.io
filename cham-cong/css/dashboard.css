@@ -288,24 +288,34 @@ body {
   margin: 4px 0 6px;
   opacity: 0.9;
 
-  /* 🔒 CHỈ 1 DÒNG */
+  /* KHÓA KÍCH THƯỚC */
   white-space: nowrap;
   overflow: hidden;
+  max-width: 100%;
+  width: 100%;
+
+  height: 1.2em;
+  line-height: 1.2em;
+
   position: relative;
-   /* ⚠️ RẤT QUAN TRỌNG */
-  height: 1.2em;      /* cố định chiều cao */
-  line-height: 1.2em; /* không làm card cao lên */
 }
 .site-status span {
+  position: absolute;
+  left: 0;
+  top: 0;
+
   display: inline-block;
-  padding-left: 100%;
+  white-space: nowrap;
+
   animation: cardMarquee 12s linear infinite;
 }
 
+
 @keyframes cardMarquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
 }
+
 
 
 .site-green {
@@ -336,7 +346,7 @@ body {
 .ticker span {
   display: inline-block;
   padding-right: 20px;
-  animation: tickerMove 70s linear infinite;
+  animation: tickerMove 90s linear infinite;
 }
 
 @keyframes tickerMove {
