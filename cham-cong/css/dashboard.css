@@ -346,7 +346,7 @@ body {
 .ticker span {
   display: inline-block;
   padding-right: 20px;
-  animation: tickerMove 90s linear infinite;
+  animation: tickerMove 130s linear infinite;
 }
 
 @keyframes tickerMove {
@@ -359,7 +359,7 @@ body {
 .site-red    { color: #ef4444; }
 
 .site-blink {
-  animation: blink 1s infinite;
+  animation: blink 150s infinite;
 }
 
 @keyframes blink {
