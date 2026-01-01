@@ -22,6 +22,14 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
+    // ===== MAP SITE STATUS BY MA CAN =====
+const siteMap = {};
+if (data.sites) {
+  Object.keys(data.sites).forEach(k => {
+    siteMap[k] = data.sites[k];
+  });
+}
+
 // ===== MAP SITE STATUS TỪ DASHBOARD API =====
 const siteMap = data.sites || {};
 
@@ -237,6 +245,24 @@ function renderUnitCards(units, siteMap) {
   box.innerHTML = "";
 
   units.forEach(u => {
+    const site = siteMap ? siteMap[u.maCan] : null;
+
+let dayText = "";
+let dayClass = "";
+
+if (site) {
+  if (site.diffDays === 0) {
+    dayText = "Hôm nay có thi công";
+    dayClass = "day-ok";
+  } else if (site.diffDays === 1) {
+    dayText = "1 ngày chưa thi công";
+    dayClass = "day-warn";
+  } else {
+    dayText = site.diffDays + " ngày chưa thi công";
+    dayClass = "day-danger";
+  }
+}
+
     const site = siteMap[u.maCan] || null;
 
     const card = document.createElement("div");
@@ -269,6 +295,12 @@ ${site ? `
           ${u.statusText}
         </span>
       </div>
+${dayText ? `
+<div class="line">
+  <span class="day-status ${dayClass}">
+    ${dayText}
+  </span>
+</div>` : ""}
 
       <div class="finance">
         <div>
