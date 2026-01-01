@@ -333,7 +333,7 @@ body {
 .ticker span {
   display: inline-block;
   padding-right: 20px;
-  animation: tickerMove 30s linear infinite;
+  animation: tickerMove 70s linear infinite;
 }
 
 @keyframes tickerMove {
