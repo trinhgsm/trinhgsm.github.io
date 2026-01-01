@@ -100,6 +100,8 @@ function renderUnitOverview(units) {
    PROJECT STATUS CHART – BAR + MULTI LINE
    ========================================================= */
 function renderProjectStatusChart(units) {
+  console.log("🔥 renderProjectStatusChart CALLED", units.length);
+
   const canvas = document.getElementById("projectStatusChart");
   if (!canvas || !units || !units.length) return;
 
