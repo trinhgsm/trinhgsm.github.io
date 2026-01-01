@@ -22,6 +22,8 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
+// ===== MAP SITE STATUS TỪ DASHBOARD API =====
+const siteMap = data.sites || {};
 
     if (!data || !data.units) {
       console.error("Không có dữ liệu units");
@@ -232,6 +234,8 @@ function renderUnitCards(units) {
   box.innerHTML = "";
 
   units.forEach(u => {
+    const site = siteMap[u.maCan] || null;
+
     const card = document.createElement("div");
     card.className = "card";
 
@@ -527,5 +531,6 @@ function renderSiteStatusExtension(units) {
     }
   });
 }
+renderActivityTicker(siteMap);
 
 loadDashboard();
