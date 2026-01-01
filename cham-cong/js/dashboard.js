@@ -22,16 +22,15 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-    // ===== MAP SITE STATUS TỪ DASHBOARD API =====
-const siteMap = data.sites || {};
 
     if (!data || !data.units) {
       console.error("Không có dữ liệu units");
       return;
     }
-// ===== EXTENSION SAFE CALL =====
-SITE_MAP = data.sites || {};
-renderSiteStatusExtension(data.units);
+
+    // ✅ CHỈ 1 SITE MAP DUY NHẤT
+    const siteMap = data.sites || {};
+    SITE_MAP = siteMap;
 
     updateTime(data.generatedAt);
 
@@ -44,8 +43,9 @@ renderSiteStatusExtension(data.units);
     renderSidebarDetail(data.units);
     renderActivityTicker(siteMap);
 
+    renderSiteStatusExtension(data.units);
 
-} catch (err) {
+  } catch (err) {
     console.error("Lỗi loadDashboard:", err);
   } finally {
     if (dash) dash.classList.remove("loading");
