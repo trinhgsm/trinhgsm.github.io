@@ -282,3 +282,29 @@ body {
     grid-template-columns: 1fr;
   }
 }
+.site-activity {
+  font-size: 0.75rem;
+  margin: 4px 0 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+
+.site-green {
+  background: #ecfdf5;
+  color: #15803d;
+}
+
+.site-yellow {
+  background: #fffbeb;
+  color: #a16207;
+}
+
+.site-red {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.site-unknown {
+  background: #f3f4f6;
+  color: #6b7280;
+}
