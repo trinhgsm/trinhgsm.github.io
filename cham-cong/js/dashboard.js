@@ -22,15 +22,7 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-    // ===== MAP SITE STATUS BY MA CAN =====
-const siteMap = {};
-if (data.sites) {
-  Object.keys(data.sites).forEach(k => {
-    siteMap[k] = data.sites[k];
-  });
-}
-
-// ===== MAP SITE STATUS TỪ DASHBOARD API =====
+    // ===== MAP SITE STATUS TỪ DASHBOARD API =====
 const siteMap = data.sites || {};
 
     if (!data || !data.units) {
