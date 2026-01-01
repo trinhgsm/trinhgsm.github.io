@@ -292,6 +292,9 @@ body {
   white-space: nowrap;
   overflow: hidden;
   position: relative;
+   /* ⚠️ RẤT QUAN TRỌNG */
+  height: 1.2em;      /* cố định chiều cao */
+  line-height: 1.2em; /* không làm card cao lên */
 }
 .site-status span {
   display: inline-block;
