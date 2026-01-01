@@ -9,6 +9,7 @@ const API_URL =
 
 let projectChart = null;
 let unitOverviewChart = null;
+let siteMap = {};   // 👈 BẮT BUỘC PHẢI CÓ
 
 /* =========================================================
    LOAD DASHBOARD
