@@ -65,6 +65,8 @@ if (window.currentMonthFile) {
 
     renderWarnings(data.units);
     renderUnitCards(data.units);
+    renderActivityTicker(data.units, siteMap);
+
     renderSidebarDetail(data.units);
 
   } catch (err) {
@@ -542,5 +544,21 @@ function fmtShortMoney(n) {
     throw new Error("Access denied");
   }
 })();
+function renderActivityTicker(units, siteMap) {
+  const el = document.getElementById("activityTicker");
+  if (!el) return;
+
+  const items = units.map(u => {
+    const site = siteMap[u.maCan];
+    if (!site) return null;
+
+    if (site.diffDays === 0) {
+      return `🟢 ${u.maCan}: Hôm nay có thi công`;
+    }
+    return `${site.status === "yellow" ? "🟡" : "🔴"} ${u.maCan}: ${site.diffDays} ngày không thi công`;
+  }).filter(Boolean);
+
+  el.innerHTML = items.join(" • ");
+}
 
 loadDashboard();
