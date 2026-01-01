@@ -41,7 +41,8 @@ renderSiteStatusExtension(data.units);
     renderWarnings(data.units);
     renderUnitCards(data.units);
     renderSidebarDetail(data.units);
-    //renderActivityTicker(data.units, siteMap);
+    renderActivityTicker(siteMap);
+
 
 } catch (err) {
     console.error("Lỗi loadDashboard:", err);
