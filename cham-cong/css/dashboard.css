@@ -328,3 +328,14 @@ body {
 .site-none {
   color: #6b7280;
 }
+.ticker {
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: 0.8rem;
+  animation: ticker 25s linear infinite;
+}
+
+@keyframes ticker {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
+}
