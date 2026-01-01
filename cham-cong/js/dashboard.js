@@ -22,16 +22,15 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-// ===== MAP SITE STATUS TỪ DASHBOARD API =====
-const siteMap = data.sites || {};
 
     if (!data || !data.units) {
       console.error("Không có dữ liệu units");
       return;
     }
-// ===== EXTENSION SAFE CALL =====
-SITE_MAP = data.sites || {};
-renderSiteStatusExtension(data.units);
+
+    // ✅ CHỈ 1 SITE MAP DUY NHẤT
+    const siteMap = data.sites || {};
+    SITE_MAP = siteMap;
 
     updateTime(data.generatedAt);
 
@@ -44,8 +43,9 @@ renderSiteStatusExtension(data.units);
     renderSidebarDetail(data.units);
     renderActivityTicker(siteMap);
 
+    renderSiteStatusExtension(data.units);
 
-} catch (err) {
+  } catch (err) {
     console.error("Lỗi loadDashboard:", err);
   } finally {
     if (dash) dash.classList.remove("loading");
@@ -100,6 +100,8 @@ function renderUnitOverview(units) {
    PROJECT STATUS CHART – BAR + MULTI LINE
    ========================================================= */
 function renderProjectStatusChart(units) {
+  console.log("🔥 renderProjectStatusChart CALLED", units.length);
+
   const canvas = document.getElementById("projectStatusChart");
   if (!canvas || !units || !units.length) return;
 
@@ -207,23 +209,34 @@ function renderProjectStatusChart(units) {
 /* =========================================================
    SIDEBAR – CẢNH BÁO (TIẾN ĐỘ + TIỀN)
    ========================================================= */
-function renderWarnings(units) {
+function renderWarnings(units, siteMap) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
   const list = [...units].sort((a, b) => b.level - a.level);
 
-  box.innerHTML = list.map(u => `
-    <div class="warning-item warning-${u.status}">
-      <span class="dot"></span>
-      <div class="text">
-        <strong>${u.maCan}</strong><br>
-        ${u.statusText}
-        ${u.cashFlow < 0 ? `<br><span class="mini">Thiếu tiền: ${fmtShortMoney(u.cashFlow)}</span>` : ""}
-        ${u.debtCDT > 0 ? `<br><span class="mini">CĐT nợ: ${fmtShortMoney(u.debtCDT)}</span>` : ""}
+  box.innerHTML = list.map(u => {
+    const site = siteMap ? siteMap[u.maCan] : null;
+
+    return `
+      <div class="warning-item warning-${u.status}">
+        <span class="dot"></span>
+        <div class="text">
+          <strong>${u.maCan}</strong><br>
+          ${u.statusText}
+
+          ${site ? `
+            <div class="mini site-${site.status}">
+              ${site.diffDays === 0
+                ? "Hôm nay có thi công"
+                : site.diffDays + " ngày chưa thi công"}
+              ${site.summary ? " – " + site.summary : ""}
+            </div>
+          ` : ""}
+        </div>
       </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 /* =========================================================
@@ -237,7 +250,23 @@ function renderUnitCards(units, siteMap) {
   box.innerHTML = "";
 
   units.forEach(u => {
-    const site = siteMap[u.maCan] || null;
+    const site = siteMap ? siteMap[u.maCan] : null;
+
+let dayText = "";
+let dayClass = "";
+
+if (site) {
+  if (site.diffDays === 0) {
+    dayText = "Hôm nay có thi công";
+    dayClass = "day-ok";
+  } else if (site.diffDays === 1) {
+    dayText = "1 ngày chưa thi công";
+    dayClass = "day-warn";
+  } else {
+    dayText = site.diffDays + " ngày chưa thi công";
+    dayClass = "day-danger";
+  }
+}
 
     const card = document.createElement("div");
     card.className = "card";
@@ -269,6 +298,12 @@ ${site ? `
           ${u.statusText}
         </span>
       </div>
+${dayText ? `
+<div class="line">
+  <span class="day-status ${dayClass}">
+    ${dayText}
+  </span>
+</div>` : ""}
 
       <div class="finance">
         <div>
