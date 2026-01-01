@@ -304,3 +304,35 @@ body {
 .site-none {
   color: #6b7280;
 }
+/* ===== ACTIVITY TICKER ===== */
+.ticker {
+  white-space: nowrap;
+  overflow: hidden;
+  background: #0f172a;
+  color: #e5e7eb;
+  font-size: 0.75rem;
+  padding: 6px 12px;
+}
+
+.ticker span {
+  display: inline-block;
+  padding-right: 60px;
+  animation: tickerMove 30s linear infinite;
+}
+
+@keyframes tickerMove {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(-100%); }
+}
+
+.site-green  { color: #22c55e; }
+.site-yellow { color: #eab308; }
+.site-red    { color: #ef4444; }
+
+.site-blink {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.3; }
+}
