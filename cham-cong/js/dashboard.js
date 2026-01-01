@@ -39,7 +39,8 @@ renderSiteStatusExtension(data.units);
     renderProjectStatusChart(data.units);
 
     renderWarnings(data.units);
-    renderUnitCards(data.units);
+    renderUnitCards(data.units, siteMap);
+
     renderSidebarDetail(data.units);
     renderActivityTicker(siteMap);
 
@@ -228,7 +229,8 @@ function renderWarnings(units) {
 /* =========================================================
    CARD MỖI CĂN
    ========================================================= */
-function renderUnitCards(units) {
+function renderUnitCards(units, siteMap) {
+
   const box = document.getElementById("unitCards");
   if (!box) return;
 
