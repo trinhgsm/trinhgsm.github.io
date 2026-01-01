@@ -365,3 +365,56 @@ body {
 @keyframes blink {
   50% { opacity: 0.3; }
 }
+/* ===== HEADER BASE ===== */
+header.top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 10px 14px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ticker chiếm phần còn lại */
+header.top .ticker {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* tiêu đề */
+header.top .title {
+  flex: 0 0 auto;
+  font-weight: 600;
+}
+
+/* thời gian */
+header.top #genTime {
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+/* ===== MOBILE: TICKER XUỐNG DÒNG ===== */
+@media (max-width: 768px) {
+  header.top {
+    flex-wrap: wrap;
+  }
+
+  /* hàng 1: title + time */
+  header.top .title {
+    order: 1;
+  }
+
+  header.top #genTime {
+    order: 2;
+    margin-left: auto;
+  }
+
+  /* hàng 2: ticker */
+  header.top .ticker {
+    order: 3;
+    width: 100%;
+    margin-top: 6px;
+  }
+}
