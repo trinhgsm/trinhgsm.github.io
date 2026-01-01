@@ -256,13 +256,26 @@ function renderUnitCards(units) {
   box.innerHTML = "";
 
   units.forEach(u => {
-    const site = siteMap[u.maCan];
+    const site = siteMap && siteMap[u.maCan] ? siteMap[u.maCan] : null;
 
     const card = document.createElement("div");
     card.className = "card";
 
     card.innerHTML = `
       <h2>${u.maCan}</h2>
+${site ? `
+<div class="site-activity site-${site.status}">
+  ${
+    site.diffDays === 0
+      ? "Hôm nay có thi công"
+      : site.diffDays + " ngày không thi công"
+  }
+</div>
+` : `
+<div class="site-activity site-unknown">
+  Chưa có dữ liệu nhật ký
+</div>
+`}
 
       <div class="line">
         <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
