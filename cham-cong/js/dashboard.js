@@ -5,7 +5,7 @@
  ************************************************************/
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
+  "https://script.google.com/macros/s/AKfycbyhRG5uIQ1Vr12XaZ_Cj5hApls09brgnTJjrv5cuJgHJ-ppYOREHdmfNWmE4fcbdKZa/exec?action=dashboard";
 
 let projectChart = null;
 let unitOverviewChart = null;
@@ -34,7 +34,6 @@ async function loadDashboard() {
     renderWarnings(data.units);
     renderUnitCards(data.units);
     renderSidebarDetail(data.units);
-    renderSiteTicker(data.units);
 
   } catch (err) {
     console.error("Lỗi loadDashboard:", err);
@@ -231,17 +230,7 @@ function renderUnitCards(units) {
     card.className = "card";
 
     card.innerHTML = `
-      <h2 class="unit-title">
-  <span class="ma-can">${u.maCan}</span>
-
-  ${u.log && u.log.summary ? `
-    <span class="unit-log ${u.log.status}">
-      <span class="log-track">
-        ${u.log.summary}
-      </span>
-    </span>
-  ` : ""}
-</h2>
+      <h2>${u.maCan}</h2>
 
       <div class="line">
         <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
@@ -476,28 +465,5 @@ function fmtShortMoney(n) {
     throw new Error("Access denied");
   }
 })();
-function renderSiteTicker(units) {
-  const el = document.getElementById("siteTicker");
-  if (!el) return;
-
-  const items = units
-    .filter(u => u.log && u.log.summary)
-    .map(u =>
-      `<span class="tk ${u.log.status}">
-        <strong>${u.maCan}</strong>: ${u.log.summary}
-      </span>`
-    );
-
-  if (!items.length) {
-    el.innerHTML = "";
-    return;
-  }
-
-  el.innerHTML = `
-    <div class="ticker-track">
-      ${items.join(" • ")}
-    </div>
-  `;
-}
 
 loadDashboard();
