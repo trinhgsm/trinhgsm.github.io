@@ -307,7 +307,7 @@ body {
   display: inline-block;
   white-space: nowrap;
 
-  animation: cardMarquee 12s linear infinite;
+  animation: cardMarquee 1s linear infinite;
 }
 
 
