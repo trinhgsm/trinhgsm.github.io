@@ -9,6 +9,8 @@ const API_URL =
 
 let projectChart = null;
 let unitOverviewChart = null;
+// ===== EXTENSION LAYER (SAFE) =====
+let SITE_MAP = {};
 
 /* =========================================================
    LOAD DASHBOARD
@@ -25,6 +27,9 @@ async function loadDashboard() {
       console.error("Không có dữ liệu units");
       return;
     }
+// ===== EXTENSION SAFE CALL =====
+SITE_MAP = data.sites || {};
+renderSiteStatusExtension(data.units);
 
     updateTime(data.generatedAt);
 
@@ -465,5 +470,26 @@ function fmtShortMoney(n) {
     throw new Error("Access denied");
   }
 })();
+/* =========================================================
+   EXTENSION – SITE STATUS (KHÔNG ẢNH HƯỞNG CODE CŨ)
+   ========================================================= */
+function renderSiteStatusExtension(units) {
+  if (!units || !units.length) return;
+  if (!SITE_MAP) return;
+
+  units.forEach(u => {
+    const site = SITE_MAP[u.maCan];
+    if (!site) return;
+
+    // chỉ log để xác nhận – chưa hiển thị UI
+    console.log(
+      "[SITE]",
+      u.maCan,
+      site.status,
+      site.diffDays,
+      site.summary || ""
+    );
+  });
+}
 
 loadDashboard();
