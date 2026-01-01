@@ -470,9 +470,6 @@ function fmtShortMoney(n) {
     throw new Error("Access denied");
   }
 })();
-/* =========================================================
-   EXTENSION – SITE STATUS (KHÔNG ẢNH HƯỞNG CODE CŨ)
-   ========================================================= */
 function renderSiteStatusExtension(units) {
   if (!units || !units.length) return;
   if (!SITE_MAP) return;
@@ -481,14 +478,50 @@ function renderSiteStatusExtension(units) {
     const site = SITE_MAP[u.maCan];
     if (!site) return;
 
-    // chỉ log để xác nhận – chưa hiển thị UI
-    console.log(
-      "[SITE]",
-      u.maCan,
-      site.status,
-      site.diffDays,
-      site.summary || ""
-    );
+    // tìm card tương ứng theo tiêu đề mã căn
+    const cards = document.querySelectorAll(".card h2");
+    let cardEl = null;
+
+    cards.forEach(h2 => {
+      if (h2.textContent.trim() === u.maCan) {
+        cardEl = h2.closest(".card");
+      }
+    });
+
+    if (!cardEl) return;
+
+    // tránh render trùng
+    if (cardEl.querySelector(".site-status")) return;
+
+    // xác định text + màu
+    let text = "Chưa có dữ liệu thi công";
+    let cls  = "site-none";
+
+    if (site.diffDays === 0) {
+      text = "Hôm nay có thi công";
+      cls  = "site-green";
+    } else {
+      text = site.diffDays + " ngày không thi công";
+      cls  = site.status === "yellow" ? "site-yellow" : "site-red";
+    }
+
+    // summary nếu có
+    if (site.summary) {
+      text += " – " + site.summary;
+    }
+
+    // tạo node
+    const div = document.createElement("div");
+    div.className = "site-status " + cls;
+    div.textContent = text;
+
+    // gắn vào card (sau dòng ngày)
+    const line = cardEl.querySelector(".line");
+    if (line) {
+      line.after(div);
+    } else {
+      cardEl.appendChild(div);
+    }
   });
 }
 
