@@ -282,3 +282,25 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* ===== SITE STATUS EXTENSION ===== */
+.site-status {
+  font-size: 0.75rem;
+  margin: 4px 0 6px;
+  line-height: 1.4;
+}
+
+.site-green {
+  color: #16a34a;
+}
+
+.site-yellow {
+  color: #ca8a04;
+}
+
+.site-red {
+  color: #dc2626;
+}
+
+.site-none {
+  color: #6b7280;
+}
