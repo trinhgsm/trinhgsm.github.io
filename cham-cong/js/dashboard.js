@@ -21,6 +21,8 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
+    const siteMap = data.sites || {};
+
     // ================== LOAD SITE (NHẬT KÝ) ==================
 siteMap = {}; // reset dữ liệu mỗi lần load
 
@@ -256,6 +258,23 @@ function renderUnitCards(units) {
   box.innerHTML = "";
 
   units.forEach(u => {
+    const site = siteMap[u.maCan];
+
+let siteText = "Chưa có dữ liệu nhật ký";
+let siteClass = "site-none";
+
+if (site) {
+  if (site.diffDays === 0) {
+    siteText = "Hôm nay có thi công";
+    siteClass = "site-green";
+  } else {
+    siteText = site.diffDays + " ngày không thi công";
+    siteClass = site.status === "yellow"
+      ? "site-yellow"
+      : "site-red";
+  }
+}
+
     const site = siteMap && siteMap[u.maCan] ? siteMap[u.maCan] : null;
 
     const card = document.createElement("div");
@@ -263,6 +282,10 @@ function renderUnitCards(units) {
 
     card.innerHTML = `
       <h2>${u.maCan}</h2>
+      <div class="site-status ${siteClass}">
+  ${siteText}
+</div>
+
 ${site ? `
 <div class="site-activity site-${site.status}">
   ${
