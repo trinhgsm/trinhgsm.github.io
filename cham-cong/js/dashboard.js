@@ -217,7 +217,6 @@ function renderWarnings(units, siteMap) {
 
   box.innerHTML = list.map(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
-const trend = getTrendArrow(site);
 
     return `
       <div class="warning-item warning-${u.status}">
@@ -273,13 +272,7 @@ if (site) {
     card.className = "card";
 
     card.innerHTML = `
-      <h2>
-  ${u.maCan}
-  <span class="trend ${trend.cls}">
-    ${trend.arrow}
-  </span>
-</h2>
-
+      <h2>${u.maCan}</h2>
 ${site ? `
   <div class="site-status site-${site.status}">
     <span>
@@ -606,19 +599,6 @@ function renderActivityTicker(siteMap) {
       `).join(" | ")}
     </span>
   `;
-}
-function getTrendArrow(site) {
-  if (!site) return { arrow: "→", cls: "trend-flat" };
-
-  if (site.diffDays === 0) {
-    return { arrow: "↗", cls: "trend-up" };
-  }
-
-  if (site.diffDays === 1) {
-    return { arrow: "↘", cls: "trend-warn" };
-  }
-
-  return { arrow: "↘", cls: "trend-down" };
 }
 
 loadDashboard();
