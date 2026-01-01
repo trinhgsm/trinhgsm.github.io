@@ -255,8 +255,6 @@ if (site) {
   }
 }
 
-    const site = siteMap[u.maCan] || null;
-
     const card = document.createElement("div");
     card.className = "card";
 
