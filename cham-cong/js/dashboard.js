@@ -37,7 +37,7 @@ if (data.sites && Array.isArray(data.sites)) {
     renderUnitOverview(data.units);
     renderProjectStatusChart(data.units);
 
-    renderWarnings(data.units);
+    renderWarnings(data.units, siteMap);
     renderUnitCards(data.units, siteMap);
     renderSidebarDetail(data.units);
     renderActivityTicker(data.units, siteMap);
