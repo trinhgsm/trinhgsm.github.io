@@ -308,3 +308,23 @@ body {
   background: #f3f4f6;
   color: #6b7280;
 }
+.site-status {
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+.site-green {
+  color: #16a34a;
+}
+
+.site-yellow {
+  color: #ca8a04;
+}
+
+.site-red {
+  color: #dc2626;
+}
+
+.site-none {
+  color: #6b7280;
+}
