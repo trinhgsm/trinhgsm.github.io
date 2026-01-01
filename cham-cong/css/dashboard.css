@@ -304,3 +304,26 @@ body {
   0%   { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
+/* =========================================================
+   ACTIVITY STATUS IN CARD
+   ========================================================= */
+.activity {
+  margin-top: 6px;
+}
+
+.activity-text {
+  font-size: 0.75rem;
+  margin-bottom: 2px;
+}
+
+.activity-text.level-0 { color: var(--green); }
+.activity-text.level-1 { color: var(--yellow); }
+.activity-text.level-2 { color: var(--red); }
+.activity-text.level-3 {
+  color: var(--red);
+  animation: blinkDanger 1.1s infinite;
+}
+
+.activity canvas {
+  height: 18px !important;
+}
