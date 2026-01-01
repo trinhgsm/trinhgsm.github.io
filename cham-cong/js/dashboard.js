@@ -531,6 +531,4 @@ function renderSiteStatusExtension(units) {
     }
   });
 }
-renderActivityTicker(siteMap);
-
 loadDashboard();
