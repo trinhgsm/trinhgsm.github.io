@@ -5,11 +5,10 @@
  ************************************************************/
 
 const API_URL =
-  "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
+  "https://script.google.com/macros/s/AKfycbyhRG5uIQ1Vr12XaZ_Cj5hApls09brgnTJjrv5cuJgHJ-ppYOREHdmfNWmE4fcbdKZa/exec?action=dashboard";
 
 let projectChart = null;
 let unitOverviewChart = null;
-let siteMap = {};   // 👈 BẮT BUỘC PHẢI CÓ
 
 /* =========================================================
    LOAD DASHBOARD
@@ -21,38 +20,6 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
-    siteMap = data.sites || {};
-
-
-    // ================== LOAD SITE (NHẬT KÝ) ==================
-siteMap = {}; // reset dữ liệu mỗi lần load
-
-
-// ⚠️ fileId lấy từ URL file tháng mà dashboard đang dùng
-// Nếu bạn đã có biến lưu link file tháng → dùng lại
-// Ví dụ: window.currentMonthFile
-
-if (window.currentMonthFile) {
-  const fileId = window.currentMonthFile
-    .match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
-
-  if (fileId) {
-    const siteRes = await fetch(
-      API_URL.replace(
-        "action=dashboard",
-        "action=sheets&fileId=" + fileId
-      )
-    );
-
-    const siteData = await siteRes.json();
-
-    if (siteData && Array.isArray(siteData.sites)) {
-      siteData.sites.forEach(s => {
-        siteMap[s.maCan] = s;
-      });
-    }
-  }
-}
 
     if (!data || !data.units) {
       console.error("Không có dữ liệu units");
@@ -66,8 +33,6 @@ if (window.currentMonthFile) {
 
     renderWarnings(data.units);
     renderUnitCards(data.units);
-    renderActivityTicker(data.units, siteMap);
-
     renderSidebarDetail(data.units);
 
   } catch (err) {
@@ -261,61 +226,16 @@ function renderUnitCards(units) {
   box.innerHTML = "";
 
   units.forEach(u => {
-    const site = siteMap[u.maCan];
-
-let siteText = "Chưa có dữ liệu nhật ký";
-let siteClass = "site-none";
-
-if (site) {
-  if (site.diffDays === 0) {
-    siteText = "Hôm nay có thi công";
-    siteClass = "site-green";
-  } else {
-    siteText = site.diffDays + " ngày không thi công";
-    siteClass = site.status === "yellow"
-      ? "site-yellow"
-      : "site-red";
-  }
-}
-
-    const site = siteMap && siteMap[u.maCan] ? siteMap[u.maCan] : null;
-
     const card = document.createElement("div");
     card.className = "card";
 
     card.innerHTML = `
       <h2>${u.maCan}</h2>
-      <div class="site-status ${siteClass}">
-  ${siteText}
-</div>
-
-${site ? `
-<div class="site-activity site-${site.status}">
-  ${
-    site.diffDays === 0
-      ? "Hôm nay có thi công"
-      : site.diffDays + " ngày không thi công"
-  }
-</div>
-` : `
-<div class="site-activity site-unknown">
-  Chưa có dữ liệu nhật ký
-</div>
-`}
 
       <div class="line">
         <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
         <span class="date">Hoàn thành ${fmtDate(u.end)}</span>
       </div>
-      ${site ? `
-<div class="site-line site-${site.status}">
-  ${
-    site.diffDays === 0
-      ? "Hôm nay có thi công"
-      : site.diffDays + " ngày không thi công"
-  }
-</div>
-` : ""}
 
       <div class="line">
         <span class="work">
@@ -545,21 +465,5 @@ function fmtShortMoney(n) {
     throw new Error("Access denied");
   }
 })();
-function renderActivityTicker(units, siteMap) {
-  const el = document.getElementById("activityTicker");
-  if (!el) return;
-
-  const items = units.map(u => {
-    const site = siteMap[u.maCan];
-    if (!site) return null;
-
-    if (site.diffDays === 0) {
-      return `🟢 ${u.maCan}: Hôm nay có thi công`;
-    }
-    return `${site.status === "yellow" ? "🟡" : "🔴"} ${u.maCan}: ${site.diffDays} ngày không thi công`;
-  }).filter(Boolean);
-
-  el.innerHTML = items.join(" • ");
-}
 
 loadDashboard();
