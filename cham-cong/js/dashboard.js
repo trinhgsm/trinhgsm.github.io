@@ -20,6 +20,34 @@ async function loadDashboard() {
   try {
     const res = await fetch(API_URL);
     const data = await res.json();
+    // ================== LOAD SITE (NHẬT KÝ) ==================
+let siteMap = {};
+
+// ⚠️ fileId lấy từ URL file tháng mà dashboard đang dùng
+// Nếu bạn đã có biến lưu link file tháng → dùng lại
+// Ví dụ: window.currentMonthFile
+
+if (window.currentMonthFile) {
+  const fileId = window.currentMonthFile
+    .match(/\/d\/([a-zA-Z0-9-_]+)/)?.[1];
+
+  if (fileId) {
+    const siteRes = await fetch(
+      API_URL.replace(
+        "action=dashboard",
+        "action=sheets&fileId=" + fileId
+      )
+    );
+
+    const siteData = await siteRes.json();
+
+    if (siteData && Array.isArray(siteData.sites)) {
+      siteData.sites.forEach(s => {
+        siteMap[s.maCan] = s;
+      });
+    }
+  }
+}
 
     if (!data || !data.units) {
       console.error("Không có dữ liệu units");
@@ -226,6 +254,8 @@ function renderUnitCards(units) {
   box.innerHTML = "";
 
   units.forEach(u => {
+    const site = siteMap[u.maCan];
+
     const card = document.createElement("div");
     card.className = "card";
 
@@ -236,6 +266,15 @@ function renderUnitCards(units) {
         <span class="date">Bắt đầu ${fmtDate(u.start)}</span>
         <span class="date">Hoàn thành ${fmtDate(u.end)}</span>
       </div>
+      ${site ? `
+<div class="site-line site-${site.status}">
+  ${
+    site.diffDays === 0
+      ? "Hôm nay có thi công"
+      : site.diffDays + " ngày không thi công"
+  }
+</div>
+` : ""}
 
       <div class="line">
         <span class="work">
