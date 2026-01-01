@@ -359,7 +359,7 @@ body {
 .site-red    { color: #ef4444; }
 
 .site-blink {
-  animation: blink 150s infinite;
+  animation: blink 95s infinite;
 }
 
 @keyframes blink {
