@@ -539,4 +539,25 @@ function renderSiteStatusExtension(units) {
     }
   });
 }
+function renderActivityTicker(siteMap) {
+  const box = document.getElementById("activityTicker");
+  if (!box || !siteMap) return;
+
+  const items = Object.values(siteMap);
+
+  box.innerHTML = `
+    <span>
+      ${items.map(s => `
+        <b class="site-${s.status} ${s.status === "red" && s.diffDays >= 3 ? "site-blink" : ""}">
+          ${s.maCan}:
+          ${s.diffDays === 0
+            ? "đang thi công"
+            : s.diffDays + " ngày chưa thi công"}
+          ${s.summary ? " – " + s.summary : ""}
+        </b>
+      `).join(" | ")}
+    </span>
+  `;
+}
+
 loadDashboard();
