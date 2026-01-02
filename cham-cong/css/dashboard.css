@@ -465,11 +465,6 @@ header.top #genTime {
 .warning-item.level-2 {
   border-left: 3px solid #ef4444;
 }
-
-.warning-item.level-3 {
-  border-left: 3px solid #ef4444;
-  animation: blink 1s infinite;
-}
 @keyframes blink {
   0% { opacity: 1; }
   50% { opacity: 0.3; }
@@ -487,11 +482,6 @@ header.top #genTime {
 /* dùng chung cho mọi nơi */
 .site-blink,
 .level-3,
-/* chữ trong sidebar */
-.warning-item.level-3 {
-  border-left: 3px solid #ef4444;
-}
-
 /* ticker trên đầu trang */
 #activityTicker .site-blink {
   color: #ef4444;
@@ -544,4 +534,9 @@ header.top #genTime {
   animation:
     blinkDanger 1.2s infinite,
     pulseShadow 1.2s infinite;
+}
+/* WARNING – LEVEL 3 (sidebar) */
+.warning-item.level-3 {
+  border-left: 3px solid #ef4444;
+  animation: blink 1s infinite;
 }
