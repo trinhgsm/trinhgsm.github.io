@@ -212,8 +212,23 @@ function renderWarnings(units, siteMap) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  const list = [...units].sort((a, b) => b.level - a.level);
+  // ===== 1. CĂN DỪNG THI CÔNG (ƯU TIÊN) =====
+  const stoppedSites = units.filter(u => {
+    const site = siteMap ? siteMap[u.maCan] : null;
+    return site && site.diffDays >= 2;
+  }).sort((a, b) => {
+    return siteMap[b.maCan].diffDays - siteMap[a.maCan].diffDays;
+  });
 
+  // ===== 2. CẢNH BÁO CŨ =====
+  const normalWarnings = units
+    .filter(u => !stoppedSites.find(s => s.maCan === u.maCan))
+    .sort((a, b) => b.level - a.level);
+
+  // ===== 3. GỘP DANH SÁCH =====
+  const list = [...stoppedSites, ...normalWarnings];
+
+  // ===== 4. RENDER =====
   box.innerHTML = list.map(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
 
@@ -224,11 +239,9 @@ function renderWarnings(units, siteMap) {
           <strong>${u.maCan}</strong><br>
           ${u.statusText}
 
-          ${site ? `
+          ${site && site.diffDays >= 2 ? `
             <div class="mini site-${site.status}">
-              ${site.diffDays === 0
-                ? "Hôm nay có thi công"
-                : site.diffDays + " ngày chưa thi công"}
+              🚨 ${site.diffDays} ngày chưa thi công
               ${site.summary ? " – " + site.summary : ""}
             </div>
           ` : ""}
@@ -237,6 +250,7 @@ function renderWarnings(units, siteMap) {
     `;
   }).join("");
 }
+
 
 /* =========================================================
    CARD MỖI CĂN
