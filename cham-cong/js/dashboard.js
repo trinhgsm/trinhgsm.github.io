@@ -1,4 +1,3 @@
-
 /************************************************************
  * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
  * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
@@ -228,9 +227,11 @@ function renderWarnings(units, siteMap) {
 
   box.innerHTML = finalList.map(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
-    const level = site ? site.level : 0;
+    const showLevel = site
+  ? (site.diffDays >= 3 ? 3 : Math.max(level, site.level))
+  : level;
 
-    return `
+   return `
       <div class="warning-item level-${level}">
         <span class="dot level-${showLevel}"></span>
 
