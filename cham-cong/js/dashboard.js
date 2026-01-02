@@ -1,3 +1,4 @@
+
 /************************************************************
  * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
  * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
@@ -256,6 +257,8 @@ function renderWarnings(units, siteMap) {
     </div>
   `;
 }).join("");
+
+}
 
 /* =========================================================
    CARD MỖI CĂN
