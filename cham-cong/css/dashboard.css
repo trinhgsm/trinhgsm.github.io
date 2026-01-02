@@ -427,28 +427,6 @@ header.top #genTime {
 .warning-item.level-2 {
   border-left: 3px solid #ef4444;
 }
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.3; }
-  100% { opacity: 1; }
-}
-/* ===============================
-   BLINK ANIMATION – LEVEL 3
-   =============================== */
-@keyframes blinkRed {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.3; }
-  100% { opacity: 1; }
-}
-
-/* dùng chung cho mọi nơi */
-.site-blink,
-.level-3,
-/* ticker trên đầu trang */
-#activityTicker .site-blink {
-  color: #ef4444;
-  font-weight: 600;
-}
 /* ===============================
    DOT LEVEL
    =============================== */
@@ -475,30 +453,29 @@ header.top #genTime {
   background: #ef4444;
 }
 /* ===============================
-   LEVEL 3 – ĐỎ NHẤP NHÁY (FIX)
+   LEVEL 3 – NHẤP NHÁY DUY NHẤT
    =============================== */
-@keyframes blinkDanger {
-  0% {
-    background-color: rgba(239,68,68,.15);
-    opacity: 1;
-  }
-  50% {
-    background-color: rgba(239,68,68,.45);
-    opacity: 0.9;
-  }
-  100% {
-    background-color: rgba(239,68,68,.15);
-    opacity: 1;
-  }
+@keyframes dangerBlink {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.25; }
+  100% { opacity: 1; }
 }
+
+/* chấm tròn */
 .dot.level-3 {
   background: #ef4444;
-  animation:
-    blinkDanger 1.2s infinite,
-    pulseShadow 1.2s infinite;
+  animation: dangerBlink 1.1s infinite;
 }
-/* WARNING – LEVEL 3 (sidebar) */
+
+/* cảnh báo sidebar */
 .warning-item.level-3 {
   border-left: 3px solid #ef4444;
-  animation: blink 1s infinite;
+  animation: dangerBlink 1.1s infinite;
+}
+
+/* ticker trên đầu trang */
+.site-blink {
+  animation: dangerBlink 1.1s infinite;
+  color: #ef4444;
+  font-weight: 600;
 }
