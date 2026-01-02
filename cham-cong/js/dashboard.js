@@ -212,24 +212,27 @@ function renderWarnings(units, siteMap) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  // ===== 1. CĂN DỪNG THI CÔNG (ƯU TIÊN) =====
-  const stoppedSites = units.filter(u => {
+  /* ===== NHÓM 2: CẢNH BÁO GỐC (LUÔN CÓ) ===== */
+  const baseList = [...units].sort((a, b) => b.level - a.level);
+
+  /* ===== NHÓM 1: DỪNG THI CÔNG ≥ 2 NGÀY ===== */
+  const stopList = baseList.filter(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
     return site && site.diffDays >= 2;
   }).sort((a, b) => {
     return siteMap[b.maCan].diffDays - siteMap[a.maCan].diffDays;
   });
 
-  // ===== 2. CẢNH BÁO CŨ =====
-  const normalWarnings = units
-    .filter(u => !stoppedSites.find(s => s.maCan === u.maCan))
-    .sort((a, b) => b.level - a.level);
+  /* ===== GỘP: NHÓM 1 Ở TRÊN, NHÓM 2 Ở DƯỚI ===== */
+  const finalList = stopList.length
+    ? [
+        ...stopList,
+        ...baseList.filter(u => !stopList.some(s => s.maCan === u.maCan))
+      ]
+    : baseList;
 
-  // ===== 3. GỘP DANH SÁCH =====
-  const list = [...stoppedSites, ...normalWarnings];
-
-  // ===== 4. RENDER =====
-  box.innerHTML = list.map(u => {
+  /* ===== RENDER ===== */
+  box.innerHTML = finalList.map(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
 
     return `
@@ -250,7 +253,6 @@ function renderWarnings(units, siteMap) {
     `;
   }).join("");
 }
-
 
 /* =========================================================
    CARD MỖI CĂN
