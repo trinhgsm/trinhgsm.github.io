@@ -272,7 +272,16 @@ if (site) {
     card.className = "card";
 
     card.innerHTML = `
-      <h2>${u.maCan}</h2>
+      <h2 class="unit-title">
+  <span class="ma-can">${u.maCan}</span>
+  ${(u.manager1 || u.manager2) ? `
+    <span class="manager-inline">
+      ${u.manager1 || ""}
+      ${u.manager1 && u.manager2 ? " · " : ""}
+      ${u.manager2 || ""}
+    </span>
+  ` : ""}
+</h2>
       ${(u.manager1 || u.manager2) ? `
   <div class="manager-line">
     <span class="manager">
