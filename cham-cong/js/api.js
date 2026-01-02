@@ -43,41 +43,42 @@ async function loadFiles() {
   showLoading();
   try {
     const res  = await fetch(API_URL + "?action=files");
-    const json = await res.json();
-    const list = Array.isArray(json) ? json : (json.files || []);
+    const list = await res.json();
 
     fileMenu.innerHTML = "";
 
     const now  = new Date();
     const curM = now.getMonth() + 1;
     const curY = now.getFullYear();
-    let defaultIndex = 0;
+
+    let defaultIndex = -1;
 
     list.forEach((item, idx) => {
-      const name = item.name || item.label || ("Dòng " + (item.rowIndex || ""));
-      const url  = item.url;
-      if (!url) return;
+      if (!item.url) return;
 
       const op = document.createElement("option");
-      op.value = url;
-      op.textContent = name;
+      op.value = item.url;
+      op.textContent = item.name || ("Dòng " + item.rowIndex);
       fileMenu.appendChild(op);
 
-      const monthVal = item.month || item.thang || item.A || null;
-      if (monthVal && isCurrentMonthValue(monthVal, curM, curY)) {
+      // ✅ CHỈ KIỂM TRA THÁNG
+      if (item.month && isCurrentMonthValue(item.month, curM, curY)) {
         defaultIndex = idx;
       }
     });
 
-    if (fileMenu.options.length > 0) {
+    // ✅ ƯU TIÊN FILE THÁNG HIỆN TẠI
+    if (defaultIndex >= 0) {
       fileMenu.selectedIndex = defaultIndex;
-      await loadSheetsForCurrentFile();
     } else {
-      hideLoading();
+      // fallback: chọn file cuối cùng
+      fileMenu.selectedIndex = fileMenu.options.length - 1;
     }
+
+    await loadSheetsForCurrentFile();
   } catch (err) {
     console.error(err);
-    alert("Lỗi tải danh sách file từ API.");
+    alert("Lỗi tải danh sách file");
     hideLoading();
   }
 }
