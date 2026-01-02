@@ -213,51 +213,47 @@ function renderWarnings(units, siteMap) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  /* ===== NHÓM 2: CẢNH BÁO GỐC (LUÔN CÓ) ===== */
-  const baseList = [...units].sort((a, b) => b.level - a.level);
+  // nhóm 1: có dừng thi công
+  const danger = [];
+  // nhóm 2: còn lại
+  const normal = [];
 
-  /* ===== NHÓM 1: DỪNG THI CÔNG ≥ 2 NGÀY ===== */
-  const stopList = baseList.filter(u => {
+  units.forEach(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
-    return site && site.diffDays >= 2;
-  }).sort((a, b) => {
-    return siteMap[b.maCan].diffDays - siteMap[a.maCan].diffDays;
+    if (site && site.diffDays >= 2) danger.push(u);
+    else normal.push(u);
   });
 
-  /* ===== GỘP: NHÓM 1 Ở TRÊN, NHÓM 2 Ở DƯỚI ===== */
-  const finalList = stopList.length
-    ? [
-        ...stopList,
-        ...baseList.filter(u => !stopList.some(s => s.maCan === u.maCan))
-      ]
-    : baseList;
+  const finalList = [...danger, ...normal];
 
-  /* ===== RENDER ===== */
   box.innerHTML = finalList.map(u => {
-  const site = siteMap ? siteMap[u.maCan] : null;
+    const site = siteMap ? siteMap[u.maCan] : null;
+    const level = site ? site.level : 0;
 
-  return `
-    <div class="warning-item warning-${u.status}">
-      <span class="dot level-${site ? site.level : 0}"></span>
+    return `
+      <div class="warning-item level-${level}">
+        <span class="dot level-${level}"></span>
+        <div class="text">
+          <strong>${u.maCan}</strong><br>
 
-      <div class="text">
-        <strong>${u.maCan}</strong><br>
+          ${site && site.diffDays >= 2
+            ? "🚫 Dừng thi công"
+            : u.statusText
+          }
 
-        ${site && site.diffDays >= 2
-          ? "🚫 Dừng thi công"
-          : u.statusText
-        }
-
-        ${site && site.diffDays >= 2 ? `
-          <div class="mini site-${site.status}">
-            🚨 ${site.diffDays} ngày chưa thi công
-            ${site.summary ? " – " + site.summary : ""}
-          </div>
-        ` : ""}
+          ${site && site.diffDays > 0 ? `
+            <div class="mini">
+              ${site.diffDays === 0
+                ? "Hôm nay có thi công"
+                : site.diffDays + " ngày chưa thi công"}
+            </div>
+          ` : ""}
+        </div>
       </div>
-    </div>
-  `;
-}).join("");
+    `;
+  }).join("");
+}
+
 
 }
 
