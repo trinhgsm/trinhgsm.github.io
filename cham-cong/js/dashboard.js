@@ -273,6 +273,16 @@ if (site) {
 
     card.innerHTML = `
       <h2>${u.maCan}</h2>
+      ${(u.manager1 || u.manager2) ? `
+  <div class="manager-line">
+    <span class="manager">
+      ${u.manager1 || ""}
+      ${u.manager1 && u.manager2 ? " · " : ""}
+      ${u.manager2 || ""}
+    </span>
+  </div>
+` : ""}
+
 ${site ? `
   <div class="site-status site-${site.status}">
     <span>
