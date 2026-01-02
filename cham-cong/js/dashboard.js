@@ -1,4 +1,5 @@
 
+
 /************************************************************
  * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
  * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
@@ -274,23 +275,15 @@ if (site) {
     card.innerHTML = `
       <h2 class="unit-title">
   <span class="ma-can">${u.maCan}</span>
+
   ${(u.manager1 || u.manager2) ? `
     <span class="manager-inline">
-      ${u.manager1 || ""}
-      ${u.manager1 && u.manager2 ? " · " : ""}
-      ${u.manager2 || ""}
+      ${u.manager1 ? `Chỉ huy trưởng: ${u.manager1}` : ""}
+      ${u.manager1 && u.manager2 ? " | " : ""}
+      ${u.manager2 ? `Thủ kho: ${u.manager2}` : ""}
     </span>
   ` : ""}
 </h2>
-      ${(u.manager1 || u.manager2) ? `
-  <div class="manager-line">
-    <span class="manager">
-      ${u.manager1 || ""}
-      ${u.manager1 && u.manager2 ? " · " : ""}
-      ${u.manager2 || ""}
-    </span>
-  </div>
-` : ""}
 
 ${site ? `
   <div class="site-status site-${site.status}">
