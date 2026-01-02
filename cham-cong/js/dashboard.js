@@ -1,5 +1,3 @@
-
-
 /************************************************************
  * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
  * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
@@ -280,7 +278,7 @@ if (site) {
     <span class="manager-inline">
       ${u.manager1 ? `Chỉ huy trưởng: ${u.manager1}` : ""}
       ${u.manager1 && u.manager2 ? " | " : ""}
-      ${u.manager2 ? `Thủ kho: ${u.manager2}` : ""}
+      ${u.manager2 ? `Trợ lý: ${u.manager2}` : ""}
     </span>
   ` : ""}
 </h2>
