@@ -233,26 +233,29 @@ function renderWarnings(units, siteMap) {
 
   /* ===== RENDER ===== */
   box.innerHTML = finalList.map(u => {
-    const site = siteMap ? siteMap[u.maCan] : null;
+  const site = siteMap ? siteMap[u.maCan] : null;
 
-    return `
-      <div class="warning-item warning-${u.status}">
-        <span class="dot"></span>
-        <div class="text">
-          <strong>${u.maCan}</strong><br>
-          ${u.statusText}
+  return `
+    <div class="warning-item warning-${u.status}">
+      <span class="dot"></span>
+      <div class="text">
+        <strong>${u.maCan}</strong><br>
 
-          ${site && site.diffDays >= 2 ? `
-            <div class="mini site-${site.status}">
-              🚨 ${site.diffDays} ngày chưa thi công
-              ${site.summary ? " – " + site.summary : ""}
-            </div>
-          ` : ""}
-        </div>
+        ${site && site.diffDays >= 2
+          ? "🚫 Dừng thi công"
+          : u.statusText
+        }
+
+        ${site && site.diffDays >= 2 ? `
+          <div class="mini site-${site.status}">
+            🚨 ${site.diffDays} ngày chưa thi công
+            ${site.summary ? " – " + site.summary : ""}
+          </div>
+        ` : ""}
       </div>
-    `;
-  }).join("");
-}
+    </div>
+  `;
+}).join("");
 
 /* =========================================================
    CARD MỖI CĂN
