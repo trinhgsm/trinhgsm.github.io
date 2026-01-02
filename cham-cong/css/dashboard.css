@@ -159,12 +159,6 @@ body {
 .warning-red .dot,
 .warning-red-blink .dot { background: var(--red); }
 
-@keyframes blinkDanger {
-  0%   { background-color: rgba(239,68,68,.15); }
-  50%  { background-color: rgba(239,68,68,.45); }
-  100% { background-color: rgba(239,68,68,.15); }
-}
-
 .warning-red-blink {
   animation: blinkDanger 1.1s infinite;
   border: 1px solid rgba(239,68,68,.6);
@@ -551,14 +545,22 @@ header.top #genTime {
 .dot.level-2 {
   background: #ef4444;
 }
-
 /* ===============================
-   LEVEL 3 – ĐỎ NHẤP NHÁY
+   LEVEL 3 – ĐỎ NHẤP NHÁY (FIX)
    =============================== */
 @keyframes blinkDanger {
-  0%   { opacity: 1; }
-  50%  { opacity: 0.25; }
-  100% { opacity: 1; }
+  0% {
+    background-color: rgba(239,68,68,.15);
+    opacity: 1;
+  }
+  50% {
+    background-color: rgba(239,68,68,.45);
+    opacity: 0.9;
+  }
+  100% {
+    background-color: rgba(239,68,68,.15);
+    opacity: 1;
+  }
 }
 
 .dot.level-3 {
