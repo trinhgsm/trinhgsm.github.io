@@ -495,3 +495,34 @@ header.top #genTime {
   50% { opacity: 0.3; }
   100% { opacity: 1; }
 }
+/* ===============================
+   BLINK ANIMATION – LEVEL 3
+   =============================== */
+@keyframes blinkRed {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+/* dùng chung cho mọi nơi */
+.site-blink,
+.level-3,
+.dot.level-3 {
+  animation: blinkRed 1.2s infinite;
+}
+
+/* chấm tròn cảnh báo */
+.dot.level-3 {
+  background: #ef4444;
+}
+
+/* chữ trong sidebar */
+.warning-item.level-3 {
+  border-left: 3px solid #ef4444;
+}
+
+/* ticker trên đầu trang */
+#activityTicker .site-blink {
+  color: #ef4444;
+  font-weight: 600;
+}
