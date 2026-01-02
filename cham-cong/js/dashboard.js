@@ -310,14 +310,7 @@ ${site ? `
           ${u.statusText}
         </span>
       </div>
-${dayText ? `
-<div class="line">
-  <span class="day-status ${dayClass}">
-    ${dayText}
-  </span>
-</div>` : ""}
-
-      <div class="finance">
+ <div class="finance">
         <div>
           <span class="label">Lãi / lỗ:</span>
           <span class="value ${u.profit < 0 ? "debt" : ""}">
