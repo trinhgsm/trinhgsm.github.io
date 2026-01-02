@@ -232,7 +232,8 @@ function renderWarnings(units, siteMap) {
 
     return `
       <div class="warning-item level-${level}">
-        <span class="dot level-${level}"></span>
+        <span class="dot level-${showLevel}"></span>
+
         <div class="text">
           <strong>${u.maCan}</strong><br>
 
