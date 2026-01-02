@@ -36,7 +36,7 @@ async function loadDashboard() {
     renderUnitOverview(data.units);
     renderProjectStatusChart(data.units);
 
-    renderWarnings(data.units);
+    renderWarnings(data.units, siteMap);
     renderUnitCards(data.units, siteMap);
 
     renderSidebarDetail(data.units);
