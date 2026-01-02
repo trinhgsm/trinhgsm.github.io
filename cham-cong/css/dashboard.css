@@ -432,19 +432,6 @@ header.top #genTime {
 .day-warn {
   color: #eab308;
 }
-.manager-line {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  margin: 4px 0 6px;
-  overflow: hidden;
-}
-
-.manager-line .manager {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 .day-danger {
   color: #ef4444;
@@ -454,4 +441,25 @@ header.top #genTime {
 @keyframes blink {
   0%,100% { opacity: 1 }
   50% { opacity: 0.4 }
+}
+.unit-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.unit-title .ma-can {
+  font-weight: 700;
+  color: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.unit-title .manager-inline {
+  font-size: 0.75rem;
+  color: #93c5fd;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
