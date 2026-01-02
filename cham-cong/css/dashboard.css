@@ -446,20 +446,11 @@ header.top #genTime {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 1rem;
-  line-height: 1.2;
+  flex-wrap: wrap;
 }
 
-.unit-title .ma-can {
-  font-weight: 700;
-  color: #e5e7eb;
-  flex-shrink: 0;
-}
-
-.unit-title .manager-inline {
+.manager-inline {
   font-size: 0.75rem;
   color: #93c5fd;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
