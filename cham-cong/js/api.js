@@ -8,31 +8,17 @@ function extractSheetId(url) {
 function isCurrentMonthValue(val, curM, curY) {
   if (!val) return false;
 
+  // ✅ CASE 1: ISO date string từ Apps Script
+  if (typeof val === "string") {
+    const d = new Date(val);
+    if (!isNaN(d)) {
+      return (d.getMonth() + 1 === curM) && (d.getFullYear() === curY);
+    }
+  }
+
+  // ✅ CASE 2: phòng trường hợp val đã là Date (hiếm)
   if (val instanceof Date) {
     return (val.getMonth() + 1 === curM) && (val.getFullYear() === curY);
-  }
-
-  const s = String(val).trim();
-
-  let m = s.match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
-  if (m) {
-    const month = parseInt(m[1], 10);
-    const year  = parseInt(m[2], 10);
-    return month === curM && year === curY;
-  }
-
-  m = s.match(/^(\d{4})\s*[\/\-]\s*(\d{1,2})$/);
-  if (m) {
-    const year  = parseInt(m[1], 10);
-    const month = parseInt(m[2], 10);
-    return month === curM && year === curY;
-  }
-
-  m = s.match(/Tháng\s*(\d{1,2})\s*[\/\-]?\s*(\d{4})?/i);
-  if (m) {
-    const month = parseInt(m[1], 10);
-    const year  = m[2] ? parseInt(m[2], 10) : curY;
-    return month === curM && year === curY;
   }
 
   return false;
