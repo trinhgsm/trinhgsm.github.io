@@ -454,3 +454,44 @@ header.top #genTime {
   color: #93c5fd;
   white-space: nowrap;
 }
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* level 0 – xanh */
+.dot.level-0 {
+  background: #22c55e;
+}
+
+/* level 1 – vàng */
+.dot.level-1 {
+  background: #eab308;
+}
+
+/* level 2 – đỏ */
+.dot.level-2 {
+  background: #ef4444;
+}
+
+/* level 3 – đỏ nhấp nháy */
+.dot.level-3 {
+  background: #ef4444;
+  animation: blink 1s infinite;
+}
+.warning-item.level-2 {
+  border-left: 3px solid #ef4444;
+}
+
+.warning-item.level-3 {
+  border-left: 3px solid #ef4444;
+  animation: blink 1s infinite;
+}
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
