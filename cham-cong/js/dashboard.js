@@ -228,7 +228,13 @@ function renderWarnings(units, siteMap) {
 
   box.innerHTML = finalList.map(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
-    const level = site ? site.level : 0;
+    let level = 0;
+if (site) {
+  if (site.diffDays >= 3) level = 3;   // 🔥 đỏ nhấp nháy
+  else if (site.diffDays === 2) level = 2; // đỏ
+  else if (site.diffDays === 1) level = 1; // vàng
+}
+
 
     return `
       <div class="warning-item level-${level}">
