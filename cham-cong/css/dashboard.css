@@ -309,21 +309,6 @@ body {
   0%   { transform: translateX(100%); }
   100% { transform: translateX(-100%); }
 }
-
-
-
-.site-green {
-  color: #16a34a;
-}
-
-.site-yellow {
-  color: #ca8a04;
-}
-
-.site-red {
-  color: #dc2626;
-}
-
 .site-none {
   color: #6b7280;
 }
@@ -348,9 +333,9 @@ body {
   to   { transform: translateX(-100%); }
 }
 
-.site-green  { color: #22c55e; }
-.site-yellow { color: #eab308; }
-.site-red    { color: #ef4444; }
+.site-green  { color: var(--green); }
+.site-yellow { color: var(--yellow); }
+.site-red    { color: var(--red); }
 
 .site-blink {
   animation: blink 95s infinite;
@@ -439,29 +424,6 @@ header.top #genTime {
   color: #93c5fd;
   white-space: nowrap;
 }
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 8px;
-}
-
-/* level 0 – xanh */
-.dot.level-0 {
-  background: #22c55e;
-}
-
-/* level 1 – vàng */
-.dot.level-1 {
-  background: #eab308;
-}
-
-/* level 2 – đỏ */
-.dot.level-2 {
-  background: #ef4444;
-}
-
 .warning-item.level-2 {
   border-left: 3px solid #ef4444;
 }
