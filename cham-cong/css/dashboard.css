@@ -355,10 +355,6 @@ body {
 .site-blink {
   animation: blink 95s infinite;
 }
-
-@keyframes blink {
-  50% { opacity: 0.3; }
-}
 /* ===== HEADER BASE ===== */
 header.top {
   display: flex;
@@ -431,11 +427,6 @@ header.top #genTime {
   color: #ef4444;
   animation: blink 1.2s infinite;
 }
-
-@keyframes blink {
-  0%,100% { opacity: 1 }
-  50% { opacity: 0.4 }
-}
 .unit-title {
   display: flex;
   align-items: center;
@@ -471,11 +462,6 @@ header.top #genTime {
   background: #ef4444;
 }
 
-/* level 3 – đỏ nhấp nháy */
-.dot.level-3 {
-  background: #ef4444;
-  animation: blink 1s infinite;
-}
 .warning-item.level-2 {
   border-left: 3px solid #ef4444;
 }
@@ -501,15 +487,6 @@ header.top #genTime {
 /* dùng chung cho mọi nơi */
 .site-blink,
 .level-3,
-.dot.level-3 {
-  animation: blinkRed 1.2s infinite;
-}
-
-/* chấm tròn cảnh báo */
-.dot.level-3 {
-  background: #ef4444;
-}
-
 /* chữ trong sidebar */
 .warning-item.level-3 {
   border-left: 3px solid #ef4444;
@@ -562,8 +539,9 @@ header.top #genTime {
     opacity: 1;
   }
 }
-
 .dot.level-3 {
   background: #ef4444;
-  animation: blinkDanger 1s infinite;
+  animation:
+    blinkDanger 1.2s infinite,
+    pulseShadow 1.2s infinite;
 }
