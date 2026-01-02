@@ -526,3 +526,42 @@ header.top #genTime {
   color: #ef4444;
   font-weight: 600;
 }
+/* ===============================
+   DOT LEVEL
+   =============================== */
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+/* level 0 – xanh */
+.dot.level-0 {
+  background: #22c55e;
+}
+
+/* level 1 – vàng */
+.dot.level-1 {
+  background: #eab308;
+}
+
+/* level 2 – đỏ */
+.dot.level-2 {
+  background: #ef4444;
+}
+
+/* ===============================
+   LEVEL 3 – ĐỎ NHẤP NHÁY
+   =============================== */
+@keyframes blinkDanger {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.25; }
+  100% { opacity: 1; }
+}
+
+.dot.level-3 {
+  background: #ef4444;
+  animation: blinkDanger 1s infinite;
+}
