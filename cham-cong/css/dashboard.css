@@ -159,6 +159,12 @@ body {
 .warning-red .dot,
 .warning-red-blink .dot { background: var(--red); }
 
+@keyframes blinkDanger {
+  0%   { background-color: rgba(239,68,68,.15); }
+  50%  { background-color: rgba(239,68,68,.45); }
+  100% { background-color: rgba(239,68,68,.15); }
+}
+
 .warning-red-blink {
   animation: blinkDanger 1.1s infinite;
   border: 1px solid rgba(239,68,68,.6);
@@ -356,6 +362,9 @@ body {
   animation: blink 95s infinite;
 }
 
+@keyframes blink {
+  50% { opacity: 0.3; }
+}
 /* ===== HEADER BASE ===== */
 header.top {
   display: flex;
@@ -429,6 +438,10 @@ header.top #genTime {
   animation: blink 1.2s infinite;
 }
 
+@keyframes blink {
+  0%,100% { opacity: 1 }
+  50% { opacity: 0.4 }
+}
 .unit-title {
   display: flex;
   align-items: center;
@@ -465,16 +478,48 @@ header.top #genTime {
 }
 
 /* level 3 – đỏ nhấp nháy */
-
+.dot.level-3 {
+  background: #ef4444;
+  animation: blink 1s infinite;
+}
 .warning-item.level-2 {
   border-left: 3px solid #ef4444;
 }
 
+.warning-item.level-3 {
+  border-left: 3px solid #ef4444;
+  animation: blink 1s infinite;
+}
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+/* ===============================
+   BLINK ANIMATION – LEVEL 3
+   =============================== */
+@keyframes blinkRed {
+  0%   { opacity: 1; }
+  50%  { opacity: 0.3; }
+  100% { opacity: 1; }
+}
 
 /* dùng chung cho mọi nơi */
 .site-blink,
 .level-3,
+.dot.level-3 {
+  animation: blinkRed 1.2s infinite;
+}
 
+/* chấm tròn cảnh báo */
+.dot.level-3 {
+  background: #ef4444;
+}
+
+/* chữ trong sidebar */
+.warning-item.level-3 {
+  border-left: 3px solid #ef4444;
+}
 
 /* ticker trên đầu trang */
 #activityTicker .site-blink {
@@ -506,48 +551,17 @@ header.top #genTime {
 .dot.level-2 {
   background: #ef4444;
 }
-/* =========================================
-   BLINK LEVEL 3 – DUY NHẤT & ỔN ĐỊNH
-   ========================================= */
 
-@keyframes blink-level-3 {
+/* ===============================
+   LEVEL 3 – ĐỎ NHẤP NHÁY
+   =============================== */
+@keyframes blinkDanger {
   0%   { opacity: 1; }
   50%  { opacity: 0.25; }
   100% { opacity: 1; }
 }
 
-/* ===== CHẤM TRẠNG THÁI ===== */
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px;
-}
-
-.dot.level-0 { background: #22c55e; } /* xanh */
-.dot.level-1 { background: #eab308; } /* vàng */
-.dot.level-2 { background: #ef4444; } /* đỏ */
-
 .dot.level-3 {
   background: #ef4444;
-  animation: blink-level-3 1s infinite;
+  animation: blinkDanger 1s infinite;
 }
-
-/* ===== CẢNH BÁO SIDEBAR ===== */
-.warning-item.level-3 {
-  border-left: 3px solid #ef4444;
-}
-
-/* ===== SITE STATUS TRONG CARD ===== */
-.site-status.level-3 {
-  animation: blink-level-3 1.2s infinite;
-}
-
-/* ===== TICKER TRÊN ĐẦU TRANG ===== */
-#activityTicker .level-3 {
-  color: #ef4444;
-  font-weight: 600;
-  animation: blink-level-3 1.2s infinite;
-}
-
