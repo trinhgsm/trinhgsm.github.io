@@ -155,7 +155,7 @@ function renderProjectStatusChart(units) {
     enabled: false
   },
 
-  order: 1
+  order: 10,
 }
 
         {
