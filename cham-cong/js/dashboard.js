@@ -330,6 +330,14 @@ ${site ? `
           ${u.statusText}
         </span>
       </div>
+      ${(u.overCong || u.overCost || u.overDay) ? `
+<div class="line over-warning level-${u.level}">
+  ${u.overCong ? `<span>⚠ Công</span>` : ""}
+  ${u.overCost ? `<span>💰 Chi phí</span>` : ""}
+  ${u.overDay  ? `<span>⏱ Thời gian</span>` : ""}
+</div>
+` : ""}
+
  <div class="finance">
         <div>
           <span class="label">Lãi / lỗ:</span>
