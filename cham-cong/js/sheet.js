@@ -1,28 +1,41 @@
 /* =========================================================
-   SHEET OVERLAY – DUKICO
-   Load động – không phụ thuộc HTML
+   SHEET OVERLAY – DUKICO (PRO VERSION)
+   - Load động
+   - Fix gid = "0"
+   - Mobile friendly
+   - Không phá layout
    ========================================================= */
 
 (() => {
   if (window.__sheetInit) return;
   window.__sheetInit = true;
 
+  /* ================== API ================== */
   const API_FILES =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=files";
 
   const API_SHEETS =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=sheets&fileId=";
 
-  let overlay, iframe, menuBox, currentFileId, zoom = 1;
+  /* ================== STATE ================== */
+  let overlay = null;
+  let iframe = null;
+  let menuBox = null;
+
+  let currentFileId = null;
+  let loadedOnce = false;
 
   /* =======================================================
-     TẠO OVERLAY + MENU
+     CREATE OVERLAY
      ======================================================= */
   function createOverlay() {
     overlay = document.createElement("div");
+    overlay.className = "sheet-overlay";
+    overlay.style.display = "none";
 
     iframe = document.createElement("iframe");
     iframe.allowFullscreen = true;
+    iframe.loading = "lazy";
 
     menuBox = document.createElement("div");
     menuBox.className = "sheet-menu";
@@ -33,9 +46,6 @@
 
       <button id="sheetDriveBtn">Drive</button>
       <button id="sheetEditBtn">Sửa</button>
-
-      <button id="sheetZoomIn">+</button>
-      <button id="sheetZoomOut">−</button>
       <button id="sheetCloseBtn">✕</button>
     `;
 
@@ -51,18 +61,6 @@
      ======================================================= */
   function bindMenuEvents() {
     menuBox.querySelector("#sheetCloseBtn").onclick = closeSheet;
-
-    menuBox.querySelector("#sheetZoomIn").onclick = () => {
-      zoom = Math.min(1.5, zoom + 0.1);
-      iframe.style.transform = `scale(${zoom})`;
-      iframe.style.transformOrigin = "0 0";
-    };
-
-    menuBox.querySelector("#sheetZoomOut").onclick = () => {
-      zoom = Math.max(0.6, zoom - 0.1);
-      iframe.style.transform = `scale(${zoom})`;
-      iframe.style.transformOrigin = "0 0";
-    };
 
     menuBox.querySelector("#sheetDriveBtn").onclick = () => {
       if (!currentFileId) return;
@@ -90,52 +88,71 @@
   }
 
   /* =======================================================
-     LOAD FILE LIST (CỘT A + C)
+     LOAD FILE LIST
      ======================================================= */
   async function loadFileMenu() {
     const sel = menuBox.querySelector("#sheetFileMenu");
     sel.innerHTML = `<option>Đang tải...</option>`;
 
-    const res = await fetch(API_FILES);
-    const list = await res.json();
+    try {
+      const res = await fetch(API_FILES);
+      const list = await res.json();
 
-    sel.innerHTML = list
-      .map(
-        f =>
-          `<option value="${f.fileId}">${f.name || "Không tên"}</option>`
-      )
-      .join("");
+      if (!Array.isArray(list) || list.length === 0) {
+        sel.innerHTML = `<option>Không có dữ liệu</option>`;
+        return;
+      }
 
-    if (list[0]) {
+      sel.innerHTML = list
+        .map(
+          f =>
+            `<option value="${f.fileId}">${f.name || "Không tên"}</option>`
+        )
+        .join("");
+
       loadSheetFile(list[0].fileId);
+    } catch (e) {
+      sel.innerHTML = `<option>Lỗi tải file</option>`;
+      console.error(e);
     }
   }
 
   /* =======================================================
-     LOAD FILE → LẤY TAB (gid)
+     LOAD FILE → LOAD TAB
      ======================================================= */
   async function loadSheetFile(fileId) {
-    currentFileId = fileId;
-    zoom = 1;
-    iframe.style.transform = "scale(1)";
+    if (!fileId) return;
 
+    currentFileId = fileId;
+
+    // load preview trước
     iframe.src =
       `https://docs.google.com/spreadsheets/d/${fileId}/preview`;
 
     const tabSel = menuBox.querySelector("#sheetTabMenu");
     tabSel.innerHTML = `<option>Đang tải...</option>`;
 
-    const res = await fetch(API_SHEETS + encodeURIComponent(fileId));
-    const tabs = await res.json();
+    try {
+      const res = await fetch(API_SHEETS + encodeURIComponent(fileId));
+      const tabs = await res.json();
 
-    tabSel.innerHTML = tabs
-      .map(
-        s => `<option value="${s.gid}">${s.name}</option>`
-      )
-      .join("");
+      if (!Array.isArray(tabs) || tabs.length === 0) {
+        tabSel.innerHTML = `<option>Không có sheet</option>`;
+        return;
+      }
 
-    if (tabs[0]) {
-      loadSheetTab(tabs[0].gid);
+      tabSel.innerHTML = tabs
+        .map(
+          s =>
+            `<option value="${String(s.gid)}">${s.name}</option>`
+        )
+        .join("");
+
+      // ⚠️ FIX GID = "0"
+      loadSheetTab(String(tabs[0].gid));
+    } catch (e) {
+      tabSel.innerHTML = `<option>Lỗi tải tab</option>`;
+      console.error(e);
     }
   }
 
@@ -144,6 +161,8 @@
      ======================================================= */
   function loadSheetTab(gid) {
     if (!currentFileId) return;
+    if (gid === undefined || gid === null) return;
+
     iframe.src =
       `https://docs.google.com/spreadsheets/d/${currentFileId}/preview?gid=${gid}`;
   }
@@ -153,13 +172,20 @@
      ======================================================= */
   function openSheet() {
     if (!overlay) createOverlay();
+
     document.body.classList.add("sheet-open");
     overlay.style.display = "flex";
-    loadFileMenu();
+
+    if (!loadedOnce) {
+      loadedOnce = true;
+      loadFileMenu();
+    }
   }
 
   function closeSheet() {
     if (!overlay) return;
+
+    iframe.src = "about:blank"; // giải phóng tài nguyên
     overlay.style.display = "none";
     document.body.classList.remove("sheet-open");
   }
