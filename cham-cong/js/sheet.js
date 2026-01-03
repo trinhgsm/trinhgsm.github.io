@@ -117,10 +117,7 @@ const currentFile = pickCurrentMonthFile(files);
 if (currentFile) {
   menuFile.value = currentFile.fileId;
   openFile(currentFile.fileId);
-}
-
-
-  function openFile(fileId) {
+function openFile(fileId) {
     currentFileId = fileId;
     iframe.src = buildEmbedUrl(fileId);
     loadSheetTabs(fileId);
