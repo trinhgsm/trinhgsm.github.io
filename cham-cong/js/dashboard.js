@@ -563,6 +563,7 @@ function fmtShortMoney(n) {
 /* =========================================================
    START
    ========================================================= */
+/************************************************************
 (function () {
   const SECRET = "dukico@2025"; // 🔒 đổi nếu muốn
 
@@ -596,6 +597,8 @@ function fmtShortMoney(n) {
     throw new Error("Access denied");
   }
 })();
+* ko dùng md5)
+ ************************************************************/
 function renderSiteStatusExtension(units) {
   //console.log("🔥 renderSiteStatusExtension CALLED", units.length);
 
