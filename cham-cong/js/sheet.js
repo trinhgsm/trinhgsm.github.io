@@ -1,126 +1,126 @@
-/*************************************************
- * SHEET DRAWER – ĐỘC LẬP VỚI DASHBOARD
- *************************************************/
+/************************************************************
+ * SHEET OVERLAY – ĐÚNG LUỒNG API CỦA DUKICO
+ ************************************************************/
 
-const SHEET_API_URL =
+const API_URL =
   "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
-/* ===============================
-   INIT HTML
-   =============================== */
-(function initSheetDrawer() {
+/* ================= DOM ================= */
+const overlay   = document.getElementById("sheetOverlay");
+const iframe    = document.getElementById("sheetFrame");
 
-  // nút mở
-  const btn = document.createElement("button");
-  btn.id = "sheetOpenBtn";
-  btn.textContent = "📊 Sheet";
-  document.body.appendChild(btn);
+const btnOpen   = document.getElementById("openSheetBtn");
+const btnClose  = document.getElementById("sheetClose");
+const btnZoomIn = document.getElementById("sheetZoomIn");
+const btnZoomOut= document.getElementById("sheetZoomOut");
 
-  // drawer
-  const drawer = document.createElement("div");
-  drawer.id = "sheetDrawer";
-  drawer.innerHTML = `
-    <div class="sheet-toolbar">
-      <select id="sheetFileSelect"></select>
-      <select id="sheetTabSelect"></select>
+const menu1Box  = document.getElementById("sheetMenu1"); // FILE
+const menu2Box  = document.getElementById("sheetMenu2"); // TAB
 
-      <button id="sheetDriveBtn">📁</button>
-      <button id="sheetZoomIn">＋</button>
-      <button id="sheetZoomOut">－</button>
-    </div>
-    <iframe id="sheetFrame"></iframe>
-  `;
-  document.body.appendChild(drawer);
+/* ================= STATE ================= */
+let currentFileUrl = "";
+let currentFileId  = "";
+let currentZoom    = 1;
 
-  // toggle
-  btn.onclick = () => drawer.classList.toggle("open");
+/* ================= OPEN / CLOSE ================= */
+btnOpen.onclick = () => {
+  overlay.classList.add("show");
+  loadFileList();       // 👈 BƯỚC 1
+};
 
-  loadSheetFiles();
-})();
+btnClose.onclick = () => {
+  overlay.classList.remove("show");
+};
 
-/* ===============================
-   LOAD FILE MENU (A / C)
-   =============================== */
-async function loadSheetFiles() {
-  const res = await fetch(SHEET_API_URL + "?action=sheetFiles");
-  const files = await res.json();
+/* ================= MENU 1 – FILE ================= */
+async function loadFileList() {
+  menu1Box.innerHTML = "Đang tải…";
+  menu2Box.innerHTML = "";
 
-  const sel = document.getElementById("sheetFileSelect");
-  sel.innerHTML = files.map(f =>
-    `<option value="${f.url}">${f.name}</option>`
-  ).join("");
+  try {
+    const res = await fetch(API_URL + "?action=files");
+    const files = await res.json();
 
-  if (files[0]) {
-    loadSheet(files[0].url);
-    loadTabsFromUrl(files[0].url);
+    menu1Box.innerHTML = "";
+
+    files.forEach(f => {
+      const btn = document.createElement("button");
+      btn.textContent = f.name;
+
+      btn.onclick = () => {
+        currentFileUrl = f.url;
+        currentFileId  = f.fileId;
+        currentZoom = 1;
+
+        loadSheet(f.url);
+        loadSheetTabs(f.fileId);   // 👈 BƯỚC 2
+      };
+
+      menu1Box.appendChild(btn);
+    });
+
+    // 👉 tự mở file đầu tiên
+    if (files[0]) {
+      currentFileUrl = files[0].url;
+      currentFileId  = files[0].fileId;
+      loadSheet(currentFileUrl);
+      loadSheetTabs(currentFileId);
+    }
+
+  } catch (e) {
+    console.error("❌ loadFileList error:", e);
+    menu1Box.innerHTML = "Lỗi tải file";
   }
-
-  sel.onchange = e => {
-    loadSheet(e.target.value);
-    loadTabsFromUrl(e.target.value);
-  };
 }
 
-/* ===============================
-   LOAD SHEET
-   =============================== */
-function loadSheet(url) {
-  const iframe = document.getElementById("sheetFrame");
-  iframe.style.transform = "scale(1)";
-  iframe.src = url.replace("/edit", "/preview");
-}
+/* ================= MENU 2 – TAB ================= */
+async function loadSheetTabs(fileId) {
+  menu2Box.innerHTML = "Đang tải tab…";
 
-/* ===============================
-   LOAD TABS
-   =============================== */
-async function loadTabsFromUrl(url) {
-  const fileId = extractFileId(url);
-  if (!fileId) return;
+  try {
+    const res = await fetch(
+      API_URL + "?action=sheets&fileId=" + encodeURIComponent(fileId)
+    );
+    const data = await res.json();
 
-  const res = await fetch(
-    SHEET_API_URL + "?action=sheetTabs&fileId=" + fileId
-  );
-  const tabs = await res.json();
+    menu2Box.innerHTML = "";
 
-  const sel = document.getElementById("sheetTabSelect");
-  sel.innerHTML = tabs.map(t =>
-    `<option value="${t}">${t}</option>`
-  ).join("");
+    (data.sheets || []).forEach(sh => {
+      const btn = document.createElement("button");
+      btn.textContent = sh.name;
 
-  sel.onchange = e => {
-    const iframe = document.getElementById("sheetFrame");
-    iframe.src = iframe.src.split("#")[0] + "#sheet=" + e.target.value;
-  };
-}
+      btn.onclick = () => {
+        loadSheet(currentFileUrl, sh.gid);
+      };
 
-/* ===============================
-   ZOOM
-   =============================== */
-let sheetZoom = 1;
+      menu2Box.appendChild(btn);
+    });
 
-document.addEventListener("click", e => {
-  if (e.target.id === "sheetZoomIn") {
-    sheetZoom += 0.1;
-    applyZoom();
+  } catch (e) {
+    console.error("❌ loadSheetTabs error:", e);
+    menu2Box.innerHTML = "Lỗi tải tab";
   }
-  if (e.target.id === "sheetZoomOut") {
-    sheetZoom = Math.max(0.7, sheetZoom - 0.1);
-    applyZoom();
-  }
-  if (e.target.id === "sheetDriveBtn") {
-    window.open("https://drive.google.com", "_blank");
-  }
-});
-
-function applyZoom() {
-  document.getElementById("sheetFrame")
-    .style.transform = `scale(${sheetZoom})`;
 }
 
-/* ===============================
-   UTIL
-   =============================== */
-function extractFileId(url) {
-  const m = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-  return m ? m[1] : null;
+/* ================= LOAD SHEET ================= */
+function loadSheet(url, gid) {
+  if (!url) return;
+
+  let finalUrl = url;
+  if (gid) finalUrl += "#gid=" + gid;
+
+  iframe.src = finalUrl;
+  iframe.style.transform = `scale(${currentZoom})`;
+  iframe.style.transformOrigin = "0 0";
 }
+
+/* ================= ZOOM ================= */
+btnZoomIn.onclick = () => {
+  currentZoom += 0.1;
+  iframe.style.transform = `scale(${currentZoom})`;
+};
+
+btnZoomOut.onclick = () => {
+  currentZoom = Math.max(0.6, currentZoom - 0.1);
+  iframe.style.transform = `scale(${currentZoom})`;
+};
