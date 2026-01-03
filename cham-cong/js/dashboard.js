@@ -674,3 +674,26 @@ function renderActivityTicker(siteMap) {
 }
 
 loadDashboard();
+// bắt đầu load sheet
+(function () {
+  const btn = document.getElementById("openSheetBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    // chỉ load sheet.js khi cần
+    if (!window.__sheetLoaded) {
+      const s = document.createElement("script");
+      s.src = "js/sheet.js";
+      s.defer = true;
+
+      s.onload = () => {
+        window.__sheetLoaded = true;
+        window.openSheetOverlay();
+      };
+
+      document.body.appendChild(s);
+    } else {
+      window.openSheetOverlay();
+    }
+  });
+})();
