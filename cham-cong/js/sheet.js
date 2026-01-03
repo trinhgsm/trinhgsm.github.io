@@ -108,13 +108,17 @@
     }
 
     menuFile.innerHTML = files
-      .map(
-        f => `<option value="${f.fileId}">${f.name}</option>`
-      )
-      .join("");
+  .map(f => `<option value="${f.fileId}">${f.name}</option>`)
+  .join("");
 
-    openFile(files[0].fileId);
-  }
+// 🔴 CHỌN ĐÚNG THÁNG HIỆN TẠI
+const currentFile = pickCurrentMonthFile(files);
+
+if (currentFile) {
+  menuFile.value = currentFile.fileId;
+  openFile(currentFile.fileId);
+}
+
 
   function openFile(fileId) {
     currentFileId = fileId;
@@ -187,3 +191,28 @@
     iframe.style.transformOrigin = "0 0";
   }
 })();
+// menu tháng hiện tại
+function pickCurrentMonthFile(files) {
+  const now = new Date();
+
+  // chỉ lấy file có month hợp lệ
+  const monthFiles = files
+    .filter(f => f.month && !isNaN(new Date(f.month)))
+    .map(f => ({ ...f, _date: new Date(f.month) }))
+    .sort((a, b) => a._date - b._date);
+
+  if (!monthFiles.length) return null;
+
+  // ưu tiên đúng tháng hiện tại
+  let current = monthFiles.find(f =>
+    f._date.getFullYear() === now.getFullYear() &&
+    f._date.getMonth() === now.getMonth()
+  );
+
+  // không có thì lấy tháng gần nhất trước đó
+  if (!current) {
+    current = monthFiles.filter(f => f._date <= now).slice(-1)[0];
+  }
+
+  return current || monthFiles[0];
+}
