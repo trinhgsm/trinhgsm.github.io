@@ -9,6 +9,7 @@
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/sheet.css">
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -107,6 +108,8 @@
 
   <!-- ================= JS ================= -->
   <script src="js/dashboard.js"></script>
+  <script src="js/sheet.js"></script>
+
 <script>
 (function () {
   const SECRET = "dukico@2025"; // ⚠️ PHẢI GIỐNG index.html
@@ -141,5 +144,19 @@
   }
 })();
 </script>
+  <button id="openSheetBtn">📊 Sheet</button>
+<div id="sheetDrawer">
+  <div class="sheet-toolbar">
+    <select id="fileSelect"></select>
+    <select id="tabSelect"></select>
+
+    <button id="openDrive">📁</button>
+    <button id="zoomIn">＋</button>
+    <button id="zoomOut">－</button>
+  </div>
+
+  <iframe id="sheetFrame"></iframe>
+</div>
+
 </body>
 </html>
