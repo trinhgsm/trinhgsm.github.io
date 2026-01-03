@@ -1,5 +1,3 @@
-
-
 /************************************************************
  * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
  * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
@@ -150,15 +148,15 @@ function renderProjectStatusChart(units) {
   label: "Trạng thái căn",
   data: barData,
   backgroundColor: barColors,
-  barThickness: 16,
+  barThickness: 16
 
   // 🔴 QUAN TRỌNG: TẮT TOOLTIP CỦA CỘT
-  tooltip: {
-    enabled: false
-  },
+  //tooltip: {
+   // enabled: false
+  //},
 
-  order: 1
-}
+  //order: 10,
+},
 
         {
           type: "line",
@@ -168,8 +166,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd",
-          order: 10 // line vẽ sau
+          yAxisID: "yInd"
+         // order: 10 // line vẽ sau
         },
         {
           type: "line",
@@ -179,8 +177,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd",
-          order: 10 // line vẽ sau
+          yAxisID: "yInd"
+          //order: 10 // line vẽ sau
         },
         {
           type: "line",
@@ -190,8 +188,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd",
-          order: 10 // line vẽ sau
+          yAxisID: "yInd"
+         // order: 10 // line vẽ sau
         }
       ]
     },
