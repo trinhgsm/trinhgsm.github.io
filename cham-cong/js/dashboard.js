@@ -675,18 +675,23 @@ function renderActivityTicker(siteMap) {
 
 loadDashboard();
 // bắt đầu load sheet
-(function () {
+document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("openSheetBtn");
-  if (!btn) return;
+  if (!btn) {
+    console.warn("❌ Không tìm thấy openSheetBtn");
+    return;
+  }
 
   btn.addEventListener("click", () => {
-    // chỉ load sheet.js khi cần
+    console.log("📄 Click Sheet");
+
     if (!window.__sheetLoaded) {
       const s = document.createElement("script");
       s.src = "js/sheet.js";
       s.defer = true;
 
       s.onload = () => {
+        console.log("✅ sheet.js loaded");
         window.__sheetLoaded = true;
         window.openSheetOverlay();
       };
@@ -696,4 +701,4 @@ loadDashboard();
       window.openSheetOverlay();
     }
   });
-})();
+});
