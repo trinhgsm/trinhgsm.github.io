@@ -28,14 +28,22 @@
   left: 0;
   right: 0;
 
-  /* ❗ chạm sát ticker – không che */
+  /* chạm ticker */
   top: 48px;
-  bottom: 0;
+
+  /* ❗ chừa menu mobile */
+  bottom: 56px;
 
   background: #020617;
+
+  /* 🔥 CHO PHÉP CUỘN */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
   transform: translateY(100%);
   transition: transform 0.35s ease;
 }
+
 
 #sheetOverlay.show .sheet-panel {
   transform: translateY(0);
