@@ -132,11 +132,22 @@
     API_BASE + "?action=sheets&fileId=" + encodeURIComponent(fileId)
   );
 
+  if (!res.ok) {
+    console.error("❌ API sheets HTTP error", res.status);
+    menuSheet.innerHTML = `<option>Lỗi tải sheet</option>`;
+    return;
+  }
+
   const data = await res.json();
   console.log("API sheets raw:", data);
 
-  // 🔴 ĐÚNG FORMAT
-  const tabs = Array.isArray(data.sheets) ? data.sheets : [];
+  if (!data || !Array.isArray(data.sheets)) {
+    console.error("❌ Sai format sheets", data);
+    menuSheet.innerHTML = `<option>Không có sheet</option>`;
+    return;
+  }
+
+  const tabs = data.sheets;
 
   if (!tabs.length) {
     menuSheet.innerHTML = `<option>Không có sheet</option>`;
@@ -147,9 +158,9 @@
     .map(t => `<option value="${t.gid}">${t.name}</option>`)
     .join("");
 
-  // mở sheet đầu tiên
   openSheetTab(tabs[0].gid);
 }
+
 
   function openSheetTab(gid) {
     if (!currentFileId) return;
