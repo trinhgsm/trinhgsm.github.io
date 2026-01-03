@@ -1,197 +1,159 @@
-/* =========================================================
-   SHEET OVERLAY – DUKICO (PRO VERSION)
-   - Load động
-   - Fix gid = "0"
-   - Mobile friendly
-   - Không phá layout
-   ========================================================= */
+/************************************************************
+ * SHEET EMBED OVERLAY – LOAD ON DEMAND
+ * Phụ thuộc:
+ *  - CSS: sheet.css (đã link sẵn trong HTML)
+ *  - API dashboard?action=files & action=sheets
+ ************************************************************/
 
-(() => {
-  if (window.__sheetInit) return;
-  window.__sheetInit = true;
+(function () {
+  const API_BASE =
+    "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
-  /* ================== API ================== */
-  const API_FILES =
-    "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=files";
-
-  const API_SHEETS =
-    "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=sheets&fileId=";
-
-  /* ================== STATE ================== */
-  let overlay = null;
-  let iframe = null;
-  let menuBox = null;
-
+  let overlay, iframe, menuFile, menuSheet;
   let currentFileId = null;
-  let loadedOnce = false;
+  let zoomLevel = 1;
 
-  /* =======================================================
-     CREATE OVERLAY
-     ======================================================= */
+  /* ======================================================
+     OPEN / CLOSE
+     ====================================================== */
+  window.openSheetOverlay = async function () {
+    if (!overlay) createOverlay();
+    overlay.classList.add("show");
+    await loadFileList();
+  };
+
+  function closeOverlay() {
+    overlay.classList.remove("show");
+  }
+
+  /* ======================================================
+     CREATE DOM
+     ====================================================== */
   function createOverlay() {
     overlay = document.createElement("div");
-    overlay.className = "sheet-overlay";
-    overlay.style.display = "none";
+    overlay.id = "sheetOverlay";
 
-    iframe = document.createElement("iframe");
-    iframe.allowFullscreen = true;
-    iframe.loading = "lazy";
+    overlay.innerHTML = `
+      <div class="sheet-panel">
+        <iframe id="sheetFrame" allowfullscreen></iframe>
 
-    menuBox = document.createElement("div");
-    menuBox.className = "sheet-menu";
+        <!-- MENU -->
+        <div class="sheet-menu">
+          <select id="sheetFileMenu"></select>
+          <select id="sheetTabMenu"></select>
 
-    menuBox.innerHTML = `
-      <select id="sheetFileMenu"></select>
-      <select id="sheetTabMenu"></select>
+          <button id="btnDrive">Drive</button>
+          <button id="btnEdit">Sửa</button>
 
-      <button id="sheetDriveBtn">Drive</button>
-      <button id="sheetEditBtn">Sửa</button>
-      <button id="sheetCloseBtn">✕</button>
+          <button id="btnZoomIn">＋</button>
+          <button id="btnZoomOut">－</button>
+
+          <button id="btnClose">✕</button>
+        </div>
+      </div>
     `;
 
-    overlay.appendChild(iframe);
-    overlay.appendChild(menuBox);
     document.body.appendChild(overlay);
 
-    bindMenuEvents();
-  }
+    iframe = overlay.querySelector("#sheetFrame");
+    menuFile = overlay.querySelector("#sheetFileMenu");
+    menuSheet = overlay.querySelector("#sheetTabMenu");
 
-  /* =======================================================
-     MENU EVENTS
-     ======================================================= */
-  function bindMenuEvents() {
-    menuBox.querySelector("#sheetCloseBtn").onclick = closeSheet;
+    /* EVENTS */
+    overlay.querySelector("#btnClose").onclick = closeOverlay;
 
-    menuBox.querySelector("#sheetDriveBtn").onclick = () => {
-      if (!currentFileId) return;
-      window.open(
-        `https://drive.google.com/file/d/${currentFileId}`,
-        "_blank"
-      );
-    };
+    overlay.querySelector("#btnZoomIn").onclick = () => setZoom(zoomLevel + 0.1);
+    overlay.querySelector("#btnZoomOut").onclick = () => setZoom(zoomLevel - 0.1);
 
-    menuBox.querySelector("#sheetEditBtn").onclick = () => {
-      if (!currentFileId) return;
-      window.open(
-        `https://docs.google.com/spreadsheets/d/${currentFileId}/edit`,
-        "_blank"
-      );
-    };
-
-    menuBox.querySelector("#sheetFileMenu").onchange = e => {
-      loadSheetFile(e.target.value);
-    };
-
-    menuBox.querySelector("#sheetTabMenu").onchange = e => {
-      loadSheetTab(e.target.value);
-    };
-  }
-
-  /* =======================================================
-     LOAD FILE LIST
-     ======================================================= */
-  async function loadFileMenu() {
-    const sel = menuBox.querySelector("#sheetFileMenu");
-    sel.innerHTML = `<option>Đang tải...</option>`;
-
-    try {
-      const res = await fetch(API_FILES);
-      const list = await res.json();
-
-      if (!Array.isArray(list) || list.length === 0) {
-        sel.innerHTML = `<option>Không có dữ liệu</option>`;
-        return;
+    overlay.querySelector("#btnDrive").onclick = () => {
+      if (currentFileId) {
+        window.open(
+          `https://drive.google.com/drive/u/0/search?q=${currentFileId}`,
+          "_blank"
+        );
       }
+    };
 
-      sel.innerHTML = list
-        .map(
-          f =>
-            `<option value="${f.fileId}">${f.name || "Không tên"}</option>`
-        )
-        .join("");
+    overlay.querySelector("#btnEdit").onclick = () => {
+      if (currentFileId) {
+        window.open(
+          `https://docs.google.com/spreadsheets/d/${currentFileId}/edit`,
+          "_blank"
+        );
+      }
+    };
 
-      loadSheetFile(list[0].fileId);
-    } catch (e) {
-      sel.innerHTML = `<option>Lỗi tải file</option>`;
-      console.error(e);
+    menuFile.onchange = () => loadSheetTabs(menuFile.value);
+    menuSheet.onchange = () => openSheetTab(menuSheet.value);
+  }
+
+  /* ======================================================
+     LOAD FILE LIST (MENU 1)
+     ====================================================== */
+  async function loadFileList() {
+    menuFile.innerHTML = `<option>Đang tải...</option>`;
+
+    const res = await fetch(API_BASE + "?action=files");
+    const files = await res.json();
+
+    menuFile.innerHTML = files
+      .map(
+        f =>
+          `<option value="${f.fileId}">${f.name}</option>`
+      )
+      .join("");
+
+    if (files.length) {
+      currentFileId = files[0].fileId;
+      openFile(currentFileId);
     }
   }
 
-  /* =======================================================
-     LOAD FILE → LOAD TAB
-     ======================================================= */
-  async function loadSheetFile(fileId) {
-    if (!fileId) return;
-
+  function openFile(fileId) {
     currentFileId = fileId;
+    iframe.src = buildEmbedUrl(fileId);
+    loadSheetTabs(fileId);
+  }
 
-    // load preview trước
-    iframe.src =
-      `https://docs.google.com/spreadsheets/d/${fileId}/preview`;
+  /* ======================================================
+     LOAD SHEET TABS (MENU 2)
+     ====================================================== */
+  async function loadSheetTabs(fileId) {
+    menuSheet.innerHTML = `<option>Đang tải...</option>`;
 
-    const tabSel = menuBox.querySelector("#sheetTabMenu");
-    tabSel.innerHTML = `<option>Đang tải...</option>`;
+    const res = await fetch(
+      API_BASE + "?action=sheets&fileId=" + encodeURIComponent(fileId)
+    );
+    const tabs = await res.json();
 
-    try {
-      const res = await fetch(API_SHEETS + encodeURIComponent(fileId));
-      const tabs = await res.json();
+    menuSheet.innerHTML = tabs
+      .map(
+        t =>
+          `<option value="${t.gid}">${t.name}</option>`
+      )
+      .join("");
 
-      if (!Array.isArray(tabs) || tabs.length === 0) {
-        tabSel.innerHTML = `<option>Không có sheet</option>`;
-        return;
-      }
-
-      tabSel.innerHTML = tabs
-        .map(
-          s =>
-            `<option value="${String(s.gid)}">${s.name}</option>`
-        )
-        .join("");
-
-      // ⚠️ FIX GID = "0"
-      loadSheetTab(String(tabs[0].gid));
-    } catch (e) {
-      tabSel.innerHTML = `<option>Lỗi tải tab</option>`;
-      console.error(e);
+    if (tabs.length) {
+      openSheetTab(tabs[0].gid);
     }
   }
 
-  /* =======================================================
-     LOAD TAB (gid)
-     ======================================================= */
-  function loadSheetTab(gid) {
-    if (!currentFileId) return;
-    if (gid === undefined || gid === null) return;
-
-    iframe.src =
-      `https://docs.google.com/spreadsheets/d/${currentFileId}/preview?gid=${gid}`;
+  function openSheetTab(gid) {
+    iframe.src = buildEmbedUrl(currentFileId, gid);
   }
 
-  /* =======================================================
-     OPEN / CLOSE
-     ======================================================= */
-  function openSheet() {
-    if (!overlay) createOverlay();
-
-    document.body.classList.add("sheet-open");
-    overlay.style.display = "flex";
-
-    if (!loadedOnce) {
-      loadedOnce = true;
-      loadFileMenu();
-    }
+  /* ======================================================
+     UTIL
+     ====================================================== */
+  function buildEmbedUrl(fileId, gid) {
+    let url = `https://docs.google.com/spreadsheets/d/${fileId}/preview`;
+    if (gid) url += `?gid=${gid}`;
+    return url;
   }
 
-  function closeSheet() {
-    if (!overlay) return;
-
-    iframe.src = "about:blank"; // giải phóng tài nguyên
-    overlay.style.display = "none";
-    document.body.classList.remove("sheet-open");
+  function setZoom(z) {
+    zoomLevel = Math.max(0.6, Math.min(1.4, z));
+    iframe.style.transform = `scale(${zoomLevel})`;
+    iframe.style.transformOrigin = "0 0";
   }
-
-  /* =======================================================
-     EXPORT GLOBAL
-     ======================================================= */
-  window.openSheetOverlay = openSheet;
 })();
