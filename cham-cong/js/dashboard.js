@@ -145,12 +145,20 @@ function renderProjectStatusChart(units) {
       labels,
       datasets: [
         {
-          type: "bar",
-          label: "Trạng thái căn",
-          data: barData,
-          backgroundColor: barColors,
-          barThickness: 16
-        },
+  type: "bar",
+  label: "Trạng thái căn",
+  data: barData,
+  backgroundColor: barColors,
+  barThickness: 16,
+
+  // 🔴 QUAN TRỌNG: TẮT TOOLTIP CỦA CỘT
+  tooltip: {
+    enabled: false
+  },
+
+  order: 1
+}
+
         {
           type: "line",
           label: "Tiến độ",
@@ -159,7 +167,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd"
+          yAxisID: "yInd",
+          order: 10 // line vẽ sau
         },
         {
           type: "line",
@@ -169,7 +178,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd"
+          yAxisID: "yInd",
+          order: 10 // line vẽ sau
         },
         {
           type: "line",
@@ -179,7 +189,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd"
+          yAxisID: "yInd",
+          order: 10 // line vẽ sau
         }
       ]
     },
