@@ -479,3 +479,22 @@ header.top #genTime {
   color: #ef4444;
   font-weight: 600;
 }
+
+/* ===== VƯỢT CHỈ TIÊU ===== */
+.over-warning {
+  font-size: 0.7rem;
+  opacity: 0.9;
+  gap: 10px;
+}
+
+.over-warning span {
+  white-space: nowrap;
+}
+
+/* màu theo level */
+.over-warning.level-1 { color: var(--yellow); }
+.over-warning.level-2 { color: var(--red); }
+.over-warning.level-3 {
+  color: var(--red);
+  animation: blinkDanger 1.1s infinite;
+}
