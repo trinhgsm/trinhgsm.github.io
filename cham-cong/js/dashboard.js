@@ -148,14 +148,14 @@ function renderProjectStatusChart(units) {
   label: "Trạng thái căn",
   data: barData,
   backgroundColor: barColors,
-  barThickness: 16,
+  barThickness: 16
 
   // 🔴 QUAN TRỌNG: TẮT TOOLTIP CỦA CỘT
-  tooltip: {
-    enabled: false
-  },
+  //tooltip: {
+   // enabled: false
+  //},
 
-  order: 10,
+  //order: 10,
 }
 
         {
