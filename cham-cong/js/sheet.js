@@ -126,26 +126,30 @@
      LOAD SHEET TABS (gid)
      ====================================================== */
   async function loadSheetTabs(fileId) {
-    menuSheet.innerHTML = `<option>Đang tải sheet...</option>`;
+  menuSheet.innerHTML = `<option>Đang tải sheet...</option>`;
 
-    const res = await fetch(
-      API_BASE + "?action=sheets&fileId=" + encodeURIComponent(fileId)
-    );
-    const tabs = await res.json();
+  const res = await fetch(
+    API_BASE + "?action=sheets&fileId=" + encodeURIComponent(fileId)
+  );
 
-    if (!Array.isArray(tabs) || !tabs.length) {
-      menuSheet.innerHTML = `<option>Không có sheet</option>`;
-      return;
-    }
+  const data = await res.json();
+  console.log("API sheets raw:", data);
 
-    menuSheet.innerHTML = tabs
-      .map(
-        t => `<option value="${t.gid}">${t.name}</option>`
-      )
-      .join("");
+  // 🔴 ĐÚNG FORMAT
+  const tabs = Array.isArray(data.sheets) ? data.sheets : [];
 
-    openSheetTab(tabs[0].gid);
+  if (!tabs.length) {
+    menuSheet.innerHTML = `<option>Không có sheet</option>`;
+    return;
   }
+
+  menuSheet.innerHTML = tabs
+    .map(t => `<option value="${t.gid}">${t.name}</option>`)
+    .join("");
+
+  // mở sheet đầu tiên
+  openSheetTab(tabs[0].gid);
+}
 
   function openSheetTab(gid) {
     if (!currentFileId) return;
