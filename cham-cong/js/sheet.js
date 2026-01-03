@@ -1,20 +1,27 @@
 /************************************************************
- * SHEET EMBED OVERLAY – LOAD ON DEMAND
- * Phụ thuộc:
- *  - CSS: sheet.css (đã link sẵn trong HTML)
- *  - API dashboard?action=files & action=sheets
+ * SHEET EMBED OVERLAY – LOAD ON DEMAND (FIX GID)
+ * ✔ Load file
+ * ✔ Load tab (gid)
+ * ✔ Đổi tab nhảy đúng sheet
+ * ✔ Zoom iframe
  ************************************************************/
 
 (function () {
+  if (window.__sheetOverlayInit) return;
+  window.__sheetOverlayInit = true;
+
   const API_BASE =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
-  let overlay, iframe, menuFile, menuSheet;
-  let currentFileId = null;
-  let zoomLevel = 1;
+  let overlay,
+    iframe,
+    menuFile,
+    menuSheet,
+    currentFileId = null,
+    zoomLevel = 1;
 
   /* ======================================================
-     OPEN / CLOSE
+     PUBLIC OPEN
      ====================================================== */
   window.openSheetOverlay = async function () {
     if (!overlay) createOverlay();
@@ -35,19 +42,16 @@
 
     overlay.innerHTML = `
       <div class="sheet-panel">
-        <iframe id="sheetFrame" allowfullscreen></iframe>
+        <iframe id="sheetFrame" loading="lazy"></iframe>
 
-        <!-- MENU -->
         <div class="sheet-menu">
           <select id="sheetFileMenu"></select>
           <select id="sheetTabMenu"></select>
 
           <button id="btnDrive">Drive</button>
           <button id="btnEdit">Sửa</button>
-
           <button id="btnZoomIn">＋</button>
           <button id="btnZoomOut">－</button>
-
           <button id="btnClose">✕</button>
         </div>
       </div>
@@ -59,16 +63,17 @@
     menuFile = overlay.querySelector("#sheetFileMenu");
     menuSheet = overlay.querySelector("#sheetTabMenu");
 
-    /* EVENTS */
     overlay.querySelector("#btnClose").onclick = closeOverlay;
 
-    overlay.querySelector("#btnZoomIn").onclick = () => setZoom(zoomLevel + 0.1);
-    overlay.querySelector("#btnZoomOut").onclick = () => setZoom(zoomLevel - 0.1);
+    overlay.querySelector("#btnZoomIn").onclick = () =>
+      setZoom(zoomLevel + 0.1);
+    overlay.querySelector("#btnZoomOut").onclick = () =>
+      setZoom(zoomLevel - 0.1);
 
     overlay.querySelector("#btnDrive").onclick = () => {
       if (currentFileId) {
         window.open(
-          `https://drive.google.com/drive/u/0/search?q=${currentFileId}`,
+          `https://drive.google.com/drive/search?q=${currentFileId}`,
           "_blank"
         );
       }
@@ -83,30 +88,32 @@
       }
     };
 
-    menuFile.onchange = () => loadSheetTabs(menuFile.value);
+    menuFile.onchange = () => openFile(menuFile.value);
     menuSheet.onchange = () => openSheetTab(menuSheet.value);
   }
 
   /* ======================================================
-     LOAD FILE LIST (MENU 1)
+     LOAD FILE LIST
      ====================================================== */
   async function loadFileList() {
-    menuFile.innerHTML = `<option>Đang tải...</option>`;
+    menuFile.innerHTML = `<option>Đang tải file...</option>`;
+    menuSheet.innerHTML = "";
 
     const res = await fetch(API_BASE + "?action=files");
     const files = await res.json();
 
+    if (!Array.isArray(files) || !files.length) {
+      menuFile.innerHTML = `<option>Không có dữ liệu</option>`;
+      return;
+    }
+
     menuFile.innerHTML = files
       .map(
-        f =>
-          `<option value="${f.fileId}">${f.name}</option>`
+        f => `<option value="${f.fileId}">${f.name}</option>`
       )
       .join("");
 
-    if (files.length) {
-      currentFileId = files[0].fileId;
-      openFile(currentFileId);
-    }
+    openFile(files[0].fileId);
   }
 
   function openFile(fileId) {
@@ -116,41 +123,49 @@
   }
 
   /* ======================================================
-     LOAD SHEET TABS (MENU 2)
+     LOAD SHEET TABS (gid)
      ====================================================== */
   async function loadSheetTabs(fileId) {
-    menuSheet.innerHTML = `<option>Đang tải...</option>`;
+    menuSheet.innerHTML = `<option>Đang tải sheet...</option>`;
 
     const res = await fetch(
       API_BASE + "?action=sheets&fileId=" + encodeURIComponent(fileId)
     );
     const tabs = await res.json();
 
+    if (!Array.isArray(tabs) || !tabs.length) {
+      menuSheet.innerHTML = `<option>Không có sheet</option>`;
+      return;
+    }
+
     menuSheet.innerHTML = tabs
       .map(
-        t =>
-          `<option value="${t.gid}">${t.name}</option>`
+        t => `<option value="${t.gid}">${t.name}</option>`
       )
       .join("");
 
-    if (tabs.length) {
-      openSheetTab(tabs[0].gid);
-    }
+    openSheetTab(tabs[0].gid);
   }
 
   function openSheetTab(gid) {
+    if (!currentFileId) return;
     iframe.src = buildEmbedUrl(currentFileId, gid);
   }
 
   /* ======================================================
-     UTIL
+     URL BUILDER – FIX TRIỆT ĐỂ GID
      ====================================================== */
   function buildEmbedUrl(fileId, gid) {
-    let url = `https://docs.google.com/spreadsheets/d/${fileId}/preview`;
-    if (gid) url += `?gid=${gid}`;
+    let url = `https://docs.google.com/spreadsheets/d/${fileId}/edit`;
+    if (gid !== undefined && gid !== null) {
+      url += `#gid=${gid}`;
+    }
     return url;
   }
 
+  /* ======================================================
+     ZOOM
+     ====================================================== */
   function setZoom(z) {
     zoomLevel = Math.max(0.6, Math.min(1.4, z));
     iframe.style.transform = `scale(${zoomLevel})`;
