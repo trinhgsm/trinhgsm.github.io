@@ -117,6 +117,8 @@ const currentFile = pickCurrentMonthFile(files);
 if (currentFile) {
   menuFile.value = currentFile.fileId;
   openFile(currentFile.fileId);
+}
+
 function openFile(fileId) {
     currentFileId = fileId;
     iframe.src = buildEmbedUrl(fileId);
@@ -187,7 +189,7 @@ function openFile(fileId) {
     iframe.style.transform = `scale(${zoomLevel})`;
     iframe.style.transformOrigin = "0 0";
   }
-})();
+)();
 // menu tháng hiện tại
 function pickCurrentMonthFile(files) {
   const now = new Date();
