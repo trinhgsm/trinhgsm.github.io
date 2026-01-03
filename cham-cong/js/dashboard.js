@@ -166,8 +166,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd",
-          order: 10 // line vẽ sau
+          yAxisID: "yInd"
+         // order: 10 // line vẽ sau
         },
         {
           type: "line",
@@ -177,8 +177,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd",
-          order: 10 // line vẽ sau
+          yAxisID: "yInd"
+          //order: 10 // line vẽ sau
         },
         {
           type: "line",
@@ -188,8 +188,8 @@ function renderProjectStatusChart(units) {
           borderWidth: 1.5,
           tension: 0.35,
           pointRadius: 2,
-          yAxisID: "yInd",
-          order: 10 // line vẽ sau
+          yAxisID: "yInd"
+         // order: 10 // line vẽ sau
         }
       ]
     },
