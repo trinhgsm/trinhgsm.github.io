@@ -7,7 +7,7 @@ const API_URL =
   "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
 const FILE_ID =
-  "DAN_ID_FILE_GOOGLE_SHEET_CUA_BAN_VAO_DAY";
+  "1brdWeBYZbnBpcokVt4lLsjJ280zlZcEm342KU_-yAAk";
 
 /* DOM */
 const tabBar  = document.getElementById("tabBar");
