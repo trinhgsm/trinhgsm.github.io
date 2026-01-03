@@ -189,7 +189,7 @@ function openFile(fileId) {
     iframe.style.transform = `scale(${zoomLevel})`;
     iframe.style.transformOrigin = "0 0";
   }
-)();
+}
 // menu tháng hiện tại
 function pickCurrentMonthFile(files) {
   const now = new Date();
