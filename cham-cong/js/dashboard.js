@@ -252,11 +252,16 @@ const finalList = [
 
   box.innerHTML = finalList.map(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
-    let level = 0;
-if (site) {
-  if (site.diffDays >= 3) level = 3;   // 🔥 đỏ nhấp nháy
-  else if (site.diffDays === 2) level = 2; // đỏ
-  else if (site.diffDays === 1) level = 1; // vàng
+    // ===== LEVEL CUỐI CÙNG (KHÔNG GHI ĐÈ VƯỢT CHỈ TIÊU) =====
+let level = u.level || 0;
+
+// chỉ dùng diffDays nếu KHÔNG có vượt chỉ tiêu
+if (!(u.overCong || u.overCost || u.overDay)) {
+  if (site) {
+    if (site.diffDays >= 3) level = 3;
+    else if (site.diffDays === 2) level = 2;
+    else if (site.diffDays === 1) level = 1;
+  }
 }
 
 
