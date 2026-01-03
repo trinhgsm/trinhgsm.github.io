@@ -1,158 +1,126 @@
 /* =========================================================
-   SHEET OVERLAY – CHUẨN HOÁ TOÀN CỤC
-   ========================================================= */
-
-/* Floating button – đã có trong HTML */
-.sheet-fab {
-  position: fixed;
-  right: 14px;
-  bottom: 18px;
-  z-index: 900;
-
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: #020617;
-  color: #e5e7eb;
-  border: 1px solid rgba(148,163,184,.25);
-  font-size: 14px;
-}
-
-/* =========================================================
-   BẮT OVERLAY DO sheet.js TẠO (KHÔNG GIẢ ĐỊNH ID)
-   ========================================================= */
-
-/* container chứa iframe google sheet */
-body > div:has(iframe[src*="docs.google.com"]) {
-  position: fixed;
-  left: 0;
-  right: 0;
-
-  /* 👇 KHÔNG CHE DÒNG CHỮ TRÔI */
-  top: 44px;
-
-  bottom: 0;
-  z-index: 999;
-  background: #020617;
-
-  display: flex;
-  flex-direction: column;
-}
-
-/* iframe sheet */
-iframe[src*="docs.google.com"] {
-  flex: 1;
-  width: 100% !important;
-  height: 100% !important;
-  border: none !important;
-  background: #fff;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* =========================================================
-   MENU / CONTROL – CHUNG
-   ========================================================= */
-
-.sheet-menu,
-.sheet-controls,
-[class*="sheet-menu"],
-[class*="sheet-control"] {
-  background: #020617;
-  color: #e5e7eb;
-  border: none;
-}
-
-/* nút trong menu */
-.sheet-menu button,
-.sheet-controls button {
-  background: #0f172a;
-  color: #e5e7eb;
-  border: 1px solid rgba(148,163,184,.25);
-  border-radius: 10px;
-  height: 40px;
-  font-size: 13px;
-}
-
-/* =========================================================
-   MOBILE – BOTTOM SHEET CHUẨN
-   ========================================================= */
-
-@media (max-width: 768px) {
-
-  /* overlay sheet */
-  body > div:has(iframe[src*="docs.google.com"]) {
-    top: 42px;                 /* chạm chữ trôi */
-    bottom: 0;
-  }
-
-  /* menu bám chân */
-  .sheet-menu,
-  .sheet-controls,
-  [class*="sheet-menu"],
-  [class*="sheet-control"] {
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    padding: 10px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-
-    border-top: 1px solid rgba(148,163,184,.25);
-    z-index: 1000;
-  }
-}
-
-/* =========================================================
-   PC – MENU DẠNG ĐỨNG BÊN HÔNG (RÊ CHUỘT MỚI HIỆN)
-   ========================================================= */
-
-@media (min-width: 769px) {
-
-  /* menu đứng bên phải */
-  .sheet-menu,
-  .sheet-controls,
-  [class*="sheet-menu"],
-  [class*="sheet-control"] {
-    position: absolute;
-    top: 80px;
-    right: 0;
-
-    width: 56px;
-    padding: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-
-    background: rgba(2,6,23,.9);
-    border-left: 1px solid rgba(148,163,184,.25);
-
-    transform: translateX(100%);
-    transition: transform .25s ease;
-  }
-
-  /* rê chuột mới thò ra */
-  body > div:has(iframe[src*="docs.google.com"]):hover
-  .sheet-menu,
-  body > div:has(iframe[src*="docs.google.com"]):hover
-  .sheet-controls {
-    transform: translateX(0);
-  }
-
-  .sheet-menu button,
-  .sheet-controls button {
-    width: 44px;
-    height: 44px;
-    padding: 0;
-  }
-}
-
-/* =========================================================
-   CHỐNG CHE – TICKER + DASHBOARD
+   SHEET OVERLAY – DUKICO
    ========================================================= */
 
 body.sheet-open {
   overflow: hidden;
+}
+
+/* ===== OVERLAY ===== */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #020617;
+  display: none;
+  flex-direction: column;
+}
+
+/* ===== IFRAME WRAPPER ===== */
+.sheet-overlay iframe {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: none;
+
+  /* QUAN TRỌNG – ép fit màn hình */
+  transform-origin: 0 0;
+  background: #fff;
+}
+
+/* =========================================================
+   MENU – MOBILE (BOTTOM)
+   ========================================================= */
+.sheet-menu {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+
+  padding: 10px;
+  background: linear-gradient(
+    to top,
+    rgba(2, 6, 23, 0.98),
+    rgba(2, 6, 23, 0.92)
+  );
+
+  z-index: 10000;
+}
+
+/* ===== SELECT + BUTTON ===== */
+.sheet-menu select,
+.sheet-menu button {
+  height: 42px;
+  border-radius: 10px;
+  border: 1px solid #1e293b;
+
+  background: #020617;
+  color: #e5e7eb;
+
+  font-size: 14px;
+  outline: none;
+}
+
+.sheet-menu select {
+  padding: 0 10px;
+}
+
+.sheet-menu button {
+  cursor: pointer;
+}
+
+.sheet-menu button:active {
+  transform: scale(0.97);
+}
+
+/* =========================================================
+   DESKTOP – MENU DỌC BÊN HÔNG
+   ========================================================= */
+@media (min-width: 900px) {
+  .sheet-menu {
+    top: 50%;
+    bottom: auto;
+    right: 12px;
+    left: auto;
+
+    transform: translateY(-50%);
+    width: 160px;
+
+    grid-template-columns: 1fr;
+    gap: 10px;
+
+    border-radius: 14px;
+    padding: 12px;
+  }
+}
+
+/* =========================================================
+   FIX VIEWPORT MOBILE
+   ========================================================= */
+@media (max-width: 768px) {
+  .sheet-overlay iframe {
+    height: calc(100vh - 120px); /* chừa chỗ menu */
+  }
+}
+
+/* =========================================================
+   NÚT FLOAT MỞ SHEET (đã có trong HTML)
+   ========================================================= */
+.sheet-fab {
+  position: fixed;
+  right: 14px;
+  bottom: 90px;
+  z-index: 9000;
+
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1e293b;
+  border-radius: 999px;
+
+  padding: 10px 14px;
+  font-size: 14px;
 }
