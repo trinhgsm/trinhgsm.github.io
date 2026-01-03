@@ -1,126 +1,156 @@
+/************************************************************
+ * SHEET OVERLAY – DUKICO
+ * - Kéo từ đáy lên
+ * - Không che ticker
+ * - PC: menu dọc bên hông
+ * - Mobile: menu chân trang
+ ************************************************************/
+
 /* =========================================================
-   SHEET OVERLAY – DUKICO
+   OVERLAY
    ========================================================= */
-
-body.sheet-open {
-  overflow: hidden;
-}
-
-/* ===== OVERLAY ===== */
-.sheet-overlay {
+#sheetOverlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
-  background: #020617;
-  display: none;
-  flex-direction: column;
+  z-index: 999;
+  pointer-events: none;
 }
 
-/* ===== IFRAME WRAPPER ===== */
-.sheet-overlay iframe {
-  flex: 1;
+#sheetOverlay.show {
+  pointer-events: auto;
+}
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+.sheet-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  /* ❗ chạm sát ticker – không che */
+  top: 48px;
+  bottom: 0;
+
+  background: #020617;
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
+}
+
+#sheetOverlay.show .sheet-panel {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   IFRAME
+   ========================================================= */
+#sheetFrame {
   width: 100%;
   height: 100%;
   border: none;
-
-  /* QUAN TRỌNG – ép fit màn hình */
-  transform-origin: 0 0;
-  background: #fff;
+  background: #020617;
 }
 
 /* =========================================================
-   MENU – MOBILE (BOTTOM)
+   MENU – CHUNG
    ========================================================= */
 .sheet-menu {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-
-  padding: 10px;
-  background: linear-gradient(
-    to top,
-    rgba(2, 6, 23, 0.98),
-    rgba(2, 6, 23, 0.92)
-  );
-
-  z-index: 10000;
-}
-
-/* ===== SELECT + BUTTON ===== */
-.sheet-menu select,
-.sheet-menu button {
-  height: 42px;
-  border-radius: 10px;
-  border: 1px solid #1e293b;
-
-  background: #020617;
+  position: absolute;
+  z-index: 2;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(6px);
   color: #e5e7eb;
-
-  font-size: 14px;
-  outline: none;
+  font-size: 13px;
 }
 
+/* reset */
+.sheet-menu button,
 .sheet-menu select {
-  padding: 0 10px;
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 1px solid rgba(148,163,184,.25);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
 }
 
-.sheet-menu button {
+.sheet-menu button:hover,
+.sheet-menu select:hover {
+  background: #020617;
   cursor: pointer;
 }
 
-.sheet-menu button:active {
-  transform: scale(0.97);
-}
-
 /* =========================================================
-   DESKTOP – MENU DỌC BÊN HÔNG
+   MENU – DESKTOP (DỌC BÊN HÔNG)
    ========================================================= */
-@media (min-width: 900px) {
+@media (min-width: 769px) {
   .sheet-menu {
     top: 50%;
-    bottom: auto;
-    right: 12px;
-    left: auto;
-
+    right: 6px;
     transform: translateY(-50%);
+
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    padding: 8px;
+    border-radius: 12px 0 0 12px;
+
+    /* ẩn nhẹ */
+    opacity: 0.35;
+    transition: opacity 0.25s;
+  }
+
+  .sheet-menu:hover {
+    opacity: 1;
+  }
+
+  .sheet-menu select {
     width: 160px;
-
-    grid-template-columns: 1fr;
-    gap: 10px;
-
-    border-radius: 14px;
-    padding: 12px;
   }
 }
 
 /* =========================================================
-   FIX VIEWPORT MOBILE
+   MENU – MOBILE (CHÂN TRANG)
    ========================================================= */
 @media (max-width: 768px) {
-  .sheet-overlay iframe {
-    height: calc(100vh - 120px); /* chừa chỗ menu */
+  .sheet-menu {
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+
+    padding: 8px 10px;
+    border-top: 1px solid rgba(148,163,184,.25);
+  }
+
+  .sheet-menu select {
+    grid-column: span 2;
+  }
+
+  .sheet-menu button {
+    width: 100%;
   }
 }
 
 /* =========================================================
-   NÚT FLOAT MỞ SHEET (đã có trong HTML)
+   ZOOM FIX (KHÔNG VỠ KHUNG)
    ========================================================= */
-.sheet-fab {
-  position: fixed;
-  right: 14px;
-  bottom: 90px;
-  z-index: 9000;
+#sheetFrame {
+  transform-origin: 0 0;
+}
 
-  background: #020617;
-  color: #e5e7eb;
-  border: 1px solid #1e293b;
-  border-radius: 999px;
+/* =========================================================
+   DARK SCROLLBAR (OPTIONAL)
+   ========================================================= */
+#sheetFrame::-webkit-scrollbar {
+  width: 8px;
+}
 
-  padding: 10px 14px;
-  font-size: 14px;
+#sheetFrame::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,.3);
+  border-radius: 4px;
 }
