@@ -1,63 +1,156 @@
-/* ===== FLOAT BUTTON ===== */
-.sheet-fab {
-  position: fixed;
-  bottom: 18px;
-  right: 18px;
-  z-index: 50;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: #0f172a;
-  color: #fff;
-  border: 1px solid rgba(148,163,184,.25);
-  cursor: pointer;
-}
+/************************************************************
+ * SHEET OVERLAY – DUKICO
+ * - Kéo từ đáy lên
+ * - Không che ticker
+ * - PC: menu dọc bên hông
+ * - Mobile: menu chân trang
+ ************************************************************/
 
-/* ===== OVERLAY ===== */
+/* =========================================================
+   OVERLAY
+   ========================================================= */
 #sheetOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.55);
-  display: none;
-  z-index: 100;
+  z-index: 999;
+  pointer-events: none;
 }
 
 #sheetOverlay.show {
-  display: block;
+  pointer-events: auto;
 }
 
-/* ===== PANEL ===== */
+/* =========================================================
+   PANEL
+   ========================================================= */
 .sheet-panel {
   position: absolute;
   left: 0;
   right: 0;
+
+  /* ❗ chạm sát ticker – không che */
+  top: 48px;
   bottom: 0;
-  height: calc(100% - 60px); /* không che top bar */
+
   background: #020617;
-  border-radius: 16px 16px 0 0;
-  display: flex;
-  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
 }
 
-/* ===== HEADER ===== */
-.sheet-header {
-  height: 44px;
-  padding: 0 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(148,163,184,.25);
+#sheetOverlay.show .sheet-panel {
+  transform: translateY(0);
 }
 
-.sheet-header button {
-  background: none;
+/* =========================================================
+   IFRAME
+   ========================================================= */
+#sheetFrame {
+  width: 100%;
+  height: 100%;
   border: none;
-  color: #fff;
-  font-size: 18px;
+  background: #020617;
+}
+
+/* =========================================================
+   MENU – CHUNG
+   ========================================================= */
+.sheet-menu {
+  position: absolute;
+  z-index: 2;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(6px);
+  color: #e5e7eb;
+  font-size: 13px;
+}
+
+/* reset */
+.sheet-menu button,
+.sheet-menu select {
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 1px solid rgba(148,163,184,.25);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.sheet-menu button:hover,
+.sheet-menu select:hover {
+  background: #020617;
   cursor: pointer;
 }
 
-/* ===== IFRAME ===== */
+/* =========================================================
+   MENU – DESKTOP (DỌC BÊN HÔNG)
+   ========================================================= */
+@media (min-width: 769px) {
+  .sheet-menu {
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    padding: 8px;
+    border-radius: 12px 0 0 12px;
+
+    /* ẩn nhẹ */
+    opacity: 0.35;
+    transition: opacity 0.25s;
+  }
+
+  .sheet-menu:hover {
+    opacity: 1;
+  }
+
+  .sheet-menu select {
+    width: 160px;
+  }
+}
+
+/* =========================================================
+   MENU – MOBILE (CHÂN TRANG)
+   ========================================================= */
+@media (max-width: 768px) {
+  .sheet-menu {
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+
+    padding: 8px 10px;
+    border-top: 1px solid rgba(148,163,184,.25);
+  }
+
+  .sheet-menu select {
+    grid-column: span 2;
+  }
+
+  .sheet-menu button {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   ZOOM FIX (KHÔNG VỠ KHUNG)
+   ========================================================= */
 #sheetFrame {
-  flex: 1;
-  border: none;
+  transform-origin: 0 0;
+}
+
+/* =========================================================
+   DARK SCROLLBAR (OPTIONAL)
+   ========================================================= */
+#sheetFrame::-webkit-scrollbar {
+  width: 8px;
+}
+
+#sheetFrame::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,.3);
+  border-radius: 4px;
 }
