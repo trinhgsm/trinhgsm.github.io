@@ -100,7 +100,7 @@ function renderUnitOverview(units) {
    PROJECT STATUS CHART – BAR + MULTI LINE
    ========================================================= */
 function renderProjectStatusChart(units) {
-  console.log("🔥 renderProjectStatusChart CALLED", units.length);
+  //console.log("🔥 renderProjectStatusChart CALLED", units.length);
 
   const canvas = document.getElementById("projectStatusChart");
   if (!canvas || !units || !units.length) return;
@@ -213,18 +213,42 @@ function renderWarnings(units, siteMap) {
   const box = document.getElementById("sidebarSummary");
   if (!box) return;
 
-  // nhóm 1: có dừng thi công
-  const danger = [];
-  // nhóm 2: còn lại
-  const normal = [];
+  // ===== PHÂN NHÓM CẢNH BÁO =====
 
-  units.forEach(u => {
-    const site = siteMap ? siteMap[u.maCan] : null;
-    if (site && site.diffDays >= 2) danger.push(u);
-    else normal.push(u);
-  });
+// TOP 1 – VƯỢT CHỈ TIÊU
+const overLimit = [];
 
-  const finalList = [...danger, ...normal];
+// TOP 2 – DỪNG THI CÔNG
+const stopWork = [];
+
+// TOP 3 – CÒN LẠI
+const normal = [];
+
+units.forEach(u => {
+  const site = siteMap ? siteMap[u.maCan] : null;
+
+  // 🚨 vượt chỉ tiêu (ưu tiên cao nhất)
+  if (u.overCong || u.overCost || u.overDay) {
+    overLimit.push(u);
+    return;
+  }
+
+  // ⛔ dừng thi công
+  if (site && site.diffDays >= 2) {
+    stopWork.push(u);
+    return;
+  }
+
+  normal.push(u);
+});
+
+// GHÉP THEO THỨ TỰ ƯU TIÊN
+const finalList = [
+  ...overLimit.sort((a, b) => b.level - a.level),
+  ...stopWork.sort((a, b) => b.level - a.level),
+  ...normal.sort((a, b) => b.level - a.level)
+];
+
 
   box.innerHTML = finalList.map(u => {
     const site = siteMap ? siteMap[u.maCan] : null;
