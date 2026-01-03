@@ -1,183 +1,158 @@
-/************************************************************
- * SHEET OVERLAY – DUKICO
- * - Kéo từ đáy lên
- * - Không che ticker
- * - PC: menu dọc bên hông
- * - Mobile: menu chân trang
- ************************************************************/
-
 /* =========================================================
-   OVERLAY
+   SHEET OVERLAY – CHUẨN HOÁ TOÀN CỤC
    ========================================================= */
-#sheetOverlay {
+
+/* Floating button – đã có trong HTML */
+.sheet-fab {
   position: fixed;
-  inset: 0;
-  z-index: 999;
-  pointer-events: none;
-}
+  right: 14px;
+  bottom: 18px;
+  z-index: 900;
 
-#sheetOverlay.show {
-  pointer-events: auto;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #020617;
+  color: #e5e7eb;
+  border: 1px solid rgba(148,163,184,.25);
+  font-size: 14px;
 }
 
 /* =========================================================
-   PANEL
+   BẮT OVERLAY DO sheet.js TẠO (KHÔNG GIẢ ĐỊNH ID)
    ========================================================= */
-.sheet-panel {
-  position: absolute;
+
+/* container chứa iframe google sheet */
+body > div:has(iframe[src*="docs.google.com"]) {
+  position: fixed;
   left: 0;
   right: 0;
 
-  /* chạm ticker */
-  top: 48px;
+  /* 👇 KHÔNG CHE DÒNG CHỮ TRÔI */
+  top: 44px;
 
-  /* ❗ chừa menu mobile */
-  bottom: 56px;
-
+  bottom: 0;
+  z-index: 999;
   background: #020617;
 
-  /* 🔥 CHO PHÉP CUỘN */
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* iframe sheet */
+iframe[src*="docs.google.com"] {
+  flex: 1;
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  background: #fff;
+  overflow: auto;
   -webkit-overflow-scrolling: touch;
-
-  transform: translateY(100%);
-  transition: transform 0.35s ease;
-}
-
-
-#sheetOverlay.show .sheet-panel {
-  transform: translateY(0);
 }
 
 /* =========================================================
-   IFRAME
+   MENU / CONTROL – CHUNG
    ========================================================= */
-#sheetFrame {
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  border: none;
 
-  /* ❗ không để iframe tự cuộn */
-  overflow: hidden;
-}
-
-
-/* =========================================================
-   MENU – CHUNG
-   ========================================================= */
-.sheet-menu {
-  position: absolute;
-  z-index: 2;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: blur(6px);
+.sheet-menu,
+.sheet-controls,
+[class*="sheet-menu"],
+[class*="sheet-control"] {
+  background: #020617;
   color: #e5e7eb;
-  font-size: 13px;
+  border: none;
 }
 
-/* reset */
+/* nút trong menu */
 .sheet-menu button,
-.sheet-menu select {
+.sheet-controls button {
   background: #0f172a;
   color: #e5e7eb;
   border: 1px solid rgba(148,163,184,.25);
-  border-radius: 6px;
-  padding: 6px 8px;
+  border-radius: 10px;
+  height: 40px;
   font-size: 13px;
 }
 
-.sheet-menu button:hover,
-.sheet-menu select:hover {
-  background: #020617;
-  cursor: pointer;
-}
-
 /* =========================================================
-   MENU – DESKTOP (DỌC BÊN HÔNG)
+   MOBILE – BOTTOM SHEET CHUẨN
    ========================================================= */
-@media (min-width: 769px) {
-  .sheet-menu {
-    top: 50%;
-    right: 6px;
-    transform: translateY(-50%);
 
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-
-    padding: 8px;
-    border-radius: 12px 0 0 12px;
-
-    /* ẩn nhẹ */
-    opacity: 0.35;
-    transition: opacity 0.25s;
-  }
-
-  .sheet-menu:hover {
-    opacity: 1;
-  }
-
-  .sheet-menu select {
-    width: 160px;
-  }
-}
-
-/* =========================================================
-   MENU – MOBILE (CHÂN TRANG)
-   ========================================================= */
 @media (max-width: 768px) {
-  .sheet-menu {
+
+  /* overlay sheet */
+  body > div:has(iframe[src*="docs.google.com"]) {
+    top: 42px;                 /* chạm chữ trôi */
+    bottom: 0;
+  }
+
+  /* menu bám chân */
+  .sheet-menu,
+  .sheet-controls,
+  [class*="sheet-menu"],
+  [class*="sheet-control"] {
+    position: sticky;
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
 
+    padding: 10px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
 
-    padding: 8px 10px;
     border-top: 1px solid rgba(148,163,184,.25);
-  }
-
-  .sheet-menu select {
-    grid-column: span 2;
-  }
-
-  .sheet-menu button {
-    width: 100%;
+    z-index: 1000;
   }
 }
 
 /* =========================================================
-   ZOOM FIX (KHÔNG VỠ KHUNG)
+   PC – MENU DẠNG ĐỨNG BÊN HÔNG (RÊ CHUỘT MỚI HIỆN)
    ========================================================= */
-#sheetFrame {
-  transform-origin: 0 0;
+
+@media (min-width: 769px) {
+
+  /* menu đứng bên phải */
+  .sheet-menu,
+  .sheet-controls,
+  [class*="sheet-menu"],
+  [class*="sheet-control"] {
+    position: absolute;
+    top: 80px;
+    right: 0;
+
+    width: 56px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    background: rgba(2,6,23,.9);
+    border-left: 1px solid rgba(148,163,184,.25);
+
+    transform: translateX(100%);
+    transition: transform .25s ease;
+  }
+
+  /* rê chuột mới thò ra */
+  body > div:has(iframe[src*="docs.google.com"]):hover
+  .sheet-menu,
+  body > div:has(iframe[src*="docs.google.com"]):hover
+  .sheet-controls {
+    transform: translateX(0);
+  }
+
+  .sheet-menu button,
+  .sheet-controls button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
 }
 
 /* =========================================================
-   DARK SCROLLBAR (OPTIONAL)
+   CHỐNG CHE – TICKER + DASHBOARD
    ========================================================= */
-#sheetFrame::-webkit-scrollbar {
-  width: 8px;
-}
 
-#sheetFrame::-webkit-scrollbar-thumb {
-  background: rgba(148,163,184,.3);
-  border-radius: 4px;
-}
-/* =========================================================
-   MOBILE OPTIMIZE
-   ========================================================= */
-@media (max-width: 768px) {
-
-  .sheet-panel {
-    top: 44px;        /* ticker mỏng hơn */
-    bottom: 60px;     /* menu chân */
-  }
-
-  #sheetFrame {
-    height: calc(100vh - 104px); 
-  }
-
+body.sheet-open {
+  overflow: hidden;
 }
