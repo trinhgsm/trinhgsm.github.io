@@ -111,6 +111,11 @@ function renderUnitOverview(units) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+
+animation: {
+      onComplete: hideLogoOnce   // ✅ DÒNG QUYẾT ĐỊNH
+    },
+
       plugins: { legend: { display: false } },
       scales: {
         y: { beginAtZero: true, max: 100 },
