@@ -145,7 +145,7 @@
   }
 
   function setZoom(z) {
-  zoomLevel = Math.max(0.4, Math.min(1.4, z));
+  zoomLevel = Math.max(0.6, Math.min(1.4, z));
   iframe.style.transform = `scale(${zoomLevel})`;
   iframe.style.transformOrigin = "0 0";
 }
@@ -179,7 +179,7 @@
   let fitZoom = screenW / SHEET_BASE_WIDTH;
 
   if (fitZoom > 1) fitZoom = 1;
-  if (fitZoom < 0.4) fitZoom = 0.4;
+  if (fitZoom < 0.6) fitZoom = 0.6;
 
   zoomLevel = fitZoom;
 
