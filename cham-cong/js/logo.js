@@ -10,7 +10,7 @@
   const unlockBtn      = document.getElementById("unlockBtn");
 
   // ===== CONFIG =====
-  const PASSWORD = "123456";        // đổi theo ý bạn
+  const PASSWORD = "123";        // đổi theo ý bạn
   const AUTH_KEY = "dukico-auth";   // key lưu localStorage
 
   /* ===== LOADING ===== */
