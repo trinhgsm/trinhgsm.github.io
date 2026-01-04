@@ -27,7 +27,7 @@
   position: absolute;
   left: 0;
   right: 0;
-
+  overflow-x: hidden;
   /* ❗ chạm sát ticker – không che */
   top: 48px;
   bottom: 0;
@@ -45,10 +45,11 @@
    IFRAME
    ========================================================= */
 #sheetFrame {
-  width: 100%;
+  width: 1500px;      /* WIDTH THỰC CỦA SHEET */
   height: 100%;
   border: none;
-  background: #020617;
+
+  transform-origin: 0 0;
 }
 
 /* =========================================================
