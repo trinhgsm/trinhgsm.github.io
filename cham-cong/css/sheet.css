@@ -235,3 +235,27 @@
 .sheet-menu button {
   transition: background 0.15s ease, transform 0.1s ease;
 }
+/* ===============================
+   MOBILE FIX – SHEET + MENU
+   =============================== */
+@media (max-width: 768px) {
+
+  /* overlay gốc */
+  .sheet-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  /* vùng chứa iframe */
+  .sheet-body {
+    flex: 1;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+
+    /* ❗ trừ chiều cao menu */
+    max-height: calc(100vh - 160px);
+  }
+
+  /* iframe sheet */
+  .sheet
