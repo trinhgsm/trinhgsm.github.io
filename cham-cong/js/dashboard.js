@@ -698,12 +698,12 @@ function renderActivityTicker(siteMap) {
 
 loadDashboard();
 // bắt đầu load sheet
-//document.addEventListener("DOMContentLoaded", () => {
- // const btn = document.getElementById("openSheetBtn");
- // if (!btn) {
-   // console.warn("❌ Không tìm thấy openSheetBtn");
-    //return;
-  //}
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("openSheetBtn");
+  if (!btn) {
+    console.warn("❌ Không tìm thấy openSheetBtn");
+    return;
+  }
 
   btn.addEventListener("click", () => {
     console.log("📄 Click Sheet");
