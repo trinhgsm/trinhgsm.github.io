@@ -33,54 +33,84 @@
 }
 
   /* ================= DOM ================= */
-  function createOverlay() {
-    overlay = document.createElement("div");
-    overlay.id = "sheetOverlay";
+function createOverlay() {
+  overlay = document.createElement("div");
+  overlay.id = "sheetOverlay";
 
-    overlay.innerHTML = `
-      <div class="sheet-panel">
-        <iframe id="sheetFrame"></iframe>
-        <div class="sheet-menu">
-          <select id="sheetFileMenu"></select>
-          <select id="sheetTabMenu"></select>
-          <button id="btnDrive">Drive</button>
-          <button id="btnEdit">Sửa</button>
-          <button id="btnZoomIn">＋</button>
-          <button id="btnZoomOut">－</button>
-          <button id="btnClose">✕</button>
-        </div>
+  overlay.innerHTML = `
+    <div class="sheet-panel">
+      <iframe id="sheetFrame"></iframe>
+
+      <div class="sheet-menu">
+        <!-- HÀNG 1: FILE + GID -->
+        <select id="sheetFileMenu"></select>
+        <select id="sheetTabMenu"></select>
+
+        <!-- HÀNG 2: 3 NÚT -->
+        <button id="btnFile">File</button>
+        <button id="btnLog1">Ghi NK 1</button>
+        <button id="btnLog2">Ghi NK 2</button>
+
+        <!-- HÀNG 3: ZOOM + CLOSE -->
+        <button id="btnZoomIn">＋</button>
+        <button id="btnZoomOut">－</button>
+        <button id="btnClose">✕</button>
       </div>
-    `;
+    </div>
+  `;
 
-    document.body.appendChild(overlay);
+  document.body.appendChild(overlay);
 
-    iframe = overlay.querySelector("#sheetFrame");
-    menuFile = overlay.querySelector("#sheetFileMenu");
-    menuSheet = overlay.querySelector("#sheetTabMenu");
+  /* ====== BẮT DOM ====== */
+  iframe = overlay.querySelector("#sheetFrame");
+  menuFile = overlay.querySelector("#sheetFileMenu");
+  menuSheet = overlay.querySelector("#sheetTabMenu");
 
-    overlay.querySelector("#btnClose").onclick = closeOverlay;
-    overlay.querySelector("#btnZoomIn").onclick = () => setZoom(zoomLevel + 0.1);
-    overlay.querySelector("#btnZoomOut").onclick = () => setZoom(zoomLevel - 0.1);
+  /* ====== SỰ KIỆN MENU ====== */
 
-    overlay.querySelector("#btnDrive").onclick = () => {
-      if (currentFileId)
-        window.open(
-          `https://drive.google.com/drive/search?q=${currentFileId}`,
-          "_blank"
-        );
-    };
+  // Đóng overlay
+  overlay.querySelector("#btnClose").onclick = closeOverlay;
 
-    overlay.querySelector("#btnEdit").onclick = () => {
-      if (currentFileId)
-        window.open(
-          `https://docs.google.com/spreadsheets/d/${currentFileId}/edit`,
-          "_blank"
-        );
-    };
+  // Zoom
+  overlay.querySelector("#btnZoomIn").onclick = () =>
+    setZoom(zoomLevel + 0.1);
 
-    menuFile.onchange = () => openFile(menuFile.value);
-    menuSheet.onchange = () => openSheetTab(menuSheet.value);
-  }
+  overlay.querySelector("#btnZoomOut").onclick = () =>
+    setZoom(zoomLevel - 0.1);
+
+  // Mở file trên Drive
+  overlay.querySelector("#btnFile").onclick = () => {
+    if (!currentFileId) return;
+    window.open(
+      `https://drive.google.com/drive/search?q=${currentFileId}`,
+      "_blank"
+    );
+  };
+
+  // Ghi NK 1 (gid = 0 — đổi nếu cần)
+  overlay.querySelector("#btnLog1").onclick = () => {
+    if (!currentFileId) return;
+    window.open(
+      `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=0`,
+      "_blank"
+    );
+  };
+
+  // Ghi NK 2 (gid = 1 — đổi nếu cần)
+  overlay.querySelector("#btnLog2").onclick = () => {
+    if (!currentFileId) return;
+    window.open(
+      `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=1`,
+      "_blank"
+    );
+  };
+
+  // Chọn file
+  menuFile.onchange = () => openFile(menuFile.value);
+
+  // Chọn tab (gid)
+  menuSheet.onchange = () => openSheetTab(menuSheet.value);
+}
 
   /* ================= FILE LIST ================= */
   async function loadFileList() {
