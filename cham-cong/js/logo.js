@@ -1,5 +1,5 @@
 /* =====================================================
-   LOGO LOADING + LOCK SCREEN (FINAL – CLEAN)
+   LOGO LOADING + LOCK SCREEN (FINAL – STABLE)
    ===================================================== */
 (function () {
   const loadingOverlay = document.getElementById("loadingOverlay");
@@ -7,24 +7,31 @@
   const passwordInput  = document.getElementById("passwordInput");
   const passwordError  = document.getElementById("passwordError");
   const unlockBtn      = document.getElementById("unlockBtn");
-  const sheetBtn       = document.getElementById("openSheetBtn");
 
   const PASSWORD = "123";
   const AUTH_KEY = "dukico-auth";
 
+  /* ===== SHEET BUTTON (LẤY ĐỘNG) ===== */
+  function getSheetBtn() {
+    return document.getElementById("openSheetBtn");
+  }
+
   /* ===== INIT ===== */
-  if (sheetBtn) sheetBtn.style.display = "none";
   if (loadingOverlay) loadingOverlay.style.display = "none";
+  const btnInit = getSheetBtn();
+  if (btnInit) btnInit.style.display = "none";
 
   /* ===== PUBLIC API ===== */
   window.showLogoLoading = function () {
     if (loadingOverlay) loadingOverlay.style.display = "flex";
-    if (sheetBtn) sheetBtn.style.display = "none";
+    const btn = getSheetBtn();
+    if (btn) btn.style.display = "none";
   };
 
   window.hideLogoLoading = function () {
     if (loadingOverlay) loadingOverlay.style.display = "none";
-    if (sheetBtn) sheetBtn.style.display = "flex";
+    const btn = getSheetBtn();
+    if (btn) btn.style.display = "";   // ✅ TRẢ VỀ CSS GỐC
   };
 
   /* ===== START APP ===== */
@@ -36,7 +43,7 @@
   function handleUnlock() {
     const pass = passwordInput.value.trim();
     if (pass === PASSWORD) {
-      try { localStorage.setItem(AUTH_KEY, "ok"); } catch(e){}
+      try { localStorage.setItem(AUTH_KEY, "ok"); } catch (e) {}
       startApp();
     } else {
       passwordError.textContent = "Sai mật khẩu!";
@@ -56,11 +63,11 @@
       if (localStorage.getItem(AUTH_KEY) === "ok") {
         startApp();
       }
-    } catch(e){}
+    } catch (e) {}
   });
 
-  /* ===== CHỜ DASHBOARD READY ===== */
+  /* ===== DASHBOARD READY → TẮT LOGO ===== */
   document.addEventListener("dashboard-ready", () => {
-    hideLogoLoading();
+    window.hideLogoLoading();
   });
 })();
