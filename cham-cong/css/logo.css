@@ -152,13 +152,3 @@
   font-size: 0.86rem;
   cursor: pointer;
 }
-/* =====================================================
-   logo
-/* ===== SHEET BUTTON CONTROL ===== */
-#openSheetBtn {
-  display: none;
-}
-
-body.sheet-allowed #openSheetBtn {
-  display: flex;
-}
