@@ -50,9 +50,9 @@ function createOverlay() {
         <select id="sheetTabMenu"></select>
 
         <!-- HÀNG 2: GHI NHẬT KÝ -->
-        <button id="btnLog1">Ghi NK 1</button>
-        <button id="btnLog2">Ghi NK 2</button>
-        <button id="btnLog3">Ghi NK 3</button>
+        <button id="btnLog1">Ghi N.K</button>
+        <button id="btnLog2">Thu chi</button>
+        <button id="btnLog3">Config</button>
 
         <!-- HÀNG 3: ZOOM + CLOSE -->
         <button id="btnZoomIn">＋</button>
