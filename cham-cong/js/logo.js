@@ -1,8 +1,8 @@
 /************************************************************
  * LOGO LOADING + LOCK SCREEN
- * LOGIC CHUẨN:
+ * LOGIC:
  * - LOGO phụ thuộc DATA
- * - SHEET phụ thuộc (DATA + AUTH)
+ * - SHEET KHÔNG TOGGLE, CHỈ BỊ ẨN KHI LOGO CÒN
  ************************************************************/
 (function () {
 
@@ -22,60 +22,64 @@
   const PASSWORD = "123";
   const AUTH_KEY = "dukico-auth";
 
-  /* =====================================================
-     STATE (2 CỜ – KHÔNG LỆCH)
-     ===================================================== */
   let DATA_READY = false;
-  let AUTH_OK    = false;
 
   /* =====================================================
-     RENDER – DUY NHẤT 1 CHỖ QUYẾT ĐỊNH UI
+     INIT STATE
      ===================================================== */
-  function renderUI() {
-    // LOGO
-    if (loadingOverlay) {
-      loadingOverlay.style.display = DATA_READY ? "none" : "flex";
-    }
+  if (loadingOverlay) loadingOverlay.style.display = "flex";
+  if (sheetBtn) sheetBtn.style.display = "none"; // mặc định ẩn
 
-    // LOCK
-    if (lockScreen) {
-      lockScreen.style.display = AUTH_OK ? "none" : "flex";
-    }
+  /* =====================================================
+     CORE: ẨN / HIỆN SHEET THEO LOGO (KHÔNG LOGIC)
+     ===================================================== */
+  function syncSheetWithLogo() {
+    if (!loadingOverlay || !sheetBtn) return;
 
-    // SHEET (CHỈ KHI DATA + AUTH)
-    if (sheetBtn) {
-      sheetBtn.style.display = (DATA_READY && AUTH_OK) ? "flex" : "none";
-    }
+    const logoVisible =
+      loadingOverlay.style.display !== "none";
+
+    // LOGO CÒN => ẨN SHEET
+    sheetBtn.style.display = logoVisible ? "none" : "flex";
   }
 
   /* =====================================================
-     INIT
+     OBSERVE LOGO (CHÌA KHOÁ)
      ===================================================== */
-  renderUI();
+  if (loadingOverlay) {
+    const observer = new MutationObserver(syncSheetWithLogo);
+    observer.observe(loadingOverlay, {
+      attributes: true,
+      attributeFilter: ["style", "class"]
+    });
+  }
 
   /* =====================================================
-     PUBLIC API – DATA
+     API – LOGO (GIỮ NGUYÊN)
      ===================================================== */
   window.showLogoLoading = function () {
     if (DATA_READY) return;
-    renderUI();
+    if (loadingOverlay) loadingOverlay.style.display = "flex";
   };
 
   window.hideLogoLoading = function () {
     if (DATA_READY) return;
     DATA_READY = true;
-    renderUI();
+    if (loadingOverlay) loadingOverlay.style.display = "none";
   };
 
   /* =====================================================
-     AUTH
+     AUTH (KHÔNG ĐỤNG SHEET)
      ===================================================== */
+  function startApp() {
+    if (lockScreen) lockScreen.style.display = "none";
+  }
+
   function handleUnlock() {
     const pass = passwordInput?.value.trim();
     if (pass === PASSWORD) {
-      AUTH_OK = true;
       try { localStorage.setItem(AUTH_KEY, "ok"); } catch (e) {}
-      renderUI();
+      startApp();
     } else if (passwordError) {
       passwordError.textContent = "Sai mật khẩu!";
     }
@@ -95,17 +99,16 @@
   window.addEventListener("load", () => {
     try {
       if (localStorage.getItem(AUTH_KEY) === "ok") {
-        AUTH_OK = true;
-        renderUI();
+        startApp();
       }
     } catch (e) {}
   });
 
   /* =====================================================
-     DATA READY EVENT
+     DATA READY
      ===================================================== */
   document.addEventListener("dashboard-ready", () => {
-    window.hideLogoLoading();
+    hideLogoLoading();
   });
 
 })();
