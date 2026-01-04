@@ -5,10 +5,8 @@
 (function () {
   if (window.__sheetOverlayInit) return;
   window.__sheetOverlayInit = true;
-  function getOpenBtn() {
-  return document.getElementById("openSheetBtn");
-}
- const API_BASE =
+  const openBtn = document.getElementById("openSheetBtn");
+  const API_BASE =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
   let overlay,
@@ -23,19 +21,18 @@
   if (!overlay) createOverlay();
   overlay.classList.add("show");
 
-  // ✅ LẤY NÚT TẠI THỜI ĐIỂM BẤM
-  const btn = getOpenBtn();
-  if (btn) btn.style.display = "none";
+  if (openBtn) openBtn.style.display = "none";
 
   await loadFileList();
 };
- function closeOverlay() {
+
+  function closeOverlay() {
   overlay.classList.remove("show");
 
-  const btn = getOpenBtn();
-  if (btn) btn.style.display = "flex"; // BẮT BUỘC
+  if (openBtn) openBtn.style.display = "";
 }
 
+  /* ================= DOM ================= */
 /* ================= DOM ================= */
 function createOverlay() {
   overlay = document.createElement("div");
@@ -236,15 +233,4 @@ function createOverlay() {
 window.addEventListener("resize", () => {
     fitSheetToScreen();
   });
-  /* ================= SAFETY: ALWAYS RESTORE SHEET BUTTON ================= */
-window.addEventListener("load", () => {
-  const btn = document.getElementById("openSheetBtn");
-  const overlay = document.getElementById("sheetOverlay");
-
-  // Nếu KHÔNG có overlay đang mở → nút PHẢI HIỆN
-  if (btn && (!overlay || !overlay.classList.contains("show"))) {
-    btn.style.display = "flex";
-  }
-});
-
 })(); // 🔴 BẮT BUỘC – KẾT THÚC IIFE
