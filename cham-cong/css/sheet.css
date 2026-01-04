@@ -189,11 +189,10 @@
 .sheet-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9998;
-  background: #020617;
+  z-index: 9999;
 
-  display: flex;
-  flex-direction: column;
+  overflow-x: hidden;   /* FIX VUỐT NGANG */
+  overflow-y: auto;
 }
 
 /* vùng hiển thị sheet */
@@ -212,4 +211,10 @@
 
   transform-origin: top left;
   will-change: transform;
+}
+.sheet-iframe {
+  width: 1200px;                 /* width thật của Google Sheet */
+  height: 100vh;
+  border: 0;
+  transform-origin: top left;
 }
