@@ -33,7 +33,7 @@
   -webkit-overflow-scrolling: touch;
 }
   /* ❗ chạm sát ticker – không che */
-  top: 72px;
+  top: 88px;
   bottom: 0;
 
   background: #020617;
