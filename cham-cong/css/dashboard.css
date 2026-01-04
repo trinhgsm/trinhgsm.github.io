@@ -376,11 +376,11 @@ header.top {
 
 /* tiêu đề */
 header.top .title {
-  flex: 0 1 auto;
+  flex: 1 1 auto;        /* 🔴 CHO PHÉP MỞ RỘNG */
+  min-width: 0;          /* 🔴 BẮT BUỘC CHO FLEX */
   font-size: 0.85rem;
   font-weight: 500;
 
-  max-width: 38vw;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
