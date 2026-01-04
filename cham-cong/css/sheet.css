@@ -317,27 +317,3 @@
     padding: 10px;
   }
 }
-/* ===============================
-   GEN TIME – LUÔN 1 DÒNG
-   RỘNG: HIỆN GIỜ + NGÀY
-   HẸP / RẤT HẸP: CHỈ HIỆN GIỜ
-   =============================== */
-
-#genTime {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  white-space: nowrap;
-  flex-shrink: 0;
-
-  font-size: 12px;
-  opacity: 0.85;
-}
-
-/* HẸP → ẨN NGÀY, GIỮ GIỜ */
-@media (max-width: 420px) {
-  #genTime .date {
-    display: none;
-  }
-}
