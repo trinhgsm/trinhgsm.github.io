@@ -1,0 +1,154 @@
+/* =====================================================
+   LOGO LOADING OVERLAY
+   ===================================================== */
+
+#loadingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000; /* thấp hơn sheet overlay */
+}
+
+.loading-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.loading-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(148,163,184,0.35);
+  border-top-color: #38bdf8;
+  border-right-color: #22c55e;
+  animation: loading-spin 1.2s linear infinite;
+}
+
+.loading-core {
+  width: 116px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* ===== LOGO DUKICO ===== */
+.dukico-logo {
+  font-family: system-ui, "Arial Black", sans-serif;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  color: #6dff4d;
+  transform: translateX(3px);
+}
+
+.dukico-logo .uk {
+  display: inline-block;
+}
+
+.dukico-logo .u {
+  display: inline-block;
+}
+
+.dukico-logo .k {
+  display: inline-block;
+  margin-left: -0.34em;
+  transform: scaleX(1.05);
+}
+
+.loading-text {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e5e7eb;
+  opacity: 0.9;
+}
+
+@keyframes loading-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =====================================================
+   LOCK SCREEN
+   ===================================================== */
+
+#lockScreen {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9000;
+}
+
+#lockBox {
+  width: 100%;
+  max-width: 340px;
+  background: rgba(15,23,42,0.95);
+  padding: 22px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(148,163,184,0.5);
+  text-align: center;
+}
+
+#lockBox h2 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #38bdf8;
+}
+
+#lockBox p {
+  margin: 0 0 12px;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+#passwordInput {
+  width: 100%;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid #475569;
+  outline: none;
+  background: #020617;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+#passwordError {
+  min-height: 18px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #f97373;
+  text-align: left;
+}
+
+#unlockBtn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px;
+  border-radius: 10px;
+  border: none;
+  background: #38bdf8;
+  color: #020617;
+  font-weight: 600;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
