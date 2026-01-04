@@ -10,7 +10,17 @@ let projectChart = null;
 let unitOverviewChart = null;
 // ===== EXTENSION LAYER (SAFE) =====
 let SITE_MAP = {};
+// ===== TẮT LOGO NGAY KHI BIỂU ĐỒ HIỆN =====
+let logoHidden = false;
 
+function hideLogoOnce() {
+  if (logoHidden) return;
+  logoHidden = true;
+
+  if (window.hideLogoLoading) {
+    hideLogoLoading();
+  }
+}
 /* =========================================================
    LOAD DASHBOARD
    ========================================================= */
