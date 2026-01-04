@@ -2,128 +2,138 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>DUKICO – CHẤM CÔNG GHI NHẬT KÝ AUTO</title>
+  <title>DUKICO – Dashboard Tiến Độ & Tài Chính</title>
 
-  <!-- Viewport: tắt pinch zoom, chỉ dùng nút + / - -->
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png"
-        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAQAAABecRxxAAAMQ0lEQVR4Ae3dQW7cNhAH4Lz/P6x0fgwlHGawEq+y3OCAXoTr4Wr9PXgCulcbkQCk2BEm90LkAMPx/+qvOB0fOkHn2q+49WCo5L+ymsrDgPV1Y6DT+xr3aMcMBXNte1qNbfXDn/YRh+1WDVYqvfdYv59lSV/TSEux33jjDPsegn+09uXBJgp7wa9u0ed7pKnz03Wx/ju0RduCMsZ/HXXdK5vXnhK/HXXdINvODsPwhj/KgOMrgJUgHgdGXNqBJ38qRAjPR9UCeFVLtZL1NVr7DiIP9N6byN1Nsx3Rp3XIan+FJxuxMxDPZWS9Vyuk3F7S3Uz7Dnk3a1WzN96CBvs1+qsSVqSdz+CA0nVddOZXS6jttuPAHyBs+Sn6TfGsDz3jHK5vVsQt1zAr72XdN6Vq776BF3nf6/Dr7guPmyAnbcW2CYwiVdc+GqORdzdrIW6DCe4kYvI0dzdrIpvCMcvrsSLvUXOc6nqBd3YsY9jhY+cxd6jxoX2HFOKRSbuuSSMzdON3vInM8JStybVNewWWm6XtOD87Qy4V/mQJu1WDVYgv3xNmPR9UCeEVHXDekOVoig3NbS1Ry49j8TjuKTzECszO2vCuxnxO8uKszN7N45ofPmbfXE/CyPwiXlL7sRKqzZo4PM5XsfS5aXoaZySUdkddUTkOcZIZyQQ4Ei5IQf3L7hIwrKyYtJ3zKzbw4edvurIWBLL8GMDIS9ZhDJW60F7uO3cu6UytzszbmWzxubUANe0yoyS9MhUlCT3VkOITkkpFmS6r30YIOCQM7DDDeWGPAHDLcGRIDHuBBhdAu+xr3MNx2qCkCmDYJLdnOjFkMrDXLI4sdAlnOzbIRbkIuWGHNirMRHkRkNvztNFVQVw1Gc7YCOUM3FZRMVAbw1Gc7ICOUJXFJRMBw1Gc4bECUkJXFJRMFh1GczYSKUmPCkhIcY7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUkJXFJhMLB1Gc7ICQUlGSeN5e7/geMHdcN1gx9P7h5e8w49AmwlZDlSv8P++/MOA+DDwHoZ8ULICwhfQ3Gscx3NFuIBZpUKoZX6mE6oPD58x35H0TADaBrZEcDgEaKkMfCjRzOQ64rcXeVUsVTNff7kwh28ykVfoWHz0N7dxyzKk5XxhxL7sRKqzo4PM468Odqy0ZOnLT5O20nT2/QY90PLfsvblSsrfxqSdzDCeWkEaKkRBHJCMlmEkmKQypISQUkJTGXOYJISUoJICKWViypISQUkJpG8gJIchICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIICQUkJZGRvyFkJpG0gZIIBQUAAAAAAAAAAAAAAAAAAAAD4T/APkjYb9YMRo5AAAAAElFTkSuQmCC">
+  <!-- Viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- CSS -->
-   <link rel="stylesheet" href="css/style.css">
-  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script>
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/sheet.css">
+  <link rel="stylesheet" href="css/logo.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- == <script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script> == -->
 
 </head>
-
 <body>
-
 <!-- ===== LOADING OVERLAY ===== -->
-<div id="loadingOverlay">
-  <div class="loading-wrap">
-    <div class="loading-ring"></div>
-    <div class="loading-core">
-      <div class="dukico-logo">
-        D<span class="uk"><span class="u">U</span><span class="k">K</span></span>ICO
+  <div id="loadingOverlay">
+    <div class="loading-wrap">
+      <div class="loading-ring"></div>
+
+      <div class="loading-core">
+        <div class="dukico-logo">
+          D<span class="uk">
+            <span class="u">U</span><span class="k">K</span>
+          </span>ICO
+        </div>
       </div>
+
+      <div class="loading-text">ĐANG TẢI…</div>
     </div>
-    <div class="loading-text">ĐANG TẢI…</div>
   </div>
-</div>
 
-<!-- ===== LOCK SCREEN ===== -->
-<div id="lockScreen">
-  <div id="lockBox">
-    <h2>Mật khẩu</h2>
-    <p>Nhập mật khẩu để mở viewer.</p>
-    <input id="passwordInput" type="password" placeholder="Mật khẩu..." />
-    <div id="passwordError"></div>
-    <button id="unlockBtn">MỞ</button>
-  </div>
-</div>
+  <!-- ===== LOCK SCREEN ===== -->
+  <div id="lockScreen">
+    <div id="lockBox">
+      <h2>Mật khẩu</h2>
+      <p>Nhập mật khẩu để tiếp tục</p>
 
-<!-- ===== HEADER ===== -->
-<header id="topBar" style="display:none;">
-  <div class="brand">
-    <div class="brand-mark">
-      <div class="brand-inner">DKC</div>
+      <input
+        id="passwordInput"
+        type="password"
+        placeholder="Mật khẩu..."
+      />
+
+      <div id="passwordError"></div>
+
+      <button id="unlockBtn">MỞ</button>
     </div>
-    <span>DUKICO – Chấm công ghi nhật ký auto</span>
+  </div>
+  <!-- ================= TOP BAR ================= -->
+  <header class="top">
+  <div class="title">
+    <strong>DUKICO</strong> – Dashboard tổng quan
   </div>
 
-  <div class="toolbar">
-    <select id="fileMenu"></select>
-    <select id="sheetMenu"></select>
-    <button id="editBtn" class="small-btn">Sửa</button>
-    <button id="driveBtn" class="small-btn">Drive</button>
-    <button id="zoomOutBtn" class="small-btn">−</button>
-    <button id="zoomInBtn" class="small-btn">+</button>
-  </div>
+  <div id="genTime">Đang tải dữ liệu…</div>
+
+  <div id="activityTicker" class="ticker"></div>
 </header>
 
-<!-- ===== MAIN ===== -->
-<main>
-  <div class="viewer">
-    <div class="iframe-wrap">
-      <div class="iframe-scale" id="iframeScale">
-        <iframe id="sheetFrame"></iframe>
-      </div>
+  <!-- ================= DASHBOARD ================= -->
+  <main id="dashboard" class="dashboard loading">
+
+  <!-- ===== HÀNG TRÊN ===== -->
+  <section class="top-row">
+
+  <!-- Cột 1: Tổng dự án -->
+  <div class="card">
+  <div id="projectCard">
+    <h2>TỔNG DỰ ÁN</h2>
+
+    <div class="chart-wrap" style="height:240px">
+      <canvas id="projectStatusChart"></canvas>
     </div>
-  </div>
-</main>
-
-<!-- ===== STATUS BAR ===== -->
-<div id="siteStatusBar" style="display:none;">
-  <div class="status-title">CÔNG TRƯỜNG ĐANG HOẠT ĐỘNG</div>
-
-  <div class="status-marquee">
-    <div id="statusList" class="status-track"></div>
-  </div>
-
-  <div class="status-note">
-    <div class="status-note-track" id="statusNoteDynamic"></div>
   </div>
 </div>
 
-<!-- ===== JS (LOAD 1 LẦN – CUỐI BODY) ===== -->
-<script src="js/config.js"></script>
-<script src="js/dom.js"></script>
-<script src="js/ui.js"></script>
-<script src="js/api.js"></script>
-<script src="js/main.js"></script>
-<!-- NÚT DS – NỔI NHẸ -->
-<a href="/cham-cong/ds.html"
-   target="_blank"
-   id="dsFloatBtn"
-   title="Danh sách chấm công">
-  Xem biểu đồ
-</a>
-<script>
-(function () {
-  // 🔒 Chuỗi bí mật – bạn có thể đổi
-  const SECRET = "dukico@2025";
 
-  // Sinh key theo NGÀY
-  function buildKey() {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
+  <!-- Cột 2: Tổng quan tiến độ -->
+  <div class="card card--stretch">
+    <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
+    <div class="chart-wrap">
+      <canvas id="unitOverviewChart"></canvas>
+    </div>
+  </div>
 
-    // VD: dukico@202520250122
-    return md5(SECRET + y + m + day);
-  }
+</section>
 
-  const btn = document.getElementById("dsFloatBtn");
-  if (!btn) return;
 
-  const key = buildKey();
+  <!-- ===== HÀNG DƯỚI ===== -->
+  <section class="bottom-row">
 
-  // ⭐ GHI ĐÈ LINK
-  btn.href = "/cham-cong/ds.html?key=" + key;
-})();
-</script>
+    <!-- CARD CÁC CĂN -->
+    <div id="unitCards"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <!-- Widget 1: Cảnh báo -->
+      <div class="card sidebar-widget">
+        <h2>CẢNH BÁO TIẾN ĐỘ</h2>
+        <div class="widget-body" id="sidebarSummary"></div>
+      </div>
+
+      <!-- Widget 2: Phân bổ theo tổ -->
+     <div class="card sidebar-widget sidebar-widget--stretch">
+  <h2>PHÂN BỔ CÔNG THEO TỔ</h2>
+  <div class="widget-body" id="sidebarDetail"></div>
+</div>
+
+
+    </aside>
+
+  </section>
+
+</main>
+
+
+  <!-- ================= FOOTER ================= -->
+  <footer style="
+    text-align:center;
+    font-size:0.7rem;
+    opacity:.6;
+    padding:8px 0;
+  ">
+    © DUKICO – Dashboard nội bộ
+  </footer>
+
+  <!-- ================= JS ================= -->
+  <script src="js/dashboard.js"></script>
+  <script src="js/logo.js"></script>
+<button id="openSheetBtn" class="sheet-fab">📄 Sheet</button>
+
 </body>
 </html>
