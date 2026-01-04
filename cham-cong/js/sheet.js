@@ -179,7 +179,7 @@
   let fitZoom = screenW / SHEET_BASE_WIDTH;
 
   if (fitZoom > 1) fitZoom = 1;
-  if (fitZoom < 0.5) fitZoom = 0.5;
+  if (fitZoom < 0.4) fitZoom = 0.4;
 
   zoomLevel = fitZoom;
 
