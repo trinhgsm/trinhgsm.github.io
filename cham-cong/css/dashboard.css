@@ -42,7 +42,20 @@ body {
   font-size: 0.75rem;
   opacity: .8;
 }
+/* ===== GEN TIME: LUÔN 1 DÒNG, ƯU TIÊN GIỜ ===== */
+#genTime {
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
+/* MÀN HÌNH HẸP → ẨN NGÀY, GIỮ GIỜ */
+@media (max-width: 420px) {
+  #genTime .date {
+    display: none;
+  }
+}
 /* =========================================================
    DASHBOARD
    ========================================================= */
