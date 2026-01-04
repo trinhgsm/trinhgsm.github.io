@@ -140,10 +140,18 @@
   }
 
   function setZoom(z) {
-    zoomLevel = Math.max(0.6, Math.min(1.4, z));
-    iframe.style.transform = `scale(${zoomLevel})`;
-    iframe.style.transformOrigin = "0 0";
+  zoomLevel = Math.max(0.6, Math.min(1.4, z));
+
+  iframe.style.transform = `scale(${zoomLevel})`;
+  iframe.style.transformOrigin = "0 0";
+
+  // 🔴 nếu zoom > fit → cho phép vuốt ngang
+  if (zoomLevel > fitZoom) {
+    iframe.parentElement.style.overflowX = "auto";
+  } else {
+    iframe.parentElement.style.overflowX = "hidden";
   }
+}
 
   /* ================= MONTH PICKER ================= */
   function pickCurrentMonthFile(files) {
