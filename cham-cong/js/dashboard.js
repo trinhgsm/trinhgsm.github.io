@@ -725,3 +725,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+window.__DASHBOARD_READY = true;
+document.dispatchEvent(new Event("dashboard-ready"));
