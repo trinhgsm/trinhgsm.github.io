@@ -29,12 +29,11 @@
 
   await loadFileList();
 };
-  function closeOverlay() {
+ function closeOverlay() {
   overlay.classList.remove("show");
 
-  // ✅ LẤY LẠI NÚT KHI ĐÓNG
   const btn = getOpenBtn();
-  if (btn) btn.style.display = "";
+  if (btn) btn.style.display = "flex"; // BẮT BUỘC
 }
 
 /* ================= DOM ================= */
