@@ -5,7 +5,7 @@
 (function () {
   if (window.__sheetOverlayInit) return;
   window.__sheetOverlayInit = true;
-
+  const openBtn = document.getElementById("openSheetBtn");
   const API_BASE =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
@@ -18,14 +18,19 @@
 
   /* ================= OPEN ================= */
   window.openSheetOverlay = async function () {
-    if (!overlay) createOverlay();
-    overlay.classList.add("show");
-    await loadFileList();
-  };
+  if (!overlay) createOverlay();
+  overlay.classList.add("show");
+
+  if (openBtn) openBtn.style.display = "none";
+
+  await loadFileList();
+};
 
   function closeOverlay() {
-    overlay.classList.remove("show");
-  }
+  overlay.classList.remove("show");
+
+  if (openBtn) openBtn.style.display = "";
+}
 
   /* ================= DOM ================= */
   function createOverlay() {
