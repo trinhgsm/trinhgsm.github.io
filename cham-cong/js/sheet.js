@@ -33,6 +33,7 @@
 }
 
   /* ================= DOM ================= */
+/* ================= DOM ================= */
 function createOverlay() {
   overlay = document.createElement("div");
   overlay.id = "sheetOverlay";
@@ -42,14 +43,15 @@ function createOverlay() {
       <iframe id="sheetFrame"></iframe>
 
       <div class="sheet-menu">
-        <!-- HÀNG 1: FILE + GID -->
+        <!-- HÀNG 1: FILE + FILE MENU + GID -->
+        <button id="btnFile">File</button>
         <select id="sheetFileMenu"></select>
         <select id="sheetTabMenu"></select>
 
-        <!-- HÀNG 2: 3 NÚT -->
-        <button id="btnFile">File</button>
+        <!-- HÀNG 2: GHI NHẬT KÝ -->
         <button id="btnLog1">Ghi NK 1</button>
         <button id="btnLog2">Ghi NK 2</button>
+        <button id="btnLog3">Ghi NK 3</button>
 
         <!-- HÀNG 3: ZOOM + CLOSE -->
         <button id="btnZoomIn">＋</button>
@@ -78,7 +80,7 @@ function createOverlay() {
   overlay.querySelector("#btnZoomOut").onclick = () =>
     setZoom(zoomLevel - 0.1);
 
-  // Mở file trên Drive
+  // Mở file trên Google Drive
   overlay.querySelector("#btnFile").onclick = () => {
     if (!currentFileId) return;
     window.open(
@@ -101,6 +103,15 @@ function createOverlay() {
     if (!currentFileId) return;
     window.open(
       `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=1`,
+      "_blank"
+    );
+  };
+
+  // Ghi NK 3 (gid = 2 — đổi nếu cần)
+  overlay.querySelector("#btnLog3").onclick = () => {
+    if (!currentFileId) return;
+    window.open(
+      `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=2`,
       "_blank"
     );
   };
