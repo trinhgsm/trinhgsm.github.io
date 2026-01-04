@@ -1,5 +1,6 @@
 /************************************************************
- * LOGO LOADING + LOCK SCREEN – FINAL LOGIC
+ * LOGO LOADING + LOCK SCREEN
+ * LOGIC: LOGO CHỈ PHỤ THUỘC DATA LOAD
  ************************************************************/
 (function () {
   const loadingOverlay = document.getElementById("loadingOverlay");
@@ -12,31 +13,29 @@
   const PASSWORD = "123";
   const AUTH_KEY = "dukico-auth";
 
-  let dashboardReady = false;
+  let DATA_READY = false; // 🔴 CHỈ 1 CỜ DUY NHẤT
 
   /* ===== INIT ===== */
+  if (loadingOverlay) loadingOverlay.style.display = "flex";
   if (sheetBtn) sheetBtn.style.display = "none";
-  if (loadingOverlay) loadingOverlay.style.display = "none";
 
-  /* ===== PUBLIC API ===== */
+  /* ===== API ===== */
   window.showLogoLoading = function () {
+    if (DATA_READY) return; // ❌ data xong rồi thì CẤM bật lại
     if (loadingOverlay) loadingOverlay.style.display = "flex";
     if (sheetBtn) sheetBtn.style.display = "none";
   };
 
   window.hideLogoLoading = function () {
+    DATA_READY = true;
     if (loadingOverlay) loadingOverlay.style.display = "none";
-
-    // ✅ CHỈ HIỆN SHEET KHI DASHBOARD ĐÃ SẴN SÀNG
-    if (dashboardReady && sheetBtn) {
-      sheetBtn.style.display = "";
-    }
+    if (sheetBtn) sheetBtn.style.display = "flex";
   };
 
-  /* ===== START APP ===== */
+  /* ===== AUTH ===== */
   function startApp() {
     if (lockScreen) lockScreen.style.display = "none";
-    showLogoLoading();
+    // ❌ KHÔNG show logo ở đây
   }
 
   function handleUnlock() {
@@ -65,9 +64,8 @@
     } catch(e){}
   });
 
-  /* ===== DASHBOARD READY ===== */
+  /* ===== DATA READY ===== */
   document.addEventListener("dashboard-ready", () => {
-    dashboardReady = true;
-    hideLogoLoading();
+    hideLogoLoading(); // ✅ CHỈ TẮT 1 LẦN
   });
 })();
