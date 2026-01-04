@@ -152,3 +152,18 @@
   font-size: 0.86rem;
   cursor: pointer;
 }
+/* App quyết định khi nào cho hiện */
+#openSheetBtn {
+  display: none;
+}
+
+/* Khi logo đã xong */
+body.sheet-allowed #openSheetBtn {
+  display: flex;
+}
+
+/* Khi overlay mở → không cho bấm */
+#openSheetBtn.sheet-disabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
