@@ -1,11 +1,11 @@
 /************************************************************
  * LOGO LOADING + LOCK SCREEN
  * LOGIC CHUẨN:
- * - LOGO HIỆN  => NÚT SHEET ẨN
- * - LOGO ẨN   => NÚT SHEET HIỆN
- * - LOGO CHỈ PHỤ THUỘC DATA LOAD
+ * - LOGO phụ thuộc DATA
+ * - SHEET phụ thuộc (DATA + AUTH)
  ************************************************************/
 (function () {
+
   /* =====================================================
      DOM
      ===================================================== */
@@ -23,61 +23,65 @@
   const AUTH_KEY = "dukico-auth";
 
   /* =====================================================
-     STATE – CHỈ 1 NGUỒN SỰ THẬT
+     STATE (2 CỜ – KHÔNG LỆCH)
      ===================================================== */
   let DATA_READY = false;
+  let AUTH_OK    = false;
 
   /* =====================================================
-     CORE TOGGLE (DUY NHẤT)
+     RENDER – DUY NHẤT 1 CHỖ QUYẾT ĐỊNH UI
      ===================================================== */
-  function toggleLogoAndSheet(showLogo) {
-    if (loadingOverlay)
-      loadingOverlay.style.display = showLogo ? "flex" : "none";
+  function renderUI() {
+    // LOGO
+    if (loadingOverlay) {
+      loadingOverlay.style.display = DATA_READY ? "none" : "flex";
+    }
 
-    if (sheetBtn)
-      sheetBtn.style.display = showLogo ? "none" : "flex";
+    // LOCK
+    if (lockScreen) {
+      lockScreen.style.display = AUTH_OK ? "none" : "flex";
+    }
+
+    // SHEET (CHỈ KHI DATA + AUTH)
+    if (sheetBtn) {
+      sheetBtn.style.display = (DATA_READY && AUTH_OK) ? "flex" : "none";
+    }
   }
 
   /* =====================================================
      INIT
      ===================================================== */
-  toggleLogoAndSheet(true); // load trang => logo hiện
+  renderUI();
 
   /* =====================================================
-     PUBLIC API – DÙNG Ở FILE KHÁC
+     PUBLIC API – DATA
      ===================================================== */
   window.showLogoLoading = function () {
-    if (DATA_READY) return;          // ❌ data xong là cấm bật lại
-    toggleLogoAndSheet(true);
+    if (DATA_READY) return;
+    renderUI();
   };
 
   window.hideLogoLoading = function () {
     if (DATA_READY) return;
     DATA_READY = true;
-    toggleLogoAndSheet(false);
+    renderUI();
   };
 
   /* =====================================================
      AUTH
      ===================================================== */
-  function startApp() {
-    if (lockScreen)
-      lockScreen.style.display = "none";
-    // ❌ KHÔNG đụng logo ở đây
-  }
-
   function handleUnlock() {
     const pass = passwordInput?.value.trim();
     if (pass === PASSWORD) {
+      AUTH_OK = true;
       try { localStorage.setItem(AUTH_KEY, "ok"); } catch (e) {}
-      startApp();
+      renderUI();
     } else if (passwordError) {
       passwordError.textContent = "Sai mật khẩu!";
     }
   }
 
-  if (unlockBtn)
-    unlockBtn.onclick = handleUnlock;
+  if (unlockBtn) unlockBtn.onclick = handleUnlock;
 
   if (passwordInput) {
     passwordInput.addEventListener("keydown", e => {
@@ -91,16 +95,17 @@
   window.addEventListener("load", () => {
     try {
       if (localStorage.getItem(AUTH_KEY) === "ok") {
-        startApp();
+        AUTH_OK = true;
+        renderUI();
       }
     } catch (e) {}
   });
 
   /* =====================================================
-     DATA READY EVENT (GỌI 1 LẦN)
+     DATA READY EVENT
      ===================================================== */
   document.addEventListener("dashboard-ready", () => {
-    window.hideLogoLoading(); // ✅ tắt logo + bật sheet
+    window.hideLogoLoading();
   });
 
 })();
