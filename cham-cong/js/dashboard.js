@@ -58,6 +58,10 @@ async function loadDashboard() {
     console.error("Lỗi loadDashboard:", err);
   } finally {
     if (dash) dash.classList.remove("loading");
+// ⭐ DÒNG QUYẾT ĐỊNH
+    if (window.hideLogoLoading) {
+      window.hideLogoLoading();
+    }
   }
 }
 
