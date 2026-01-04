@@ -1,333 +1,160 @@
-// Mobile Responsive Sheet Configuration
-(function() {
-  'use strict';
+/************************************************************
+ * SHEET EMBED OVERLAY – LOAD ON DEMAND (FIX GID)
+ ************************************************************/
 
-  // Detect if device is mobile
-  const isMobile = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-           window.innerWidth < 768;
+(function () {
+  if (window.__sheetOverlayInit) return;
+  window.__sheetOverlayInit = true;
+
+  const API_BASE =
+    "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
+
+  let overlay,
+    iframe,
+    menuFile,
+    menuSheet,
+    currentFileId = null,
+    zoomLevel = window.innerWidth < 768 ? 0.72 : 0.85;
+
+  /* ================= OPEN ================= */
+  window.openSheetOverlay = async function () {
+    if (!overlay) createOverlay();
+    overlay.classList.add("show");
+    await loadFileList();
   };
 
-  // Initialize responsive sheet
-  function initResponsiveSheet() {
-    const sheet = document.querySelector('.sheet-container') || document.body;
-    const viewport = document.querySelector('meta[name="viewport"]');
-    
-    // Ensure proper viewport meta tag for mobile
-    if (!viewport) {
-      const meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes';
-      document.head.appendChild(meta);
-    }
-
-    // Apply responsive styles
-    applyResponsiveStyles(sheet);
-    
-    // Initialize zoom functionality
-    initZoomControls(sheet);
-    
-    // Handle window resize
-    window.addEventListener('resize', () => {
-      applyResponsiveStyles(sheet);
-    });
+  function closeOverlay() {
+    overlay.classList.remove("show");
   }
 
-  // Apply responsive CSS styles
-  function applyResponsiveStyles(container) {
-    const style = document.createElement('style');
-    style.id = 'responsive-sheet-styles';
-    
-    // Remove existing style if present
-    const existing = document.getElementById('responsive-sheet-styles');
-    if (existing) {
-      existing.remove();
-    }
+  /* ================= DOM ================= */
+  function createOverlay() {
+    overlay = document.createElement("div");
+    overlay.id = "sheetOverlay";
 
-    const mobileWidth = window.innerWidth < 768 ? window.innerWidth : 'auto';
-    const baseFontSize = isMobile() ? 14 : 16;
-
-    style.textContent = `
-      * {
-        box-sizing: border-box;
-      }
-
-      html, body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow-x: auto;
-        overflow-y: auto;
-      }
-
-      .sheet-container,
-      [role="table"],
-      table {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        border-collapse: collapse;
-        font-size: ${baseFontSize}px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .sheet-wrapper {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: visible;
-        -webkit-overflow-scrolling: touch;
-        margin: 0;
-        padding: 0;
-      }
-
-      /* Mobile optimizations */
-      @media (max-width: 767px) {
-        .sheet-container,
-        [role="table"],
-        table {
-          font-size: 12px;
-          line-height: 1.4;
-        }
-
-        td, th {
-          padding: 8px 6px;
-          min-width: 60px;
-          white-space: nowrap;
-        }
-
-        .row {
-          display: flex;
-          flex-wrap: wrap;
-        }
-
-        .cell {
-          flex: 0 0 auto;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-
-      @media (min-width: 768px) {
-        .sheet-container,
-        [role="table"],
-        table {
-          font-size: 16px;
-        }
-
-        td, th {
-          padding: 12px 8px;
-          min-width: 80px;
-        }
-      }
-
-      /* Zoom controls */
-      .zoom-controls {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        gap: 8px;
-        z-index: 1000;
-        background: white;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 4px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      .zoom-button {
-        padding: 8px 12px;
-        border: none;
-        background: #f5f5f5;
-        cursor: pointer;
-        border-radius: 3px;
-        font-size: 14px;
-        transition: background-color 0.2s;
-      }
-
-      .zoom-button:hover {
-        background: #e0e0e0;
-      }
-
-      .zoom-button:active {
-        background: #d0d0d0;
-      }
-
-      .zoom-level {
-        padding: 8px 12px;
-        min-width: 50px;
-        text-align: center;
-        font-size: 14px;
-        color: #666;
-        background: #f9f9f9;
-        border-radius: 3px;
-        border: 1px solid #eee;
-      }
-
-      /* Touch-friendly adjustments */
-      @media (hover: none) and (pointer: coarse) {
-        .zoom-button {
-          padding: 10px 14px;
-          min-width: 44px;
-          min-height: 44px;
-        }
-
-        .zoom-controls {
-          bottom: 30px;
-          right: 30px;
-        }
-      }
-
-      /* Preserve zoom transformation */
-      .sheet-transform-container {
-        transform-origin: 0 0;
-        transition: transform 0.1s ease-out;
-      }
+    overlay.innerHTML = `
+      <div class="sheet-panel">
+        <iframe id="sheetFrame"></iframe>
+        <div class="sheet-menu">
+          <select id="sheetFileMenu"></select>
+          <select id="sheetTabMenu"></select>
+          <button id="btnDrive">Drive</button>
+          <button id="btnEdit">Sửa</button>
+          <button id="btnZoomIn">＋</button>
+          <button id="btnZoomOut">－</button>
+          <button id="btnClose">✕</button>
+        </div>
+      </div>
     `;
 
-    document.head.appendChild(style);
+    document.body.appendChild(overlay);
+
+    iframe = overlay.querySelector("#sheetFrame");
+    menuFile = overlay.querySelector("#sheetFileMenu");
+    menuSheet = overlay.querySelector("#sheetTabMenu");
+
+    overlay.querySelector("#btnClose").onclick = closeOverlay;
+    overlay.querySelector("#btnZoomIn").onclick = () => setZoom(zoomLevel + 0.1);
+    overlay.querySelector("#btnZoomOut").onclick = () => setZoom(zoomLevel - 0.1);
+
+    overlay.querySelector("#btnDrive").onclick = () => {
+      if (currentFileId)
+        window.open(
+          `https://drive.google.com/drive/search?q=${currentFileId}`,
+          "_blank"
+        );
+    };
+
+    overlay.querySelector("#btnEdit").onclick = () => {
+      if (currentFileId)
+        window.open(
+          `https://docs.google.com/spreadsheets/d/${currentFileId}/edit`,
+          "_blank"
+        );
+    };
+
+    menuFile.onchange = () => openFile(menuFile.value);
+    menuSheet.onchange = () => openSheetTab(menuSheet.value);
   }
 
-  // Initialize zoom controls
-  function initZoomControls(container) {
-    // Check if zoom controls already exist
-    if (document.getElementById('zoom-controls')) {
+  /* ================= FILE LIST ================= */
+  async function loadFileList() {
+    menuFile.innerHTML = `<option>Đang tải...</option>`;
+    menuSheet.innerHTML = "";
+
+    const res = await fetch(API_BASE + "?action=files");
+    const files = await res.json();
+
+    menuFile.innerHTML = files
+      .map(f => `<option value="${f.fileId}">${f.name}</option>`)
+      .join("");
+
+    const currentFile = pickCurrentMonthFile(files);
+    if (currentFile) {
+      menuFile.value = currentFile.fileId;
+      openFile(currentFile.fileId);
+    }
+  }
+
+  function openFile(fileId) {
+    currentFileId = fileId;
+    iframe.src = buildEmbedUrl(fileId);
+    loadSheetTabs(fileId);
+  }
+
+  /* ================= SHEET TABS ================= */
+  async function loadSheetTabs(fileId) {
+    menuSheet.innerHTML = `<option>Đang tải...</option>`;
+
+    const res = await fetch(
+      API_BASE + "?action=sheets&fileId=" + encodeURIComponent(fileId)
+    );
+    const data = await res.json();
+
+    if (!data || !Array.isArray(data.sheets)) {
+      menuSheet.innerHTML = `<option>Không có sheet</option>`;
       return;
     }
 
-    const controlsDiv = document.createElement('div');
-    controlsDiv.id = 'zoom-controls';
-    controlsDiv.className = 'zoom-controls';
-    controlsDiv.innerHTML = `
-      <button class="zoom-button" id="zoom-out" title="Zoom out">−</button>
-      <div class="zoom-level" id="zoom-level">100%</div>
-      <button class="zoom-button" id="zoom-in" title="Zoom in">+</button>
-      <button class="zoom-button" id="zoom-reset" title="Reset zoom">Reset</button>
-    `;
+    menuSheet.innerHTML = data.sheets
+      .map(t => `<option value="${t.gid}">${t.name}</option>`)
+      .join("");
 
-    document.body.appendChild(controlsDiv);
-
-    let currentZoom = 100;
-    const minZoom = 50;
-    const maxZoom = 200;
-    const zoomStep = 10;
-
-    const sheetElement = container.querySelector('table') || container.querySelector('[role="table"]') || container;
-    const transformContainer = createTransformContainer(sheetElement);
-
-    // Zoom in
-    document.getElementById('zoom-in').addEventListener('click', () => {
-      if (currentZoom < maxZoom) {
-        currentZoom += zoomStep;
-        applyZoom(transformContainer, currentZoom);
-      }
-    });
-
-    // Zoom out
-    document.getElementById('zoom-out').addEventListener('click', () => {
-      if (currentZoom > minZoom) {
-        currentZoom -= zoomStep;
-        applyZoom(transformContainer, currentZoom);
-      }
-    });
-
-    // Reset zoom
-    document.getElementById('zoom-reset').addEventListener('click', () => {
-      currentZoom = 100;
-      applyZoom(transformContainer, currentZoom);
-    });
-
-    // Touch pinch zoom support
-    let touchStartDistance = 0;
-    let touchStartZoom = currentZoom;
-
-    document.addEventListener('touchstart', (e) => {
-      if (e.touches.length === 2) {
-        touchStartDistance = getTouchDistance(e.touches[0], e.touches[1]);
-        touchStartZoom = currentZoom;
-      }
-    }, false);
-
-    document.addEventListener('touchmove', (e) => {
-      if (e.touches.length === 2) {
-        e.preventDefault();
-        const currentDistance = getTouchDistance(e.touches[0], e.touches[1]);
-        const scale = currentDistance / touchStartDistance;
-        currentZoom = Math.max(minZoom, Math.min(maxZoom, Math.round(touchStartZoom * scale)));
-        applyZoom(transformContainer, currentZoom);
-      }
-    }, { passive: false });
-
-    document.addEventListener('touchend', (e) => {
-      if (e.touches.length < 2) {
-        touchStartDistance = 0;
-      }
-    }, false);
+    openSheetTab(data.sheets[0].gid);
   }
 
-  // Create a transform container wrapper
-  function createTransformContainer(element) {
-    if (element.classList && element.classList.contains('sheet-transform-container')) {
-      return element;
-    }
-
-    const wrapper = document.createElement('div');
-    wrapper.className = 'sheet-transform-container';
-    element.parentNode.insertBefore(wrapper, element);
-    wrapper.appendChild(element);
-    return wrapper;
+  function openSheetTab(gid) {
+    iframe.src = buildEmbedUrl(currentFileId, gid);
   }
 
-  // Get distance between two touch points
-  function getTouchDistance(touch1, touch2) {
-    const dx = touch1.clientX - touch2.clientX;
-    const dy = touch1.clientY - touch2.clientY;
-    return Math.sqrt(dx * dx + dy * dy);
+  function buildEmbedUrl(fileId, gid) {
+    return `https://docs.google.com/spreadsheets/d/${fileId}/edit#gid=${gid}`;
   }
 
-  // Apply zoom to sheet
-  function applyZoom(container, zoomLevel) {
-    const scale = zoomLevel / 100;
-    container.style.transform = `scale(${scale})`;
-    
-    const zoomLevelElement = document.getElementById('zoom-level');
-    if (zoomLevelElement) {
-      zoomLevelElement.textContent = `${zoomLevel}%`;
-    }
-
-    // Store zoom level in sessionStorage for persistence
-    sessionStorage.setItem('sheet-zoom-level', zoomLevel);
+  function setZoom(z) {
+    zoomLevel = Math.max(0.6, Math.min(1.4, z));
+    iframe.style.transform = `scale(${zoomLevel})`;
+    iframe.style.transformOrigin = "0 0";
   }
 
-  // Restore zoom level on page load
-  function restoreZoomLevel() {
-    const savedZoom = sessionStorage.getItem('sheet-zoom-level');
-    if (savedZoom) {
-      const sheetElement = document.querySelector('table') || document.querySelector('[role="table"]') || document.body;
-      const transformContainer = createTransformContainer(sheetElement);
-      applyZoom(transformContainer, parseInt(savedZoom, 10));
-    }
+  /* ================= MONTH PICKER ================= */
+  function pickCurrentMonthFile(files) {
+    const now = new Date();
+    const monthFiles = files
+      .filter(f => f.month && !isNaN(new Date(f.month)))
+      .map(f => ({ ...f, _date: new Date(f.month) }))
+      .sort((a, b) => a._date - b._date);
+
+    let current = monthFiles.find(
+      f =>
+        f._date.getFullYear() === now.getFullYear() &&
+        f._date.getMonth() === now.getMonth()
+    );
+
+    if (!current)
+      current = monthFiles.filter(f => f._date <= now).slice(-1)[0];
+
+    return current || monthFiles[0];
   }
 
-  // Initialize on DOM ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initResponsiveSheet();
-      restoreZoomLevel();
-    });
-  } else {
-    initResponsiveSheet();
-    restoreZoomLevel();
-  }
-
-  // Expose API for manual control
-  window.SheetResponsive = {
-    isMobile: isMobile,
-    initResponsiveSheet: initResponsiveSheet,
-    restoreZoomLevel: restoreZoomLevel
-  };
-})();
+})(); // 🔴 BẮT BUỘC – KẾT THÚC IIFE
