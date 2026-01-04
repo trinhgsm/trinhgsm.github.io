@@ -97,11 +97,15 @@
   }
 
   function openFile(fileId) {
-    currentFileId = fileId;
-    iframe.src = buildEmbedUrl(fileId);
-    loadSheetTabs(fileId);
-  }
+  currentFileId = fileId;
+  iframe.src = buildEmbedUrl(fileId);
 
+  iframe.onload = () => {
+    fitSheetToScreen();   // 🔴 FIT NGAY KHI LOAD
+  };
+
+  loadSheetTabs(fileId);
+}
   /* ================= SHEET TABS ================= */
   async function loadSheetTabs(fileId) {
     menuSheet.innerHTML = `<option>Đang tải...</option>`;
@@ -124,8 +128,12 @@
   }
 
   function openSheetTab(gid) {
-    iframe.src = buildEmbedUrl(currentFileId, gid);
-  }
+  iframe.src = buildEmbedUrl(currentFileId, gid);
+
+  iframe.onload = () => {
+    fitSheetToScreen();
+  };
+}
 
   function buildEmbedUrl(fileId, gid) {
     return `https://docs.google.com/spreadsheets/d/${fileId}/edit#gid=${gid}`;
@@ -157,4 +165,32 @@
     return current || monthFiles[0];
   }
 
+/* ================= FIT TO SCREEN ================= */
+  function fitSheetToScreen() {
+    if (!iframe) return;
+
+    // Google Sheet luôn render rộng ~1200px
+    const SHEET_BASE_WIDTH = 1200;
+    const screenW = window.innerWidth;
+
+    let fitZoom = screenW / SHEET_BASE_WIDTH;
+
+    // không cho phóng to quá 100%
+    if (fitZoom > 1) fitZoom = 1;
+
+    // không nhỏ hơn mức tối thiểu đang cho phép
+    if (fitZoom < 0.6) fitZoom = 0.6;
+
+    zoomLevel = fitZoom;
+
+    iframe.style.transform = `scale(${zoomLevel})`;
+    iframe.style.transformOrigin = "0 0";
+
+    // bù chiều cao sau khi scale
+    iframe.style.height = `${window.innerHeight / zoomLevel}px`;
+  }
+
+window.addEventListener("resize", () => {
+    fitSheetToScreen();
+  });
 })(); // 🔴 BẮT BUỘC – KẾT THÚC IIFE
