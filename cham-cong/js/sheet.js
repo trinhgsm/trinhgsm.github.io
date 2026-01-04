@@ -145,7 +145,7 @@
   }
 
   function setZoom(z) {
-  zoomLevel = Math.max(0.9, Math.min(1.4, z));
+  zoomLevel = Math.max(0.4, Math.min(1.4, z));
   iframe.style.transform = `scale(${zoomLevel})`;
   iframe.style.transformOrigin = "0 0";
 }
