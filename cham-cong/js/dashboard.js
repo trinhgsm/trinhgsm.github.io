@@ -56,7 +56,21 @@ async function loadDashboard() {
    ========================================================= */
 function updateTime(ts) {
   const el = document.getElementById("genTime");
-  if (el) el.textContent = "Cập nhật: " + new Date(ts).toLocaleString();
+  if (!el) return;
+
+  const d = new Date(ts);
+
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const MM = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+
+  el.innerHTML = `
+    <span class="label">Cập nhật:</span>
+    <span class="time">${hh}:${mm}</span>
+    <span class="date">${dd}/${MM}/${yyyy}</span>
+  `;
 }
 
 
