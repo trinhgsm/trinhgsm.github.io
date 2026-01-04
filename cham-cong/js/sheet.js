@@ -14,7 +14,7 @@
     menuFile,
     menuSheet,
     currentFileId = null,
-    zoomLevel = 1;
+    zoomLevel = window.innerWidth < 768 ? 0.72 : 0.85;
 
   /* ================= OPEN ================= */
   window.openSheetOverlay = async function () {
