@@ -167,28 +167,23 @@
 
 /* ================= FIT TO SCREEN ================= */
   function fitSheetToScreen() {
-    if (!iframe) return;
+  if (!iframe) return;
 
-    // Google Sheet luôn render rộng ~1200px
-    const SHEET_BASE_WIDTH = 1200;
-    const screenW = window.innerWidth;
+  const SHEET_BASE_WIDTH = 1500;   // PHẢI KHỚP CSS
+  const screenW = window.innerWidth;
 
-    let fitZoom = screenW / SHEET_BASE_WIDTH;
+  let fitZoom = screenW / SHEET_BASE_WIDTH;
 
-    // không cho phóng to quá 100%
-    if (fitZoom > 1) fitZoom = 1;
+  if (fitZoom > 1) fitZoom = 1;
+  if (fitZoom < 0.5) fitZoom = 0.5;
 
-    // không nhỏ hơn mức tối thiểu đang cho phép
-    if (fitZoom < 0.6) fitZoom = 0.6;
+  zoomLevel = fitZoom;
 
-    zoomLevel = fitZoom;
+  iframe.style.transform = `scale(${zoomLevel})`;
+  iframe.style.transformOrigin = "0 0";
 
-    iframe.style.transform = `scale(${zoomLevel})`;
-    iframe.style.transformOrigin = "0 0";
-
-    // bù chiều cao sau khi scale
-    iframe.style.height = `${window.innerHeight / zoomLevel}px`;
-  }
+  iframe.style.height = `${window.innerHeight / zoomLevel}px`;
+}
 
 window.addEventListener("resize", () => {
     fitSheetToScreen();
