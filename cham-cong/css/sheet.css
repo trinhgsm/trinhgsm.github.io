@@ -27,7 +27,9 @@
   position: absolute;
   left: 0;
   right: 0;
-  overflow-x: hidden;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
   /* ❗ chạm sát ticker – không che */
   top: 48px;
   bottom: 0;
@@ -116,10 +118,11 @@
    ========================================================= */
 @media (max-width: 768px) {
   .sheet-menu {
+    position: fixed;   /* 🔴 QUAN TRỌNG */
     left: 0;
     right: 0;
     bottom: 0;
-
+    z-index: 10001;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 6px;
