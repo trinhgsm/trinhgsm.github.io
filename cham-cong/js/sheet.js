@@ -5,8 +5,10 @@
 (function () {
   if (window.__sheetOverlayInit) return;
   window.__sheetOverlayInit = true;
-  const openBtn = document.getElementById("openSheetBtn");
-  const API_BASE =
+  function getOpenBtn() {
+  return document.getElementById("openSheetBtn");
+}
+ const API_BASE =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
   let overlay,
@@ -21,18 +23,20 @@
   if (!overlay) createOverlay();
   overlay.classList.add("show");
 
-  if (openBtn) openBtn.style.display = "none";
+  // ✅ LẤY NÚT TẠI THỜI ĐIỂM BẤM
+  const btn = getOpenBtn();
+  if (btn) btn.style.display = "none";
 
   await loadFileList();
 };
-
   function closeOverlay() {
   overlay.classList.remove("show");
 
-  if (openBtn) openBtn.style.display = "";
+  // ✅ LẤY LẠI NÚT KHI ĐÓNG
+  const btn = getOpenBtn();
+  if (btn) btn.style.display = "";
 }
 
-  /* ================= DOM ================= */
 /* ================= DOM ================= */
 function createOverlay() {
   overlay = document.createElement("div");
