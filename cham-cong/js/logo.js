@@ -1,48 +1,66 @@
 /* =====================================================
-   LOGO LOADING + LOCK SCREEN
+   LOGO LOADING + LOCK SCREEN (FINAL)
+   - Chỉ LOADING + MẬT KHẨU
+   - Không chữ trôi
+   - Không event trung gian
    ===================================================== */
 
 (function () {
+  /* ===== DOM ===== */
   const loadingOverlay = document.getElementById("loadingOverlay");
   const lockScreen     = document.getElementById("lockScreen");
   const passwordInput  = document.getElementById("passwordInput");
   const passwordError  = document.getElementById("passwordError");
   const unlockBtn      = document.getElementById("unlockBtn");
 
-  // ===== CONFIG =====
-  const PASSWORD = "123";        // đổi theo ý bạn
-  const AUTH_KEY = "dukico-auth";   // key lưu localStorage
+  /* ===== CONFIG ===== */
+  const PASSWORD = "123";            // 🔴 đổi theo ý bạn
+  const AUTH_KEY = "dukico-auth";    // key lưu localStorage
 
-  /* ===== LOADING ===== */
+  /* =====================================================
+     LOADING API (CHO FILE KHÁC GỌI)
+     ===================================================== */
+
+  // HIỆN LOGO
   window.showLogoLoading = function () {
-    if (loadingOverlay) {
-      loadingOverlay.style.display = "flex";
-    }
+    if (!loadingOverlay) return;
+    loadingOverlay.style.display = "flex";
   };
 
-  //window.hideLogoLoading = function () {
-    //if (!loadingOverlay) return;
-    //loadingOverlay.style.display = "none";
-    //document.dispatchEvent(new //Event("dukico-loading-hidden"));
-  //};
+  // TẮT LOGO
+  window.hideLogoLoading = function () {
+    if (!loadingOverlay) return;
+    loadingOverlay.style.display = "none";
+  };
 
-  /* ===== LOCK ===== */
+  /* =====================================================
+     LOCK SCREEN
+     ===================================================== */
+
   function startApp() {
     if (lockScreen) lockScreen.style.display = "none";
-    showLogoLoading();
+    showLogoLoading(); // 🔴 luôn hiện logo sau khi unlock
   }
 
   function handleUnlock() {
+    if (!passwordInput) return;
+
     const pass = passwordInput.value.trim();
     if (pass === PASSWORD) {
       try {
         localStorage.setItem(AUTH_KEY, "ok");
       } catch (e) {}
+
+      if (passwordError) passwordError.textContent = "";
       startApp();
     } else {
-      passwordError.textContent = "Sai mật khẩu!";
+      if (passwordError) {
+        passwordError.textContent = "Sai mật khẩu!";
+      }
     }
   }
+
+  /* ===== EVENTS ===== */
 
   if (unlockBtn) {
     unlockBtn.onclick = handleUnlock;
@@ -54,7 +72,7 @@
     });
   }
 
-  // ===== AUTO UNLOCK =====
+  /* ===== AUTO UNLOCK ===== */
   window.addEventListener("load", () => {
     try {
       const auth = localStorage.getItem(AUTH_KEY);
