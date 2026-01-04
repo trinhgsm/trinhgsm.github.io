@@ -152,3 +152,7 @@
   font-size: 0.86rem;
   cursor: pointer;
 }
+// ẩn nút sheet 10s
+#openSheetBtn {
+  display: none;
+}
