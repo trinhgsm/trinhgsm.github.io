@@ -29,12 +29,13 @@
   position: absolute;
   left: 0;
   right: 0;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
+
   /* ❗ chạm sát ticker – không che */
   top: 88px;
   bottom: 0;
+
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 
   background: #020617;
   transform: translateY(100%);
