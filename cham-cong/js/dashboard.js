@@ -10,17 +10,7 @@ let projectChart = null;
 let unitOverviewChart = null;
 // ===== EXTENSION LAYER (SAFE) =====
 let SITE_MAP = {};
-// ===== TẮT LOGO NGAY KHI BIỂU ĐỒ HIỆN =====
-let logoHidden = false;
 
-function hideLogoOnce() {
-  if (logoHidden) return;
-  logoHidden = true;
-
-  if (window.hideLogoLoading) {
-    hideLogoLoading();
-  }
-}
 /* =========================================================
    LOAD DASHBOARD
    ========================================================= */
@@ -51,17 +41,16 @@ async function loadDashboard() {
 
     renderSidebarDetail(data.units);
     renderActivityTicker(siteMap);
+renderSiteStatusExtension(data.units);
 
-    renderSiteStatusExtension(data.units);
+// ✅ CHỈ PHÁT TÍN HIỆU
+document.dispatchEvent(new Event("dashboard-ready"));
 
   } catch (err) {
     console.error("Lỗi loadDashboard:", err);
   } finally {
     if (dash) dash.classList.remove("loading");
-// ⭐ DÒNG QUYẾT ĐỊNH
-    if (window.hideLogoLoading) {
-      window.hideLogoLoading();
-    }
+
   }
 }
 
@@ -116,9 +105,7 @@ function renderUnitOverview(units) {
       responsive: true,
       maintainAspectRatio: false,
 
-animation: {
-      onComplete: hideLogoOnce   // ✅ DÒNG QUYẾT ĐỊNH
-    },
+
 
       plugins: { legend: { display: false } },
       scales: {
