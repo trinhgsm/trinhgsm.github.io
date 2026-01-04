@@ -122,28 +122,69 @@
    ========================================================= */
 @media (max-width: 768px) {
   .sheet-menu {
-    position: fixed;   /* 🔴 QUAN TRỌNG */
+    position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 10001;
+
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 1fr 1fr;   /* MẶC ĐỊNH: 2 CỘT */
     gap: 6px;
 
     padding: 8px 10px;
     border-top: 1px solid rgba(148,163,184,.25);
   }
 
-  .sheet-menu select {
-    grid-column: span 2;
+  /* ===== HÀNG 1: 2 SELECT ===== */
+  #sheetFileMenu {
+    grid-column: 1 / 2;
   }
 
+  #sheetTabMenu {
+    grid-column: 2 / 3;
+  }
+
+  /* ===== CHUYỂN SANG 3 CỘT CHO CÁC HÀNG SAU ===== */
   .sheet-menu button {
-    width: 100%;
+    grid-column: span 1;
+  }
+
+  /* ÉP GRID 3 CỘT TỪ NÚT TRỞ ĐI */
+  .sheet-menu button {
+    grid-column: auto;
+  }
+
+  .sheet-menu {
+    grid-auto-flow: row;
+  }
+
+  /* HÀNG 2 */
+  #btnFile {
+    grid-column: 1 / 2;
+  }
+
+  #btnLog1 {
+    grid-column: 2 / 3;
+  }
+
+  #btnLog2 {
+    grid-column: 3 / 4;
+  }
+
+  /* HÀNG 3 */
+  #btnZoomIn {
+    grid-column: 1 / 2;
+  }
+
+  #btnZoomOut {
+    grid-column: 2 / 3;
+  }
+
+  #btnClose {
+    grid-column: 3 / 4;
   }
 }
-
 /* =========================================================
    ZOOM FIX (KHÔNG VỠ KHUNG)
    ========================================================= */
