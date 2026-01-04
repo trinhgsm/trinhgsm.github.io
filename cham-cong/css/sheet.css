@@ -220,3 +220,17 @@
   transform-origin: top left;
   will-change: transform;
 }
+.sheet-menu button,
+.sheet-menu select,
+.sheet-fab {
+  touch-action: manipulation;
+}
+
+.sheet-menu button:active,
+.sheet-fab:active {
+  transform: scale(0.96);
+}
+
+.sheet-menu button {
+  transition: background 0.15s ease, transform 0.1s ease;
+}
