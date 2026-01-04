@@ -236,4 +236,15 @@ function createOverlay() {
 window.addEventListener("resize", () => {
     fitSheetToScreen();
   });
+  /* ================= SAFETY: ALWAYS RESTORE SHEET BUTTON ================= */
+window.addEventListener("load", () => {
+  const btn = document.getElementById("openSheetBtn");
+  const overlay = document.getElementById("sheetOverlay");
+
+  // Nếu KHÔNG có overlay đang mở → nút PHẢI HIỆN
+  if (btn && (!overlay || !overlay.classList.contains("show"))) {
+    btn.style.display = "flex";
+  }
+});
+
 })(); // 🔴 BẮT BUỘC – KẾT THÚC IIFE
