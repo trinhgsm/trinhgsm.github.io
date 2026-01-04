@@ -20,11 +20,11 @@
     }
   };
 
-  window.hideLogoLoading = function () {
-    if (!loadingOverlay) return;
-    loadingOverlay.style.display = "none";
-    document.dispatchEvent(new Event("dukico-loading-hidden"));
-  };
+  //window.hideLogoLoading = function () {
+    //if (!loadingOverlay) return;
+    //loadingOverlay.style.display = "none";
+    //document.dispatchEvent(new //Event("dukico-loading-hidden"));
+  //};
 
   /* ===== LOCK ===== */
   function startApp() {
