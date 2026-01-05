@@ -5,26 +5,6 @@
 (function () {
   if (window.__sheetOverlayInit) return;
   window.__sheetOverlayInit = true;
-  function updateSheetButtonVisibility() {
-  const btn = document.getElementById("openSheetBtn");
-  if (!btn) return;
-
-  // ❌ Logo còn → ẩn
-  if (window.__LOGO_VISIBLE) {
-    btn.style.display = "none";
-    return;
-  }
-
-  // ❌ Sheet đang mở → ẩn
-  if (overlay && overlay.classList.contains("show")) {
-    btn.style.display = "none";
-    return;
-  }
-
-  // ✅ Còn lại → hiện
-  btn.style.display = "flex";
-}
-
   function getOpenBtn() {
   return document.getElementById("openSheetBtn");
 }
@@ -47,14 +27,12 @@
   
 
   await loadFileList();
-    updateSheetButtonVisibility();
-
 };
  function closeOverlay() {
   overlay.classList.remove("show");
-  updateSheetButtonVisibility();
-}
 
+  
+}
 
 /* ================= DOM ================= */
 function createOverlay() {
@@ -256,8 +234,5 @@ function createOverlay() {
 window.addEventListener("resize", () => {
     fitSheetToScreen();
   });
-  document.addEventListener("logo-hidden", () => {
-  updateSheetButtonVisibility();
-});
-
+  
 })(); // 🔴 BẮT BUỘC – KẾT THÚC IIFE
