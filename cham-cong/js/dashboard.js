@@ -687,8 +687,11 @@ function renderActivityTicker(siteMap) {
         <b class="site-${s.status} ${s.status === "red" && s.diffDays >= 3 ? "site-blink" : ""}">
           ${s.maCan}:
           ${s.diffDays === 0
-            ? "đang thi công"
-            : s.diffDays + " ngày chưa thi công"}
+  ? "hôm nay có thi công"
+  : s.diffDays === 1
+    ? "hôm qua có thi công"
+    : s.diffDays + " ngày chưa thi công"}
+
           ${s.summary ? " – " + s.summary : ""}
         </b>
       `).join(" | ")}
