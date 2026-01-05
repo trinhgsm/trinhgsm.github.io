@@ -12,12 +12,14 @@
 
   const PASSWORD = "123";
   const AUTH_KEY = "dukico-auth";
+  // biến toàn cục nút sheet
+  window.__LOGO_VISIBLE = true;
 
   let DATA_READY = false; // 🔴 CHỈ 1 CỜ DUY NHẤT
 
   /* ===== INIT ===== */
   if (loadingOverlay) loadingOverlay.style.display = "flex";
-  if (sheetBtn) sheetBtn.style.display = "none";
+
 
   /* ===== API ===== */
   window.showLogoLoading = function () {
@@ -27,10 +29,16 @@
   };
 
   window.hideLogoLoading = function () {
-    DATA_READY = true;
-    if (loadingOverlay) loadingOverlay.style.display = "none";
-    if (sheetBtn) sheetBtn.style.display = "flex";
-  };
+  DATA_READY = true;
+
+  if (loadingOverlay) {
+    loadingOverlay.style.display = "none";
+  }
+
+  window.__LOGO_VISIBLE = false;
+  document.dispatchEvent(new Event("logo-hidden"));
+};
+
 
   /* ===== AUTH ===== */
   function startApp() {
@@ -63,22 +71,5 @@
       }
     } catch(e){}
   });
-
-  /* ===== DATA READY ===== */
-  document.addEventListener("dashboard-ready", () => {
-    hideLogoLoading(); // ✅ CHỈ TẮT 1 LẦN
-  });
-  document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("openSheetBtn");
-  if (!btn) return;
-
-  // Ẩn chắc chắn
-  btn.style.display = "none";
-
-  // Sau 7 giây thì hiện
-  setTimeout(() => {
-    btn.style.display = "flex"; // hoặc "block" nếu bạn thích
-  }, 7000);
-});
 
 })();
