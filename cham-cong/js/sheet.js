@@ -8,6 +8,23 @@
   function getOpenBtn() {
   return document.getElementById("openSheetBtn");
 }
+  function updateSheetButtonVisibility() {
+  const btn = getOpenBtn();
+  if (!btn) return;
+
+  const overlayVisible =
+    document.getElementById("sheetOverlay")?.classList.contains("show");
+
+  const loadingVisible =
+    document.getElementById("loadingOverlay")?.classList.contains("show");
+
+  if (overlayVisible || loadingVisible) {
+    btn.style.display = "none";
+  } else {
+    btn.style.display = "";
+  }
+}
+
  const API_BASE =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
@@ -22,6 +39,7 @@
   window.openSheetOverlay = async function () {
   if (!overlay) createOverlay();
   overlay.classList.add("show");
+updateSheetButtonVisibility();
 
   // ✅ ẨN NÚT SHEET
   const btn = getOpenBtn();
@@ -32,6 +50,7 @@
 
  function closeOverlay() {
   overlay.classList.remove("show");
+  updateSheetButtonVisibility();
 
   // ✅ HIỆN LẠI NÚT SHEET
   const btn = getOpenBtn();
@@ -239,5 +258,21 @@ function createOverlay() {
 window.addEventListener("resize", () => {
     fitSheetToScreen();
   });
-  
+  (function observeLoadingOverlay() {
+  const loadingEl = document.getElementById("loadingOverlay");
+  if (!loadingEl) return;
+
+  const observer = new MutationObserver(() => {
+    updateSheetButtonVisibility();
+  });
+
+  observer.observe(loadingEl, {
+    attributes: true,
+    attributeFilter: ["class"]
+  });
+
+  // chạy 1 lần ngay khi gắn observer
+  updateSheetButtonVisibility();
+})();
+
 })(); // 🔴 BẮT BUỘC – KẾT THÚC IIFE
