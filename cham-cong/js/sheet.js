@@ -23,11 +23,13 @@
   if (!overlay) createOverlay();
   overlay.classList.add("show");
 
-  // ✅ LẤY NÚT TẠI THỜI ĐIỂM BẤM
-  
+  // ✅ ẨN NÚT SHEET
+  const btn = getOpenBtn();
+  if (btn) btn.style.display = "none";
 
   await loadFileList();
 };
+
  function closeOverlay() {
   overlay.classList.remove("show");
 
