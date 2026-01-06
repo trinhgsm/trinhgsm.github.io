@@ -9,6 +9,7 @@ const API_URL =
 let projectChart = null;
 let unitOverviewChart = null;
 let SITE_MAP = {};
+document.body.classList.add("app-locked");
 
 /* =========================================================
    🔴 TRUNG TÂM QUẢN LÝ NÚT SHEET (DUY NHẤT)
@@ -23,12 +24,26 @@ function updateOpenSheetBtnVisibility() {
   const sheetOpen =
     document.body.classList.contains("sheet-open");
 
-  if (loadingVisible || sheetOpen) {
+  function updateOpenSheetBtnVisibility() {
+  const btn = document.getElementById("openSheetBtn");
+  if (!btn) return;
+
+  const loadingVisible =
+    document.getElementById("loadingOverlay")?.classList.contains("show");
+
+  const sheetOpen =
+    document.body.classList.contains("sheet-open");
+
+  const appLocked =
+    document.body.classList.contains("app-locked");
+
+  if (loadingVisible || sheetOpen || appLocked) {
     btn.style.display = "none";
   } else {
     btn.style.display = "";
   }
 }
+
 
 /* =========================================================
    LOAD DASHBOARD
@@ -726,11 +741,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 🔔 DASHBOARD READY → TẮT LOGO + UPDATE NÚT
 document.addEventListener("dashboard-ready", () => {
+  document.body.classList.remove("app-locked");
+
   if (typeof hideLogoLoading === "function") {
     hideLogoLoading();
   }
+
   updateOpenSheetBtnVisibility();
 });
+
 
 // 🔔 NGHE EVENT TỪ sheet.js
 document.addEventListener("sheet-overlay-open", () => {
