@@ -13,6 +13,7 @@
   const AUTH_KEY = "dukico-auth";
 
   let DATA_READY = false; // 🔴 CHỈ 1 CỜ DUY NHẤT
+  document.body.classList.add("app-locked"); // 🔒 KHÓA APP TỪ ĐẦU
 
   /* ===== INIT ===== */
   if (loadingOverlay) loadingOverlay.style.display = "flex";
@@ -30,8 +31,15 @@
 
   /* ===== AUTH ===== */
   function startApp() {
-    if (lockScreen) lockScreen.style.display = "none";
-  }
+  if (lockScreen) lockScreen.style.display = "none";
+
+  // 🔓 MỞ KHÓA APP (QUAN TRỌNG)
+  document.body.classList.remove("app-locked");
+
+  // 🔔 THÔNG BÁO CHO DASHBOARD BIẾT
+  document.dispatchEvent(new Event("app-unlocked"));
+}
+
 
   function handleUnlock() {
     const pass = passwordInput.value.trim();
