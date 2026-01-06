@@ -68,12 +68,12 @@
   document.addEventListener("dashboard-ready", () => {
     hideLogoLoading(); // ✅ CHỈ TẮT 1 LẦN
   });
-  document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("openSheetBtn");
-  if (!btn) return;
+  //document.addEventListener("DOMContentLoaded", () => {
+  //const btn = document.getElementById("openSheetBtn");
+  //if (!btn) return;
 
   // Ẩn chắc chắn
-  btn.style.display = "none";
+  //btn.style.display = "none";
 
   // Sau 7 giây thì hiện
   //setTimeout(() => {
