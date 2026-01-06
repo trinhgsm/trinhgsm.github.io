@@ -1,6 +1,6 @@
 /************************************************************
- * DUKICO DASHBOARD – FRONTEND JS (UPDATED)
- * Tương thích backend _handleDashboard_ (MÔ HÌNH C)
+ * DUKICO DASHBOARD – FRONTEND JS (FINAL – CLEAN)
+ * QUẢN LÝ UI + DASHBOARD + NÚT SHEET
  ************************************************************/
 
 const API_URL =
@@ -8,8 +8,27 @@ const API_URL =
 
 let projectChart = null;
 let unitOverviewChart = null;
-// ===== EXTENSION LAYER (SAFE) =====
 let SITE_MAP = {};
+
+/* =========================================================
+   🔴 TRUNG TÂM QUẢN LÝ NÚT SHEET (DUY NHẤT)
+   ========================================================= */
+function updateOpenSheetBtnVisibility() {
+  const btn = document.getElementById("openSheetBtn");
+  if (!btn) return;
+
+  const loadingVisible =
+    document.getElementById("loadingOverlay")?.classList.contains("show");
+
+  const sheetOpen =
+    document.body.classList.contains("sheet-open");
+
+  if (loadingVisible || sheetOpen) {
+    btn.style.display = "none";
+  } else {
+    btn.style.display = "";
+  }
+}
 
 /* =========================================================
    LOAD DASHBOARD
@@ -22,35 +41,26 @@ async function loadDashboard() {
     const res = await fetch(API_URL);
     const data = await res.json();
 
-    if (!data || !data.units) {
-      console.error("Không có dữ liệu units");
-      return;
-    }
+    if (!data || !data.units) return;
 
-    // ✅ CHỈ 1 SITE MAP DUY NHẤT
-    const siteMap = data.sites || {};
-    SITE_MAP = siteMap;
+    SITE_MAP = data.sites || {};
 
     updateTime(data.generatedAt);
-
     renderUnitOverview(data.units);
     renderProjectStatusChart(data.units);
-
-    renderWarnings(data.units, siteMap);
-    renderUnitCards(data.units, siteMap);
-
+    renderWarnings(data.units, SITE_MAP);
+    renderUnitCards(data.units, SITE_MAP);
     renderSidebarDetail(data.units);
-    renderActivityTicker(siteMap);
-renderSiteStatusExtension(data.units);
+    renderActivityTicker(SITE_MAP);
+    renderSiteStatusExtension(data.units);
 
-// ✅ CHỈ PHÁT TÍN HIỆU
-document.dispatchEvent(new Event("dashboard-ready"));
+    // 🔔 BÁO DASHBOARD ĐÃ SẴN SÀNG
+    document.dispatchEvent(new Event("dashboard-ready"));
 
   } catch (err) {
-    console.error("Lỗi loadDashboard:", err);
+    console.error(err);
   } finally {
     if (dash) dash.classList.remove("loading");
-
   }
 }
 
@@ -62,21 +72,12 @@ function updateTime(ts) {
   if (!el) return;
 
   const d = new Date(ts);
-
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  const MM = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-
   el.innerHTML = `
     <span class="label">Cập nhật:</span>
-    <span class="time">${hh}:${mm}</span>
-    <span class="date">${dd}/${MM}/${yyyy}</span>
+    <span class="time">${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}</span>
+    <span class="date">${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}</span>
   `;
 }
-
-
 /* =========================================================
    OVERVIEW BAR CHART – TIẾN ĐỘ %
    ========================================================= */
@@ -698,26 +699,20 @@ function renderActivityTicker(siteMap) {
     </span>
   `;
 }
-
-loadDashboard();
-// bắt đầu load sheet
+// 🔒 KHÓA TRẠNG THÁI NGAY KHI DOM LOAD
 document.addEventListener("DOMContentLoaded", () => {
+  updateOpenSheetBtnVisibility();
+
   const btn = document.getElementById("openSheetBtn");
-  if (!btn) {
-    console.warn("❌ Không tìm thấy openSheetBtn");
-    return;
-  }
+  if (!btn) return;
 
   btn.addEventListener("click", () => {
-    console.log("📄 Click Sheet");
-
     if (!window.__sheetLoaded) {
       const s = document.createElement("script");
       s.src = "js/sheet.js";
       s.defer = true;
 
       s.onload = () => {
-        console.log("✅ sheet.js loaded");
         window.__sheetLoaded = true;
         window.openSheetOverlay();
       };
@@ -728,5 +723,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
-window.__DASHBOARD_READY = true;
-document.dispatchEvent(new Event("dashboard-ready"));
+
+// 🔔 DASHBOARD READY → TẮT LOGO + UPDATE NÚT
+document.addEventListener("dashboard-ready", () => {
+  if (typeof hideLogoLoading === "function") {
+    hideLogoLoading();
+  }
+  updateOpenSheetBtnVisibility();
+});
+
+// 🔔 NGHE EVENT TỪ sheet.js
+document.addEventListener("sheet-overlay-open", () => {
+  document.body.classList.add("sheet-open");
+  updateOpenSheetBtnVisibility();
+});
+
+document.addEventListener("sheet-overlay-close", () => {
+  document.body.classList.remove("sheet-open");
+  updateOpenSheetBtnVisibility();
+});
+
+// 🚀 BẮT ĐẦU
+loadDashboard();
