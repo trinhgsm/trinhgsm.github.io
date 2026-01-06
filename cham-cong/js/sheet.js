@@ -33,8 +33,11 @@
  function closeOverlay() {
   overlay.classList.remove("show");
 
-  
+  // ✅ HIỆN LẠI NÚT SHEET
+  const btn = getOpenBtn();
+  if (btn) btn.style.display = "";
 }
+
 
 /* ================= DOM ================= */
 function createOverlay() {
