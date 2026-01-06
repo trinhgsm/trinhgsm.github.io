@@ -8,7 +8,6 @@
   const passwordInput  = document.getElementById("passwordInput");
   const passwordError  = document.getElementById("passwordError");
   const unlockBtn      = document.getElementById("unlockBtn");
-  const sheetBtn       = document.getElementById("openSheetBtn");
 
   const PASSWORD = "123";
   const AUTH_KEY = "dukico-auth";
@@ -17,25 +16,21 @@
 
   /* ===== INIT ===== */
   if (loadingOverlay) loadingOverlay.style.display = "flex";
-  if (sheetBtn) sheetBtn.style.display = "none";
 
   /* ===== API ===== */
   window.showLogoLoading = function () {
-    if (DATA_READY) return; // ❌ data xong rồi thì CẤM bật lại
+    if (DATA_READY) return;
     if (loadingOverlay) loadingOverlay.style.display = "flex";
-    if (sheetBtn) sheetBtn.style.display = "none";
   };
 
   window.hideLogoLoading = function () {
     DATA_READY = true;
     if (loadingOverlay) loadingOverlay.style.display = "none";
-    if (sheetBtn) sheetBtn.style.display = "flex";
   };
 
   /* ===== AUTH ===== */
   function startApp() {
     if (lockScreen) lockScreen.style.display = "none";
-    // ❌ KHÔNG show logo ở đây
   }
 
   function handleUnlock() {
@@ -68,17 +63,5 @@
   document.addEventListener("dashboard-ready", () => {
     hideLogoLoading(); // ✅ CHỈ TẮT 1 LẦN
   });
-  //document.addEventListener("DOMContentLoaded", () => {
-  //const btn = document.getElementById("openSheetBtn");
-  //if (!btn) return;
-
-  // Ẩn chắc chắn
-  //btn.style.display = "none";
-
-  // Sau 7 giây thì hiện
-  //setTimeout(() => {
-    //btn.style.display = "flex"; // hoặc "block" nếu bạn thích
-  //}, 7000);
-//});
 
 })();
