@@ -9,7 +9,8 @@ const API_URL =
 let projectChart = null;
 let unitOverviewChart = null;
 let SITE_MAP = {};
-document.body.classList.add("app-locked");
+document.body.classList.remove("app-locked");
+document.dispatchEvent(new Event("app-unlocked"));
 
 /* =========================================================
    🔴 TRUNG TÂM QUẢN LÝ NÚT SHEET (DUY NHẤT)
@@ -739,28 +740,26 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// 🔔 DASHBOARD READY → TẮT LOGO + UPDATE NÚT
+// 🔔 DASHBOARD READY → CHỈ TẮT LOGO + UPDATE NÚT
 document.addEventListener("dashboard-ready", () => {
-  document.body.classList.remove("app-locked");
-
   if (typeof hideLogoLoading === "function") {
     hideLogoLoading();
   }
-
   updateOpenSheetBtnVisibility();
 });
 
-
-// 🔔 NGHE EVENT TỪ sheet.js
+// 🔔 SHEET OVERLAY OPEN
 document.addEventListener("sheet-overlay-open", () => {
   document.body.classList.add("sheet-open");
   updateOpenSheetBtnVisibility();
 });
 
+// 🔔 SHEET OVERLAY CLOSE
 document.addEventListener("sheet-overlay-close", () => {
   document.body.classList.remove("sheet-open");
   updateOpenSheetBtnVisibility();
 });
 
-// 🚀 BẮT ĐẦU
+// 🚀 BẮT ĐẦU LOAD DASHBOARD
 loadDashboard();
+
