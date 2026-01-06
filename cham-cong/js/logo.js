@@ -76,9 +76,9 @@
   btn.style.display = "none";
 
   // Sau 7 giây thì hiện
-  setTimeout(() => {
-    btn.style.display = "flex"; // hoặc "block" nếu bạn thích
-  }, 7000);
+  //setTimeout(() => {
+    //btn.style.display = "flex"; // hoặc "block" nếu bạn thích
+  //}, 7000);
 });
 
 })();
