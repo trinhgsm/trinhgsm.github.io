@@ -1,31 +1,13 @@
 /************************************************************
  * SHEET EMBED OVERLAY – LOAD ON DEMAND (FIX GID)
+ * CHỈ TẠO OVERLAY + PHÁT EVENT (KHÔNG ĐIỀU KHIỂN UI NGOÀI)
  ************************************************************/
 
 (function () {
   if (window.__sheetOverlayInit) return;
   window.__sheetOverlayInit = true;
-  function getOpenBtn() {
-  return document.getElementById("openSheetBtn");
-}
-  function updateSheetButtonVisibility() {
-  const btn = getOpenBtn();
-  if (!btn) return;
 
-  const overlayVisible =
-    document.getElementById("sheetOverlay")?.classList.contains("show");
-
-  const loadingVisible =
-    document.getElementById("loadingOverlay")?.classList.contains("show");
-
-  if (overlayVisible || loadingVisible) {
-    btn.style.display = "none";
-  } else {
-    btn.style.display = "";
-  }
-}
-
- const API_BASE =
+  const API_BASE =
     "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
   let overlay,
@@ -37,116 +19,110 @@
 
   /* ================= OPEN ================= */
   window.openSheetOverlay = async function () {
-  if (!overlay) createOverlay();
-  overlay.classList.add("show");
-updateSheetButtonVisibility();
+    if (!overlay) createOverlay();
 
-  // ✅ ẨN NÚT SHEET
-  const btn = getOpenBtn();
-  if (btn) btn.style.display = "none";
+    overlay.classList.add("show");
 
-  await loadFileList();
-};
+    // 🔔 BÁO DASHBOARD: SHEET ĐANG MỞ
+    document.dispatchEvent(new Event("sheet-overlay-open"));
 
- function closeOverlay() {
-  overlay.classList.remove("show");
-  updateSheetButtonVisibility();
+    await loadFileList();
+  };
 
-  // ✅ HIỆN LẠI NÚT SHEET
-  const btn = getOpenBtn();
-  if (btn) btn.style.display = "";
-}
+  function closeOverlay() {
+    overlay.classList.remove("show");
 
+    // 🔔 BÁO DASHBOARD: SHEET ĐÃ ĐÓNG
+    document.dispatchEvent(new Event("sheet-overlay-close"));
+  }
 
-/* ================= DOM ================= */
-function createOverlay() {
-  overlay = document.createElement("div");
-  overlay.id = "sheetOverlay";
+  /* ================= DOM ================= */
+  function createOverlay() {
+    overlay = document.createElement("div");
+    overlay.id = "sheetOverlay";
 
-  overlay.innerHTML = `
-    <div class="sheet-panel">
-      <iframe id="sheetFrame"></iframe>
+    overlay.innerHTML = `
+      <div class="sheet-panel">
+        <iframe id="sheetFrame"></iframe>
 
-      <div class="sheet-menu">
-        <!-- HÀNG 1: FILE + FILE MENU + GID -->
-        <button id="btnFile">File</button>
-        <select id="sheetFileMenu"></select>
-        <select id="sheetTabMenu"></select>
+        <div class="sheet-menu">
+          <!-- HÀNG 1: FILE + FILE MENU + GID -->
+          <button id="btnFile">File</button>
+          <select id="sheetFileMenu"></select>
+          <select id="sheetTabMenu"></select>
 
-        <!-- HÀNG 2: GHI NHẬT KÝ -->
-        <button id="btnLog1">Ghi N.K</button>
-        <button id="btnLog2">Thu chi</button>
-        <button id="btnLog3">Config</button>
+          <!-- HÀNG 2: GHI NHẬT KÝ -->
+          <button id="btnLog1">Ghi N.K</button>
+          <button id="btnLog2">Thu chi</button>
+          <button id="btnLog3">Config</button>
 
-        <!-- HÀNG 3: ZOOM + CLOSE -->
-        <button id="btnZoomIn">＋</button>
-        <button id="btnZoomOut">－</button>
-        <button id="btnClose">✕</button>
+          <!-- HÀNG 3: ZOOM + CLOSE -->
+          <button id="btnZoomIn">＋</button>
+          <button id="btnZoomOut">－</button>
+          <button id="btnClose">✕</button>
+        </div>
       </div>
-    </div>
-  `;
+    `;
 
-  document.body.appendChild(overlay);
+    document.body.appendChild(overlay);
 
-  /* ====== BẮT DOM ====== */
-  iframe = overlay.querySelector("#sheetFrame");
-  menuFile = overlay.querySelector("#sheetFileMenu");
-  menuSheet = overlay.querySelector("#sheetTabMenu");
+    /* ====== BẮT DOM ====== */
+    iframe = overlay.querySelector("#sheetFrame");
+    menuFile = overlay.querySelector("#sheetFileMenu");
+    menuSheet = overlay.querySelector("#sheetTabMenu");
 
-  /* ====== SỰ KIỆN MENU ====== */
+    /* ====== SỰ KIỆN MENU ====== */
 
-  // Đóng overlay
-  overlay.querySelector("#btnClose").onclick = closeOverlay;
+    // Đóng overlay
+    overlay.querySelector("#btnClose").onclick = closeOverlay;
 
-  // Zoom
-  overlay.querySelector("#btnZoomIn").onclick = () =>
-    setZoom(zoomLevel + 0.1);
+    // Zoom
+    overlay.querySelector("#btnZoomIn").onclick = () =>
+      setZoom(zoomLevel + 0.1);
 
-  overlay.querySelector("#btnZoomOut").onclick = () =>
-    setZoom(zoomLevel - 0.1);
+    overlay.querySelector("#btnZoomOut").onclick = () =>
+      setZoom(zoomLevel - 0.1);
 
-  // Mở file trên Google Drive
-  overlay.querySelector("#btnFile").onclick = () => {
-    if (!currentFileId) return;
-    window.open(
-      `https://drive.google.com/drive/folders/1o3n5GABxec53ANpnS_OaDU1w0M3cGeAX}`,
-      "_blank"
-    );
-  };
+    // Mở folder Google Drive (cố định theo cấu hình của bạn)
+    overlay.querySelector("#btnFile").onclick = () => {
+      if (!currentFileId) return;
+      window.open(
+        "https://drive.google.com/drive/folders/1o3n5GABxec53ANpnS_OaDU1w0M3cGeAX",
+        "_blank"
+      );
+    };
 
-  // Ghi NK 1 (gid = 0 — đổi nếu cần)
-  overlay.querySelector("#btnLog1").onclick = () => {
-    if (!currentFileId) return;
-    window.open(
-      `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=0`,
-      "_blank"
-    );
-  };
+    // Ghi NK 1 (gid = 0)
+    overlay.querySelector("#btnLog1").onclick = () => {
+      if (!currentFileId) return;
+      window.open(
+        `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=0`,
+        "_blank"
+      );
+    };
 
-  // Ghi NK 2 (gid = 1 — đổi nếu cần)
-  overlay.querySelector("#btnLog2").onclick = () => {
-    if (!currentFileId) return;
-    window.open(
-      `https://docs.google.com/spreadsheets/d/138SCHzhuCnaqSJVsWqVxaFEb9iLIjFguhxoJq9ASSBw/edit#gid=1`,
-      "_blank"
-    );
-  };
+    // Ghi NK 2 (file cố định)
+    overlay.querySelector("#btnLog2").onclick = () => {
+      window.open(
+        "https://docs.google.com/spreadsheets/d/138SCHzhuCnaqSJVsWqVxaFEb9iLIjFguhxoJq9ASSBw/edit#gid=1",
+        "_blank"
+      );
+    };
 
-  // Ghi NK 3 (gid = 2 — đổi nếu cần)
-  overlay.querySelector("#btnLog3").onclick = () => {
-    if (!currentFileId) return;
-    window.open(
-      `https://docs.google.com/spreadsheets/d/1YX7imCB3GempjY2X9z_GUc8LDl019FZvMVJ5l_aht2c/edit#gid=2`,
-      "_blank"
-    );
-  };
+    // Ghi NK 3 (file cố định)
+    overlay.querySelector("#btnLog3").onclick = () => {
+      window.open(
+        "https://docs.google.com/spreadsheets/d/1YX7imCB3GempjY2X9z_GUc8LDl019FZvMVJ5l_aht2c/edit#gid=2",
+        "_blank"
+      );
+    };
 
-  // Chọn file
-  menuFile.onchange = () => openFile(menuFile.value);
+    // Chọn file
+    menuFile.onchange = () => openFile(menuFile.value);
 
-  // Chọn tab (gid)
-  menuSheet.onchange = () => openSheetTab(menuSheet.value);
-}
+    // Chọn tab (gid)
+    menuSheet.onchange = () => openSheetTab(menuSheet.value);
+  }
 
   /* ================= FILE LIST ================= */
   async function loadFileList() {
@@ -168,15 +144,16 @@ function createOverlay() {
   }
 
   function openFile(fileId) {
-  currentFileId = fileId;
-  iframe.src = buildEmbedUrl(fileId);
+    currentFileId = fileId;
+    iframe.src = buildEmbedUrl(fileId);
 
-  iframe.onload = () => {
-    fitSheetToScreen();   // 🔴 FIT NGAY KHI LOAD
-  };
+    iframe.onload = () => {
+      fitSheetToScreen();
+    };
 
-  loadSheetTabs(fileId);
-}
+    loadSheetTabs(fileId);
+  }
+
   /* ================= SHEET TABS ================= */
   async function loadSheetTabs(fileId) {
     menuSheet.innerHTML = `<option>Đang tải...</option>`;
@@ -199,22 +176,23 @@ function createOverlay() {
   }
 
   function openSheetTab(gid) {
-  iframe.src = buildEmbedUrl(currentFileId, gid);
+    iframe.src = buildEmbedUrl(currentFileId, gid);
 
-  iframe.onload = () => {
-    fitSheetToScreen();
-  };
-}
+    iframe.onload = () => {
+      fitSheetToScreen();
+    };
+  }
 
-  function buildEmbedUrl(fileId, gid) {
+  function buildEmbedUrl(fileId, gid = 0) {
     return `https://docs.google.com/spreadsheets/d/${fileId}/edit#gid=${gid}`;
   }
 
   function setZoom(z) {
-  zoomLevel = Math.max(0.6, Math.min(1.4, z));
-  iframe.style.transform = `scale(${zoomLevel})`;
-  iframe.style.transformOrigin = "0 0";
-}
+    zoomLevel = Math.max(0.6, Math.min(1.4, z));
+    iframe.style.transform = `scale(${zoomLevel})`;
+    iframe.style.transformOrigin = "0 0";
+  }
+
   /* ================= MONTH PICKER ================= */
   function pickCurrentMonthFile(files) {
     const now = new Date();
@@ -235,44 +213,26 @@ function createOverlay() {
     return current || monthFiles[0];
   }
 
-/* ================= FIT TO SCREEN ================= */
+  /* ================= FIT TO SCREEN ================= */
   function fitSheetToScreen() {
-  if (!iframe) return;
+    if (!iframe) return;
 
-  const SHEET_BASE_WIDTH = 1500;   // PHẢI KHỚP CSS
-  const screenW = window.innerWidth;
+    const SHEET_BASE_WIDTH = 1500;
+    const screenW = window.innerWidth;
 
-  let fitZoom = screenW / SHEET_BASE_WIDTH;
+    let fitZoom = screenW / SHEET_BASE_WIDTH;
+    if (fitZoom > 1) fitZoom = 1;
+    if (fitZoom < 0.6) fitZoom = 0.6;
 
-  if (fitZoom > 1) fitZoom = 1;
-  if (fitZoom < 0.6) fitZoom = 0.6;
+    zoomLevel = fitZoom;
 
-  zoomLevel = fitZoom;
+    iframe.style.transform = `scale(${zoomLevel})`;
+    iframe.style.transformOrigin = "0 0";
+    iframe.style.height = `${window.innerHeight / zoomLevel}px`;
+  }
 
-  iframe.style.transform = `scale(${zoomLevel})`;
-  iframe.style.transformOrigin = "0 0";
-
-  iframe.style.height = `${window.innerHeight / zoomLevel}px`;
-}
-
-window.addEventListener("resize", () => {
+  window.addEventListener("resize", () => {
     fitSheetToScreen();
   });
-  (function observeLoadingOverlay() {
-  const loadingEl = document.getElementById("loadingOverlay");
-  if (!loadingEl) return;
 
-  const observer = new MutationObserver(() => {
-    updateSheetButtonVisibility();
-  });
-
-  observer.observe(loadingEl, {
-    attributes: true,
-    attributeFilter: ["class"]
-  });
-
-  // chạy 1 lần ngay khi gắn observer
-  updateSheetButtonVisibility();
-})();
-
-})(); // 🔴 BẮT BUỘC – KẾT THÚC IIFE
+})(); // 🔴 KẾT THÚC IIFE
