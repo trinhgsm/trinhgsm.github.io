@@ -17,6 +17,9 @@
 #sheetOverlay:not(.show) .sheet-menu {
   display: none;
 }
+#sheetOverlay.show-menu .sheet-menu {
+  display: block;
+}
 #sheetOverlay.show {
   pointer-events: auto;
 }
@@ -28,7 +31,7 @@
   position: absolute;
   left: 0;
   right: 0;
-
+  background: #020617;
   /* ❗ chạm sát ticker – không che */
   top: 42px;
   bottom: 0;
