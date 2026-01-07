@@ -76,6 +76,12 @@ async function loadCan() {
 function renderCan(u, siteMap) {
   /* ===== HEADER ===== */
   $("#canMa").textContent = "Mã căn: " + u.maCan;
+// ===== MANAGER =====
+const m1 = document.getElementById("manager1");
+const m2 = document.getElementById("manager2");
+
+if (m1) m1.textContent = u.manager1 || "—";
+if (m2) m2.textContent = u.manager2 || "—";
 
   /* ===== PERCENT CIRCLE ===== */
   const percent = u.percent || 0;
