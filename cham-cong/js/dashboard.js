@@ -774,28 +774,18 @@ function toggleCardQR(btn) {
   const base = location.href.replace(/ds\.html.*/, "");
   const url = `${base}can.html?ma=${encodeURIComponent(maCan)}`;
 
-  box.innerHTML = `
-    <img
-      src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}"
-      alt="QR ${maCan}"
-    >
+  const encoded = encodeURIComponent(url);
 
-    <div class="qr-macan">${maCan}</div>
+box.innerHTML = `
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}">
+  <div class="qr-macan">${maCan}</div>
 
-    <div class="qr-actions">
-      <a class="open" target="_blank" href="${url}">
-        🔗 Mở link
-      </a>
-
-      <a class="zalo" target="_blank"
-         href="https://zalo.me/share?url=${encodeURIComponent(url)}">
-        Zalo
-      </a>
-
-      <a class="fb" target="_blank"
-         href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}">
-        Facebook
-      </a>
+  <div class="qr-actions">
+    <a class="open" href="${url}" target="_blank">🔗 Mở</a>
+    <a class="zalo" href="https://zalo.me/share?url=${encoded}" target="_blank">💬 Zalo</a>
+    <a class="fb" href="https://m.me/?link=${encoded}" target="_blank">📩 Messenger</a>
+  </div>
+`;
     </div>
   `;
 
