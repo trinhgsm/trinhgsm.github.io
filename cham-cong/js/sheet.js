@@ -43,10 +43,11 @@
     overlay.id = "sheetOverlay";
 
     overlay.innerHTML = `
-      <div class="sheet-panel">
-        <iframe id="sheetFrame"></iframe>
+  <div class="sheet-panel">
+    <iframe id="sheetFrame"></iframe>
+  </div>
 
-        <div class="sheet-menu">
+  <div class="sheet-menu">
           <!-- HÀNG 1: FILE + FILE MENU + GID -->
           <button id="btnFile">File</button>
           <select id="sheetFileMenu"></select>
@@ -62,7 +63,6 @@
           <button id="btnZoomOut">－</button>
           <button id="btnClose">✕</button>
         </div>
-      </div>
     `;
 
     document.body.appendChild(overlay);
