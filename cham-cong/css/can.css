@@ -1,72 +1,84 @@
-body {
-  margin: 0;
-  background: #020617;
-  color: #e5e7eb;
-  font-family: system-ui, sans-serif;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#020617;
+  color:#e5e7eb;
 }
 
-.can-wrap {
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 20px;
+.ticker{
+  overflow:hidden;
+  white-space:nowrap;
+  border-bottom:1px solid #334155;
+}
+.ticker span{
+  display:inline-block;
+  padding-left:100%;
+  animation:ticker 18s linear infinite;
+}
+@keyframes ticker{
+  from{transform:translateX(0)}
+  to{transform:translateX(-100%)}
 }
 
-h1 {
-  text-align: center;
-  color: #38bdf8;
-  font-size: 18px;
+.wrap{
+  max-width:520px;
+  margin:auto;
+  padding:16px;
 }
 
-.can-ma {
-  text-align: center;
-  margin-bottom: 12px;
-  opacity: 0.8;
+h1{text-align:center;color:#38bdf8}
+.can-ma{text-align:center;margin-bottom:10px}
+
+.circle{
+  width:120px;height:120px;
+  margin:10px auto;
+  border-radius:50%;
+  background:conic-gradient(#22c55e 0deg,#1e293b 0deg);
+  display:flex;align-items:center;justify-content:center;
+}
+.circle span{font-size:22px;font-weight:700}
+
+.status{text-align:center}
+.badge{
+  padding:4px 12px;border-radius:999px;
+  font-weight:600;font-size:14px;
+}
+.badge-ok{background:#22c55e22;color:#22c55e}
+.badge-warn{background:#eab30822;color:#eab308}
+.badge-danger{background:#ef444422;color:#ef4444}
+
+.row{display:flex;justify-content:space-between;margin:8px 0}
+
+.bar{
+  height:14px;background:#1e293b;
+  border-radius:999px;overflow:hidden;
+}
+.bar>div{
+  height:100%;width:0%;
+  background:#22c55e;
+  transition:width .5s ease;
 }
 
-.status-box {
-  background: #0f172a;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  margin-bottom: 12px;
+.site{
+  margin:10px 0;
+  padding:8px;
+  border-radius:6px;
+  background:#0f172a;
 }
 
-.status-percent {
-  font-size: 36px;
-  font-weight: 700;
-  color: #22c55e;
+.actions{
+  display:flex;gap:8px;justify-content:center;margin-top:12px
+}
+.actions button{
+  padding:8px 14px;border-radius:6px;
+  border:none;cursor:pointer;
 }
 
-.timeline {
-  display: flex;
-  justify-content: space-between;
-  background: #020617;
-  border: 1px solid #334155;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
+.qr-box{text-align:center;margin-top:10px}
+.qr-box img{width:160px}
+.hidden{display:none}
 
-.work-box,
-.site-status,
-.log-box {
-  background: #0f172a;
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-}
-
-.actions button {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background: #38bdf8;
-  color: #020617;
-  font-weight: 600;
+@media print{
+  .actions,.ticker,.qr-box{display:none}
 }
