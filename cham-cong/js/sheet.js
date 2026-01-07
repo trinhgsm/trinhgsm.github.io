@@ -19,15 +19,14 @@
 
   /* ================= OPEN ================= */
   window.openSheetOverlay = async function () {
-    if (!overlay) createOverlay();
+  if (!overlay) createOverlay();
 
-    overlay.classList.add("show");
+  // ❗ CHƯA SHOW overlay
+  document.dispatchEvent(new Event("sheet-overlay-open"));
 
-    // 🔔 BÁO DASHBOARD: SHEET ĐANG MỞ
-    document.dispatchEvent(new Event("sheet-overlay-open"));
+  await loadFileList();
+};
 
-    await loadFileList();
-  };
 
   function closeOverlay() {
     overlay.classList.remove("show");
@@ -144,15 +143,10 @@
   }
 
   function openFile(fileId) {
-    currentFileId = fileId;
-    iframe.src = buildEmbedUrl(fileId);
+  currentFileId = fileId;
+  loadSheetTabs(fileId); // ✅ CHỈ load danh sách tab
+}
 
-    iframe.onload = () => {
-      fitSheetToScreen();
-    };
-
-    loadSheetTabs(fileId);
-  }
 
   /* ================= SHEET TABS ================= */
   async function loadSheetTabs(fileId) {
@@ -176,12 +170,19 @@
   }
 
   function openSheetTab(gid) {
-    iframe.src = buildEmbedUrl(currentFileId, gid);
+  // 1. Ẩn panel trước
+  overlay.classList.remove("show");
 
-    iframe.onload = () => {
-      fitSheetToScreen();
-    };
-  }
+  // 2. Set iframe
+  iframe.src = buildEmbedUrl(currentFileId, gid);
+
+  // 3. Khi sheet load xong → mới hiện
+  iframe.onload = () => {
+    fitSheetToScreen();
+    overlay.classList.add("show"); // ✅ lúc này mới trượt lên
+  };
+}
+
 
   function buildEmbedUrl(fileId, gid = 0) {
     return `https://docs.google.com/spreadsheets/d/${fileId}/edit#gid=${gid}`;
