@@ -224,16 +224,6 @@
 .sheet-fab:active {
   transform: scale(0.96);
 }
-/* overlay phủ màn hình */
-.sheet-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9998;
-  background: #020617;
-
-  display: flex;
-  flex-direction: column;
-}
 
 .sheet-menu button,
 .sheet-menu select,
