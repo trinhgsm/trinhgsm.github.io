@@ -706,28 +706,25 @@ function renderActivityTicker(siteMap) {
   `;
 }
 // 🔒 KHÓA TRẠNG THÁI NGAY KHI DOM LOAD
-document.addEventListener("DOMContentLoaded", () => {
-  updateOpenSheetBtnVisibility();
-
+document.addEventListener("dashboard-ready", () => {
   const btn = document.getElementById("openSheetBtn");
   if (!btn) return;
 
-  btn.addEventListener("click", () => {
+  btn.style.display = "flex"; // hoặc block
+
+  btn.onclick = () => {
     if (!window.__sheetLoaded) {
       const s = document.createElement("script");
       s.src = "js/sheet.js";
-      s.defer = true;
-
       s.onload = () => {
         window.__sheetLoaded = true;
         window.openSheetOverlay();
       };
-
       document.body.appendChild(s);
     } else {
       window.openSheetOverlay();
     }
-  });
+  };
 });
 
 // 🔔 DASHBOARD READY → CHỈ TẮT LOGO + UPDATE NÚT
