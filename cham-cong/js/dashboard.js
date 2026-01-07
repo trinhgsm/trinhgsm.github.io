@@ -706,25 +706,28 @@ function renderActivityTicker(siteMap) {
   `;
 }
 // 🔒 KHÓA TRẠNG THÁI NGAY KHI DOM LOAD
-document.addEventListener("dashboard-ready", () => {
+document.addEventListener("DOMContentLoaded", () => {
+  updateOpenSheetBtnVisibility();
+
   const btn = document.getElementById("openSheetBtn");
   if (!btn) return;
 
-  btn.style.display = "flex"; // hoặc block
-
-  btn.onclick = () => {
+  btn.addEventListener("click", () => {
     if (!window.__sheetLoaded) {
       const s = document.createElement("script");
       s.src = "js/sheet.js";
+      s.defer = true;
+
       s.onload = () => {
         window.__sheetLoaded = true;
         window.openSheetOverlay();
       };
+
       document.body.appendChild(s);
     } else {
       window.openSheetOverlay();
     }
-  };
+  });
 });
 
 // 🔔 DASHBOARD READY → CHỈ TẮT LOGO + UPDATE NÚT
@@ -796,4 +799,3 @@ function toggleCardQR(btn) {
 }
 // 🚀 BẮT ĐẦU LOAD DASHBOARD
 loadDashboard();
-
