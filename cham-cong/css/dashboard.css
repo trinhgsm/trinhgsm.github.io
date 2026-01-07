@@ -534,8 +534,17 @@ header.top #genTime {
 }
 //qr
 /* ===============================
-   QR BUTTON + BOX (CARD)
+   QR BUTTON + BOX (CARD) – FINAL
    =============================== */
+
+/* TẮT TAP HIGHLIGHT ĐEN (ANDROID / CHROME) */
+.qr-box,
+.qr-actions a,
+.btn-qr {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== NÚT QR ===== */
 .btn-qr {
   margin-top: 6px;
   padding: 4px 8px;
@@ -545,31 +554,19 @@ header.top #genTime {
   background: #020617;
   color: #93c5fd;
   cursor: pointer;
+  transition: background .15s ease, transform .1s ease;
 }
 
-.btn-qr:hover {
-  background: #0f172a;
+.btn-qr:active {
+  transform: scale(0.95);
 }
 
-.qr-box {
-  margin-top: 8px;
-  text-align: center;
-}
-
-.qr-box img {
-  width: 120px;
-  height: 120px;
-}
-
-.qr-hidden {
-  display: none;
-}
-/* ===============================
-   QR BOX – HIỆU ỨNG + ACTION
-   =============================== */
+/* ===== BOX QR ===== */
 .qr-box {
   margin-top: 8px;
   padding: 8px 6px;
+  text-align: center;
+
   border-radius: 10px;
   border: 1px solid rgba(56,189,248,.45);
   background: #020617;
@@ -577,12 +574,18 @@ header.top #genTime {
   animation: qrGlow 2.2s ease-in-out infinite;
 }
 
+.qr-hidden {
+  display: none;
+}
+
+/* HIỆU ỨNG VIỀN NHẸ */
 @keyframes qrGlow {
   0%   { box-shadow: 0 0 0 rgba(56,189,248,0); }
   50%  { box-shadow: 0 0 10px rgba(56,189,248,.35); }
   100% { box-shadow: 0 0 0 rgba(56,189,248,0); }
 }
 
+/* QR IMAGE */
 .qr-box img {
   display: block;
   margin: 0 auto;
@@ -590,7 +593,7 @@ header.top #genTime {
   height: 120px;
 }
 
-/* mã căn dưới QR */
+/* MÃ CĂN DƯỚI QR */
 .qr-macan {
   margin-top: 4px;
   font-size: 0.65rem;
@@ -607,28 +610,38 @@ header.top #genTime {
 }
 
 .qr-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
   font-size: 0.65rem;
-  padding: 3px 6px;
-  border-radius: 6px;
+  padding: 3px 7px;
+  border-radius: 999px;
+
   text-decoration: none;
   border: 1px solid rgba(148,163,184,.35);
-  background: #020617;
-  color: #93c5fd;
+  background: rgba(15,23,42,.9);
+  color: #e5e7eb;
+
+  transition: transform .12s ease, background .12s ease;
 }
 
-.qr-actions a:hover {
-  background: #0f172a;
+.qr-actions a:active {
+  transform: scale(0.95);
 }
 
-/* màu theo nền tảng */
+/* ===== MÀU THEO HÀNH ĐỘNG ===== */
+.qr-actions a.open {
+  border-color: rgba(34,197,94,.6);
+  color: #22c55e;
+}
+
 .qr-actions a.zalo {
+  border-color: rgba(56,189,248,.7);
   color: #38bdf8;
 }
 
 .qr-actions a.fb {
+  border-color: rgba(96,165,250,.7);
   color: #60a5fa;
-}
-
-.qr-actions a.open {
-  color: #22c55e;
 }
