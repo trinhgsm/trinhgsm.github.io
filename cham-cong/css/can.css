@@ -1,0 +1,254 @@
+/* =====================================================
+   ROOT
+   ===================================================== */
+:root {
+  --bg: #020617;
+  --card: #0f172a;
+  --border: rgba(148,163,184,.25);
+
+  --green: #22c55e;
+  --yellow: #eab308;
+  --red: #ef4444;
+  --blue: #38bdf8;
+
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.45;
+}
+
+/* =====================================================
+   HEADER
+   ===================================================== */
+.can-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #020617;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.can-title {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.can-ma {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  opacity: .85;
+}
+
+/* =====================================================
+   CARD CHUNG
+   ===================================================== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 12px 12px;
+}
+
+/* =====================================================
+   STATUS CARD
+   ===================================================== */
+.status-card {
+  text-align: center;
+}
+
+.status-percent {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.status-text {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.status-time {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* =====================================================
+   TIMELINE
+   ===================================================== */
+.timeline-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.timeline-item {
+  background: rgba(2,6,23,0.6);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.timeline-item .label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.timeline-item .value {
+  font-size: 0.85rem;
+  margin-top: 2px;
+}
+
+/* =====================================================
+   SITE STATUS
+   ===================================================== */
+.site-card {
+  text-align: center;
+}
+
+.site-status-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* =====================================================
+   LOG
+   ===================================================== */
+.log-card h3 {
+  margin: 0 0 8px;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+#logList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#logList li {
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(148,163,184,.25);
+  font-size: 0.82rem;
+}
+
+#logList li:last-child {
+  border-bottom: none;
+}
+
+/* =====================================================
+   ACTION BUTTONS
+   ===================================================== */
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 12px;
+}
+
+.actions button {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #020617;
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.actions button:active {
+  transform: scale(0.97);
+}
+
+/* =====================================================
+   QR MODAL
+   ===================================================== */
+.qr-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,6,23,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.qr-modal.hidden {
+  display: none;
+}
+
+.qr-box {
+  background: var(--card);
+  padding: 18px;
+  border-radius: 16px;
+  text-align: center;
+  width: 260px;
+}
+
+.qr-title {
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  color: var(--blue);
+}
+
+#qrCanvas {
+  margin: 10px auto;
+}
+
+#btnCloseQr {
+  margin-top: 10px;
+  padding: 8px;
+  width: 100%;
+  border-radius: 10px;
+  border: none;
+  background: var(--blue);
+  color: #020617;
+  font-weight: 600;
+}
+
+/* =====================================================
+   DESKTOP
+   ===================================================== */
+@media (min-width: 768px) {
+  body {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+}
+
+/* =====================================================
+   PRINT / PDF
+   ===================================================== */
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .actions,
+  .qr-modal {
+    display: none !important;
+  }
+
+  .card {
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+}
