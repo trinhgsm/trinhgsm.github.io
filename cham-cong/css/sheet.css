@@ -9,6 +9,7 @@
    OVERLAY
    ========================================================= */
 #sheetOverlay {
+  pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 999;
@@ -20,7 +21,9 @@
 #sheetOverlay.show {
   pointer-events: auto;
 }
-
+#sheetOverlay.show-menu {
+  pointer-events: auto;
+}
 /* =========================================================
    PANEL
    ========================================================= */
