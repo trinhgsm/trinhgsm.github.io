@@ -48,10 +48,33 @@ async function loadCan(){
       ? (site.diffDays===0 ? "Hôm nay có thi công" : site.diffDays+" ngày chưa thi công")
       : "--";
 
-  /* ==== CHỈ HUY + TRỢ LÝ (TÊN + SĐT GỘP CHUNG) ==== */
+  /* ===== CHỈ HUY + TRỢ LÝ + SĐT ===== */
 
-const m1El = document.getElementById("manager1");
-const m2El = document.getElementById("manager2");
+document.getElementById("manager1").textContent =
+  unit.manager1 || "--";
+
+document.getElementById("manager2").textContent =
+  unit.manager2 || "--";
+
+// --- PHONE 1 ---
+const m1p = document.getElementById("manager1Phone");
+if (unit.manager1Phone) {
+  m1p.textContent = "📞 " + unit.manager1Phone;
+  m1p.href = "tel:" + unit.manager1Phone;
+  m1p.style.display = "inline-block";
+} else {
+  m1p.style.display = "none";
+}
+
+// --- PHONE 2 ---
+const m2p = document.getElementById("manager2Phone");
+if (unit.manager2Phone) {
+  m2p.textContent = "📞 " + unit.manager2Phone;
+  m2p.href = "tel:" + unit.manager2Phone;
+  m2p.style.display = "inline-block";
+} else {
+  m2p.style.display = "none";
+}
 
 /*
   API hiện trả về:
