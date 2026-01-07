@@ -793,10 +793,10 @@ function toggleCardQR(btn) {
       </a>
 
       <!-- FACEBOOK – ƯU TIÊN MỞ APP -->
-      <a class="fb"
+     // <a class="fb"
          href="fb://facewebmodal/f?href=https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}">
          Facebook
-      </a>
+      </a>-->
 
       <!-- SHARE HỆ THỐNG (ANDROID / IOS) -->
       <a class="share"
