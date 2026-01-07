@@ -786,18 +786,6 @@ function toggleCardQR(btn) {
       <!-- mở trực tiếp -->
       <a class="open" href="${url}" target="_blank">🔗 Mở link</a>
 
-      <!-- ZALO – ƯU TIÊN MỞ APP -->
-      <a class="zalo"
-         href="zalo://send?text=${encodedText}%20${encodedUrl}">
-         Zalo
-      </a>
-
-      <!-- FACEBOOK – ƯU TIÊN MỞ APP -->
-     // <a class="fb"
-         href="fb://facewebmodal/f?href=https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}">
-         Facebook
-      </a>-->
-
       <!-- SHARE HỆ THỐNG (ANDROID / IOS) -->
       <a class="share"
          href="javascript:void(0)"
