@@ -786,8 +786,7 @@ box.innerHTML = `
     <a class="fb" href="https://m.me/?link=${encoded}" target="_blank">📩 Messenger</a>
   </div>
 `;
-    </div>
-  `;
+
 
   box.classList.remove("qr-hidden");
 }
