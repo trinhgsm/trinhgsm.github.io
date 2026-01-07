@@ -20,6 +20,10 @@
 #sheetOverlay.show {
   pointer-events: auto;
 }
+/* menu hiện sớm khi đang load sheet */
+#sheetOverlay.show-menu .sheet-menu {
+  display: block;
+}
 
 /* =========================================================
    PANEL
