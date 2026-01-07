@@ -1,68 +1,142 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <title>Tiến độ công trình</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="css/can.css" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="can.css" />
+
+  <!-- Chart.js (chuẩn bị cho biểu đồ tổ đội – dùng sau) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
 
-<div class="ticker">
-  <span id="tickerText">Đang tải...</span>
+<div class="can-wrap">
+
+  <!-- ================= HEADER ================= -->
+  <div class="can-title">
+    <h1>TIẾN ĐỘ CÔNG TRÌNH</h1>
+    <p class="can-ma">Mã căn: --</p>
+  </div>
+
+  <!-- ================= PROGRESS ================= -->
+  <div class="card progress-box">
+    <div class="progress-circle" id="progressCircle">
+      <span class="status-percent">--%</span>
+    </div>
+
+    <div class="status-text" id="statusText">Đang tải trạng thái...</div>
+    <div class="update-time" id="updateTime">Cập nhật: --</div>
+  </div>
+
+  <!-- ================= TIME + CONG ================= -->
+  <div class="card">
+    <div class="row">
+      <div>
+        <strong>Bắt đầu</strong><br>
+        <span id="startDate">--/--/----</span>
+      </div>
+      <div>
+        <strong>Dự kiến hoàn thành</strong><br>
+        <span id="endDate">--/--/----</span>
+      </div>
+    </div>
+
+    <div style="margin-top:10px">
+      Công: <strong><span id="actualCong">0</span></strong> /
+      <span id="plannedCong">0</span>
+    </div>
+
+    <div class="cong-bar">
+      <div class="done" id="congBar"></div>
+    </div>
+
+    <div class="site-status" id="siteStatus">
+      Đang tải tình trạng thi công...
+    </div>
+  </div>
+
+  <!-- ================= TICKER ================= -->
+  <div class="card ticker">
+    <span id="tickerText">
+      Đang tải hoạt động thi công...
+    </span>
+  </div>
+
+  <!-- ================= LOG ================= -->
+  <div class="card">
+    <div class="log-title">NHẬT KÝ GẦN NHẤT</div>
+    <ul class="log-list" id="logList">
+      <li>Đang tải nhật ký...</li>
+    </ul>
+  </div>
+
+  <!-- ================= ACTION ================= -->
+  <div class="card">
+    <div class="action-row">
+      <button onclick="window.print()">In</button>
+      <button onclick="downloadPDF()">Tải PDF</button>
+      <button onclick="toggleQR()">Mã QR</button>
+    </div>
+
+    <!-- QR -->
+    <div class="qr-box hidden" id="qrBox">
+      <img id="qrImg" src="" alt="QR Code" />
+      <div style="margin-top:6px;font-size:0.75rem;color:#94a3b8">
+        Quét để xem tiến độ
+      </div>
+
+      <div class="action-row" style="margin-top:8px">
+        <a id="zaloShare" target="_blank">Chia sẻ Zalo</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TEAM CHART (DÙNG SAU) ================= -->
+  <div class="card" id="teamChartBox" style="display:none">
+    <canvas id="teamChart" height="180"></canvas>
+  </div>
+
 </div>
 
-<div class="wrap">
+<!-- ================= JS ================= -->
+<script src="can.js"></script>
 
-  <h1>TIẾN ĐỘ CÔNG TRÌNH</h1>
-  <div class="can-ma" id="canMa">Mã căn: --</div>
+<script>
+/* =====================================================
+   ACTION HELPERS
+   ===================================================== */
+function toggleQR() {
+  const box = document.getElementById("qrBox");
+  box.classList.toggle("hidden");
+}
 
-  <!-- VÒNG % -->
-  <div class="circle" id="progressCircle">
-    <span id="circleText">0%</span>
-  </div>
+function downloadPDF() {
+  window.print();
+}
 
-  <div class="status">
-    <span id="statusText" class="badge badge-ok">--</span>
-    <div class="update" id="updateTime">Cập nhật --</div>
-  </div>
+/* =====================================================
+   INIT QR
+   ===================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const url = window.location.href;
 
-  <!-- THỜI GIAN -->
-  <div class="row">
-    <div>Bắt đầu: <b id="startDate">--</b></div>
-    <div>Dự kiến xong: <b id="endDate">--</b></div>
-  </div>
+  // QR
+  const qrImg = document.getElementById("qrImg");
+  qrImg.src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+    encodeURIComponent(url);
 
-  <!-- CÔNG -->
-  <div class="row">
-    Công: <b id="actualCong">0</b> / <b id="plannedCong">0</b>
-  </div>
+  // Zalo share
+  const zalo = document.getElementById("zaloShare");
+  zalo.href =
+    "https://zalo.me/share?url=" + encodeURIComponent(url);
+});
+</script>
 
-  <div class="bar">
-    <div id="barDone"></div>
-  </div>
-
-  <!-- THI CÔNG -->
-  <div class="site" id="siteStatus">--</div>
-
-  <!-- NHẬT KÝ -->
-  <h3>NHẬT KÝ GẦN NHẤT</h3>
-  <ul id="logList"></ul>
-
-  <!-- ACTION -->
-  <div class="actions">
-    <button onclick="window.print()">In</button>
-    <button onclick="exportPDF()">Tải PDF</button>
-    <button onclick="toggleQR()">Mã QR</button>
-  </div>
-
-  <div id="qrBox" class="qr-box hidden">
-    <img id="qrImg" />
-    <a id="zaloShare" target="_blank">Chia sẻ Zalo</a>
-  </div>
-
-</div>
-
-<script src="js/can.js"></script>
 </body>
 </html>
