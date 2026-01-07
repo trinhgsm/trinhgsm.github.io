@@ -546,15 +546,22 @@ header.top #genTime {
 
 /* ===== NÚT QR ===== */
 .btn-qr {
-  margin-top: 6px;
-  padding: 4px 8px;
-  font-size: 0.7rem;
-  border-radius: 6px;
-  border: 1px solid rgba(148,163,184,.35);
-  background: #020617;
-  color: #93c5fd;
+  position: absolute;
+  top: 6px;          /* 👈 sát mép trên */
+  right: 8px;        /* 👈 sát mép phải */
+
+  padding: 3px 8px;
+  font-size: 0.65rem;
+  border-radius: 999px;
+
+  border: 1px solid rgba(56,189,248,.6);
+  background: rgba(2,6,23,.85);
+  color: #38bdf8;
+
   cursor: pointer;
-  transition: background .15s ease, transform .1s ease;
+  z-index: 5;
+
+  transition: all .2s ease;
 }
 
 .btn-qr:active {
