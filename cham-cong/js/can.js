@@ -48,22 +48,42 @@ async function loadCan(){
       ? (site.diffDays===0 ? "Hôm nay có thi công" : site.diffDays+" ngày chưa thi công")
       : "--";
 
-  /* ===== CHỈ HUY + ĐT ===== */
-  document.getElementById("manager1").textContent = unit.manager1 || "--";
-  document.getElementById("manager2").textContent = unit.manager2 || "--";
+  /* ==== CHỈ HUY + TRỢ LÝ (TÊN + SĐT GỘP CHUNG) ==== */
 
-  const p1 = document.getElementById("phone1");
-  const p2 = document.getElementById("phone2");
+const m1El = document.getElementById("manager1");
+const m2El = document.getElementById("manager2");
 
-  if(unit.phone1){
-    p1.textContent = unit.phone1;
-    p1.href = "tel:"+unit.phone1;
-  }else p1.textContent="--";
+/*
+  API hiện trả về:
+  unit.manager1 = "KTS Kiên 0912876678"
+  unit.manager2 = "Trợ lý A 0987xxxx"
+*/
 
-  if(unit.phone2){
-    p2.textContent = unit.phone2;
-    p2.href = "tel:"+unit.phone2;
-  }else p2.textContent="--";
+function renderManager(el, value) {
+  if (!el) return;
+
+  if (!value) {
+    el.textContent = "—";
+    return;
+  }
+
+  // tách số điện thoại trong chuỗi (09xxxxxxxx, 03, 07, 08…)
+  const phoneMatch = value.match(/(0[0-9]{8,10})/);
+  const phone = phoneMatch ? phoneMatch[1] : null;
+  const name = phone ? value.replace(phone, "").trim() : value;
+
+  if (phone) {
+    el.innerHTML = `
+      <span class="manager-name">${name}</span>
+      <a class="manager-phone" href="tel:${phone}">📞 ${phone}</a>
+    `;
+  } else {
+    el.textContent = name;
+  }
+}
+
+renderManager(m1El, unit.manager1);
+renderManager(m2El, unit.manager2);
 
   /* ===== MARQUEE ===== */
   document.getElementById("tickerText").textContent =
