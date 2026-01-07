@@ -40,7 +40,7 @@ function fmtDate(d) {
    LOAD CAN
    ===================================================== */
 async function loadCan() {
-  const maCan = getQueryParam("ma");
+  const maCan = getMaCan();
 
   if (!maCan) {
     document.body.innerHTML = `
