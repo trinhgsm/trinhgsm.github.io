@@ -259,13 +259,6 @@
    =============================== */
 @media (max-width: 768px) {
 
-  /* overlay gốc */
-  .sheet-overlay {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-
   /* vùng chứa iframe */
   .sheet-body {
     flex: 1;
