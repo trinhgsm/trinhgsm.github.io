@@ -353,7 +353,7 @@ if (site) {
 
     const card = document.createElement("div");
     card.className = "card";
-
+card.dataset.ma = u.maCan;
     card.innerHTML = `
       <h2 class="unit-title">
   <span class="ma-can">${u.maCan}</span>
@@ -365,6 +365,10 @@ if (site) {
       ${u.manager2 ? `Trợ lý: ${u.manager2}` : ""}
     </span>
   ` : ""}
+<button class="btn-qr" onclick="toggleCardQR(this)">
+        QR
+      </button>
+      <div class="qr-box qr-hidden"></div>
 </h2>
 
 ${site ? `
@@ -745,7 +749,38 @@ document.addEventListener("sheet-overlay-close", () => {
   document.body.classList.remove("sheet-open");
   updateOpenSheetBtnVisibility();
 });
+function toggleCardQR(btn) {
+  const card = btn.closest(".card");
+  if (!card) return;
 
+  const box = card.querySelector(".qr-box");
+  if (!box) return;
+
+  // nếu đang mở → đóng
+  if (!box.classList.contains("qr-hidden")) {
+    box.classList.add("qr-hidden");
+    box.innerHTML = "";
+    return;
+  }
+
+  const maCan = card.dataset.ma;
+  if (!maCan) {
+    alert("❌ Không có mã căn");
+    return;
+  }
+
+  // build link can.html?ma=
+  const base = location.href.replace(/ds\.html.*/, "");
+  const url = `${base}can.html?ma=${encodeURIComponent(maCan)}`;
+
+  box.innerHTML = `
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">
+    <div style="font-size:0.65rem;opacity:.7;margin-top:4px">
+      ${maCan}
+    </div>
+  `;
+  box.classList.remove("qr-hidden");
+}
 // 🚀 BẮT ĐẦU LOAD DASHBOARD
 loadDashboard();
 
