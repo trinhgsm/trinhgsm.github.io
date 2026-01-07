@@ -71,7 +71,19 @@
   color: #e5e7eb;
   font-size: 13px;
 }
-
+/* 🔴 MẶC ĐỊNH: MENU ẨN */
+#sheetOverlay:not(.show-menu) .sheet-menu {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+/* ✅ KHI MỞ MENU */
+#sheetOverlay.show-menu .sheet-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
 /* reset */
 .sheet-menu button,
 .sheet-menu select {
