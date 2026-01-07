@@ -564,3 +564,71 @@ header.top #genTime {
 .qr-hidden {
   display: none;
 }
+/* ===============================
+   QR BOX – HIỆU ỨNG + ACTION
+   =============================== */
+.qr-box {
+  margin-top: 8px;
+  padding: 8px 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(56,189,248,.45);
+  background: #020617;
+
+  animation: qrGlow 2.2s ease-in-out infinite;
+}
+
+@keyframes qrGlow {
+  0%   { box-shadow: 0 0 0 rgba(56,189,248,0); }
+  50%  { box-shadow: 0 0 10px rgba(56,189,248,.35); }
+  100% { box-shadow: 0 0 0 rgba(56,189,248,0); }
+}
+
+.qr-box img {
+  display: block;
+  margin: 0 auto;
+  width: 120px;
+  height: 120px;
+}
+
+/* mã căn dưới QR */
+.qr-macan {
+  margin-top: 4px;
+  font-size: 0.65rem;
+  opacity: .7;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.qr-actions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.qr-actions a {
+  font-size: 0.65rem;
+  padding: 3px 6px;
+  border-radius: 6px;
+  text-decoration: none;
+  border: 1px solid rgba(148,163,184,.35);
+  background: #020617;
+  color: #93c5fd;
+}
+
+.qr-actions a:hover {
+  background: #0f172a;
+}
+
+/* màu theo nền tảng */
+.qr-actions a.zalo {
+  color: #38bdf8;
+}
+
+.qr-actions a.fb {
+  color: #60a5fa;
+}
+
+.qr-actions a.open {
+  color: #22c55e;
+}
