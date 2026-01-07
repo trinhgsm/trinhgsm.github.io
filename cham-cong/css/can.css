@@ -1,292 +1,106 @@
-/* =====================================================
-   RESET + ROOT
-   ===================================================== */
-:root {
-  --bg: #020617;
-  --card: #0f172a;
-  --border: rgba(148,163,184,.25);
-
-  --green: #22c55e;
-  --yellow: #eab308;
-  --red: #ef4444;
-  --blue: #38bdf8;
-
-  --text: #e5e7eb;
-  --muted: #94a3b8;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: system-ui, sans-serif;
+  background: #020617;
+  color: #e5e7eb;
 }
 
-/* =====================================================
-   LAYOUT
-   ===================================================== */
 .can-wrap {
-  max-width: 520px;
-  margin: 0 auto;
+  max-width: 720px;
+  margin: auto;
   padding: 16px;
 }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 14px;
+.title {
+  text-align: center;
+  color: #38bdf8;
 }
 
-/* =====================================================
-   HEADER
-   ===================================================== */
-.can-title {
+.can-ma {
+  text-align: center;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+
+.manager-box {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.status-card {
+  background: #0f172a;
+  padding: 16px;
+  border-radius: 12px;
   text-align: center;
   margin-bottom: 12px;
 }
 
-.can-title h1 {
-  margin: 0;
-  font-size: 1.1rem;
-  color: var(--blue);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.can-title p {
-  margin: 6px 0 0;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-/* =====================================================
-   PROGRESS CIRCLE
-   ===================================================== */
-.progress-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.progress-circle {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: conic-gradient(var(--green) 0deg, #1e293b 0deg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.progress-circle span {
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--green);
+.status-percent {
+  font-size: 36px;
+  color: #22c55e;
+  font-weight: bold;
 }
 
 .status-text {
-  font-size: 0.9rem;
   margin-top: 4px;
 }
 
-.update-time {
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-
-/* =====================================================
-   BADGE
-   ===================================================== */
-.badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.badge-ok {
-  background: rgba(34,197,94,.15);
-  color: var(--green);
-}
-
-.badge-warn {
-  background: rgba(234,179,8,.15);
-  color: var(--yellow);
-}
-
-.badge-danger {
-  background: rgba(239,68,68,.15);
-  color: var(--red);
-}
-
-/* =====================================================
-   DATE + CONG
-   ===================================================== */
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 0.85rem;
-}
-
-.row span {
-  color: var(--muted);
-}
-
-.cong-bar {
-  margin-top: 8px;
-  background: #020617;
-  border-radius: 999px;
-  overflow: hidden;
-  height: 10px;
-}
-
-.cong-bar .done {
-  height: 100%;
-  background: linear-gradient(90deg, var(--green), var(--blue));
-  width: 0%;
-  transition: width 0.4s ease;
-}
-
-/* =====================================================
-   SITE STATUS
-   ===================================================== */
+.timeline,
+.cong,
 .site-status {
-  margin-top: 6px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  background: rgba(56,189,248,.08);
-  color: var(--blue);
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
-/* =====================================================
-   LOG LIST
-   ===================================================== */
-.log-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 6px;
+.site-status.ok { color: #22c55e; }
+.site-status.warn { color: #eab308; }
+.site-status.danger { color: #ef4444; }
+
+.chart-box {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 12px;
+  margin: 12px 0;
 }
 
-.log-list {
-  margin: 0;
-  padding-left: 18px;
-  font-size: 0.85rem;
-  color: var(--muted);
+.log-box {
+  background: #0f172a;
+  border-radius: 12px;
+  padding: 12px;
 }
 
-.log-list li {
-  margin-bottom: 4px;
-}
-
-/* =====================================================
-   TICKER
-   ===================================================== */
-.ticker {
-  overflow: hidden;
-  white-space: nowrap;
-  border-top: 1px solid var(--border);
-  padding-top: 8px;
-}
-
-.ticker span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: ticker 18s linear infinite;
-  font-size: 0.85rem;
-  color: var(--blue);
-}
-
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
-}
-
-/* =====================================================
-   ACTION BUTTONS
-   ===================================================== */
-.action-row {
+.actions {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
-.action-row button,
-.action-row a {
+.actions button {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
-  text-align: center;
-  font-size: 0.85rem;
+  background: #38bdf8;
+  color: #020617;
   font-weight: 600;
-  cursor: pointer;
-  background: linear-gradient(135deg, #1f2937, #020617);
-  color: var(--text);
-  border: 1px solid var(--border);
-  text-decoration: none;
 }
 
-.action-row button:hover,
-.action-row a:hover {
-  background: #020617;
-}
-
-/* =====================================================
-   QR
-   ===================================================== */
 .qr-box {
-  margin-top: 10px;
+  margin-top: 12px;
   text-align: center;
 }
 
-.qr-box.hidden {
+.hidden {
   display: none;
 }
 
-.qr-box img {
-  max-width: 220px;
-  border-radius: 12px;
-  background: #fff;
-  padding: 6px;
-}
-
-/* =====================================================
-   RESPONSIVE
-   ===================================================== */
-@media (max-width: 480px) {
-  .progress-circle {
-    width: 120px;
-    height: 120px;
+@media print {
+  .actions,
+  .qr-box {
+    display: none;
   }
-
-  .progress-circle span {
-    font-size: 1.6rem;
-  }
-}
-/* ===============================
-   MANAGER INFO
-   =============================== */
-.can-manager {
-  margin-top: 6px;
-  font-size: 0.8rem;
-  color: #cbd5f5;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.can-manager .label {
-  color: #94a3b8;
-  margin-right: 4px;
 }
