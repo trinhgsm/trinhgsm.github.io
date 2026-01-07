@@ -757,7 +757,7 @@ function toggleCardQR(btn) {
   const box = card.querySelector(".qr-box");
   if (!box) return;
 
-  // đang mở → đóng
+  // nếu đang mở → đóng
   if (!box.classList.contains("qr-hidden")) {
     box.classList.add("qr-hidden");
     box.innerHTML = "";
@@ -774,19 +774,38 @@ function toggleCardQR(btn) {
   const base = location.href.replace(/ds\.html.*/, "");
   const url = `${base}can.html?ma=${encodeURIComponent(maCan)}`;
 
-  const encoded = encodeURIComponent(url);
+  const encodedUrl  = encodeURIComponent(url);
+  const shareText   = `Tiến độ căn ${maCan}`;
+  const encodedText = encodeURIComponent(shareText);
 
-box.innerHTML = `
-  <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encoded}">
-  <div class="qr-macan">${maCan}</div>
+  box.innerHTML = `
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedUrl}">
+    <div class="qr-macan">${maCan}</div>
 
-  <div class="qr-actions">
-    <a class="open" href="${url}" target="_blank">🔗 Mở</a>
-    <a class="zalo" href="https://zalo.me/share?url=${encoded}" target="_blank">💬 Zalo</a>
-    <a class="fb" href="https://m.me/?link=${encoded}" target="_blank">📩 Messenger</a>
-  </div>
-`;
+    <div class="qr-actions">
+      <!-- mở trực tiếp -->
+      <a class="open" href="${url}" target="_blank">🔗 Mở link</a>
 
+      <!-- ZALO – ƯU TIÊN MỞ APP -->
+      <a class="zalo"
+         href="zalo://send?text=${encodedText}%20${encodedUrl}">
+         Zalo
+      </a>
+
+      <!-- FACEBOOK – ƯU TIÊN MỞ APP -->
+      <a class="fb"
+         href="fb://facewebmodal/f?href=https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}">
+         Facebook
+      </a>
+
+      <!-- SHARE HỆ THỐNG (ANDROID / IOS) -->
+      <a class="share"
+         href="javascript:void(0)"
+         onclick="navigator.share && navigator.share({ title:'${shareText}', url:'${url}' })">
+         Chia sẻ…
+      </a>
+    </div>
+  `;
 
   box.classList.remove("qr-hidden");
 }
