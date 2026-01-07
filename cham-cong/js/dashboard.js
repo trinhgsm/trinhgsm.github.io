@@ -9,23 +9,10 @@ const API_URL =
 let projectChart = null;
 let unitOverviewChart = null;
 let SITE_MAP = {};
-document.body.classList.remove("app-locked");
-document.dispatchEvent(new Event("app-unlocked"));
-
 /* =========================================================
    🔴 TRUNG TÂM QUẢN LÝ NÚT SHEET (DUY NHẤT)
    ========================================================= */
 function updateOpenSheetBtnVisibility() {
-  const btn = document.getElementById("openSheetBtn");
-  if (!btn) return;
-
-  const loadingVisible =
-    document.getElementById("loadingOverlay")?.classList.contains("show");
-
-  const sheetOpen =
-    document.body.classList.contains("sheet-open");
-
-  function updateOpenSheetBtnVisibility() {
   const btn = document.getElementById("openSheetBtn");
   if (!btn) return;
 
@@ -44,7 +31,6 @@ function updateOpenSheetBtnVisibility() {
     btn.style.display = "";
   }
 }
-
 
 /* =========================================================
    LOAD DASHBOARD
