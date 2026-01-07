@@ -21,10 +21,7 @@
   window.openSheetOverlay = async function () {
   if (!overlay) createOverlay();
 
-  // ✅ HIỆN MENU NGAY LẬP TỨC
-  overlay.classList.add("show-menu");
-
-  // 🔔 BÁO DASHBOARD
+  // ❗ CHƯA SHOW overlay
   document.dispatchEvent(new Event("sheet-overlay-open"));
 
   await loadFileList();
@@ -32,11 +29,11 @@
 
 
   function closeOverlay() {
-  overlay.classList.remove("show");
-  overlay.classList.remove("show-menu");
+    overlay.classList.remove("show");
 
-  document.dispatchEvent(new Event("sheet-overlay-close"));
-}
+    // 🔔 BÁO DASHBOARD: SHEET ĐÃ ĐÓNG
+    document.dispatchEvent(new Event("sheet-overlay-close"));
+  }
 
   /* ================= DOM ================= */
   function createOverlay() {
