@@ -18,15 +18,17 @@
     zoomLevel = window.innerWidth < 768 ? 0.72 : 0.85;
 
   /* ================= OPEN ================= */
-  window.openSheetOverlay = async function () {
+  window.openSheetOverlay = function () {
   if (!overlay) createOverlay();
 
-  // ❗ CHƯA SHOW overlay
+  // 🔴 HIỆN MENU NGAY LẬP TỨC
+  overlay.classList.add("show-menu");
+
   document.dispatchEvent(new Event("sheet-overlay-open"));
 
-  await loadFileList();
+  // 🔵 LOAD SHEET NỀN – KHÔNG BLOCK MENU
+  loadFileList();
 };
-
 
   function closeOverlay() {
     overlay.classList.remove("show");
