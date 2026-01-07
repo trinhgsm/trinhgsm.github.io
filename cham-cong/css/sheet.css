@@ -118,7 +118,7 @@
     border-radius: 12px 0 0 12px;
 
     /* ẩn nhẹ */
-    opacity: 0.35;
+    
     transition: opacity 0.25s;
   }
 
