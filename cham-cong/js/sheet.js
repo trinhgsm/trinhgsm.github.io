@@ -170,14 +170,16 @@
   }
 
   function openSheetTab(gid) {
-  // ẨN PANEL SHEET
+  // 1. Ẩn panel trước
   overlay.classList.remove("show");
 
+  // 2. Set iframe
   iframe.src = buildEmbedUrl(currentFileId, gid);
 
+  // 3. Khi sheet load xong → mới hiện
   iframe.onload = () => {
     fitSheetToScreen();
-    overlay.classList.add("show"); // CHỈ LÚC NÀY SHEET MỚI HIỆN
+    overlay.classList.add("show"); // ✅ lúc này mới trượt lên
   };
 }
 
