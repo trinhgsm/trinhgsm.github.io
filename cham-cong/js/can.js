@@ -11,9 +11,20 @@ const DASH_API =
 /* =====================================================
    UTIL
    ===================================================== */
-function getQueryParam(name) {
-  return new URLSearchParams(window.location.search).get(name);
+function getMaCan() {
+  const qs = new URLSearchParams(window.location.search).get("ma");
+  if (qs) return qs;
+
+  // fallback: #/HP823 hoặc #HP823
+  if (location.hash) {
+    return location.hash.replace("#", "").replace("/", "");
+  }
+
+  // fallback: /can.html/HP823
+  const parts = location.pathname.split("/");
+  return parts.length > 1 ? parts.pop() : null;
 }
+
 
 function fmtDate(d) {
   if (!d) return "-";
