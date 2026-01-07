@@ -1,6 +1,9 @@
 const DASH_API =
   "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
-
+const m1e1 = document.getElementById("manager1");
+const m2e2 = document.getElementById("manager2");
+const p1   = document.getElementById("phone1");
+const p2   = document.getElementById("phone2");
 let chart = null;
 
 /* ========= UTIL ========= */
