@@ -749,6 +749,7 @@ document.addEventListener("sheet-overlay-close", () => {
   document.body.classList.remove("sheet-open");
   updateOpenSheetBtnVisibility();
 });
+//qr
 function toggleCardQR(btn) {
   const card = btn.closest(".card");
   if (!card) return;
@@ -756,7 +757,7 @@ function toggleCardQR(btn) {
   const box = card.querySelector(".qr-box");
   if (!box) return;
 
-  // nếu đang mở → đóng
+  // đang mở → đóng
   if (!box.classList.contains("qr-hidden")) {
     box.classList.add("qr-hidden");
     box.innerHTML = "";
@@ -774,11 +775,30 @@ function toggleCardQR(btn) {
   const url = `${base}can.html?ma=${encodeURIComponent(maCan)}`;
 
   box.innerHTML = `
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">
-    <div style="font-size:0.65rem;opacity:.7;margin-top:4px">
-      ${maCan}
+    <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}"
+      alt="QR ${maCan}"
+    >
+
+    <div class="qr-macan">${maCan}</div>
+
+    <div class="qr-actions">
+      <a class="open" target="_blank" href="${url}">
+        🔗 Mở link
+      </a>
+
+      <a class="zalo" target="_blank"
+         href="https://zalo.me/share?url=${encodeURIComponent(url)}">
+        Zalo
+      </a>
+
+      <a class="fb" target="_blank"
+         href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}">
+        Facebook
+      </a>
     </div>
   `;
+
   box.classList.remove("qr-hidden");
 }
 // 🚀 BẮT ĐẦU LOAD DASHBOARD
