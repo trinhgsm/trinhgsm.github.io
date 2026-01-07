@@ -32,7 +32,7 @@
 
   function closeOverlay() {
     overlay.classList.remove("show");
-
+    overlay.classList.remove("show-menu"); // 🔴 BẮT BUỘC
     // 🔔 BÁO DASHBOARD: SHEET ĐÃ ĐÓNG
     document.dispatchEvent(new Event("sheet-overlay-close"));
   }
