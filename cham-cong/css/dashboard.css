@@ -550,7 +550,7 @@ header.top #genTime {
   top: 3px;          /* 👈 sát mép trên */
   right: 8px;        /* 👈 sát mép phải */
 
-  padding: 3px 8px;
+  padding: 6px 8px;
   font-size: 0.65rem;
   border-radius: 999px;
 
