@@ -547,7 +547,7 @@ header.top #genTime {
 /* ===== NÚT QR ===== */
 .btn-qr {
   position: absolute;
-  top: 6px;          /* 👈 sát mép trên */
+  top: 3px;          /* 👈 sát mép trên */
   right: 8px;        /* 👈 sát mép phải */
 
   padding: 3px 8px;
