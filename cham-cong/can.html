@@ -1,72 +1,69 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Tiến độ công trình</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <title>Tiến độ công trình</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="css/can.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <link rel="stylesheet" href="can.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
+<div class="wrap">
 
-<header class="top">
-  <div class="title">TIẾN ĐỘ CÔNG TRÌNH</div>
-  <div id="ticker" class="ticker"></div>
-</header>
+  <header class="header">
+    <h1>TIẾN ĐỘ CÔNG TRÌNH</h1>
+    <div class="marquee">
+      <span id="tickerText">Đang tải dữ liệu...</span>
+    </div>
+    <div class="macan" id="maCanText">Mã căn: --</div>
+  </header>
 
-<main class="wrap">
-
-  <h1 id="maCan">Mã căn: --</h1>
-
-  <section class="status-card">
+  <section class="card big">
     <div class="percent" id="percent">--%</div>
-    <div class="status-text" id="statusText">Đang tải...</div>
-    <div class="updated" id="updatedAt">--</div>
+    <div class="status-text" id="statusText">--</div>
+    <div class="update-time" id="updateTime">Cập nhật: --</div>
   </section>
 
   <section class="grid">
-    <div class="box">Bắt đầu<br><b id="startDate">--</b></div>
-    <div class="box">Dự kiến hoàn thành<br><b id="endDate">--</b></div>
-    <div class="box">Công<br><b><span id="actualCong">0</span>/<span id="plannedCong">0</span></b></div>
-    <div class="box" id="siteStatus">--</div>
+    <div class="card"><label>Bắt đầu</label><div id="startDate">--</div></div>
+    <div class="card"><label>Dự kiến hoàn thành</label><div id="endDate">--</div></div>
+    <div class="card"><label>Công</label><div id="congText">--</div></div>
+    <div class="card"><label>Thi công</label><div id="siteStatus">--</div></div>
   </section>
 
-  <section class="managers">
-    <div>
-      <b>Chỉ huy trưởng</b><br>
-      <span id="manager1">--</span><br>
-      <a id="phone1"></a>
+  <section class="grid">
+    <div class="card">
+      <label>Chỉ huy trưởng</label>
+      <div id="manager1">--</div>
+      <a id="phone1" class="phone" href="#">--</a>
     </div>
-    <div>
-      <b>Trợ lý</b><br>
-      <span id="manager2">--</span><br>
-      <a id="phone2"></a>
+    <div class="card">
+      <label>Trợ lý</label>
+      <div id="manager2">--</div>
+      <a id="phone2" class="phone" href="#">--</a>
     </div>
   </section>
 
-  <section class="charts">
-    <canvas id="progressChart"></canvas>
+  <section class="card">
     <canvas id="teamChart"></canvas>
   </section>
 
-  <section class="log">
-    <h2>NHẬT KÝ GẦN NHẤT</h2>
+  <section class="card">
+    <h3>NHẬT KÝ GẦN NHẤT</h3>
     <ul id="logList"></ul>
   </section>
 
   <section class="actions">
     <button onclick="window.print()">In</button>
-    <button onclick="makeQR()">Mã QR</button>
+    <button onclick="toggleQR()">Mã QR</button>
   </section>
 
-  <div id="qrBox"></div>
+  <div id="qrBox" class="qr-box hidden"></div>
 
-</main>
+</div>
 
-<script src="js/can.js"></script>
+<script src="can.js"></script>
 </body>
 </html>
