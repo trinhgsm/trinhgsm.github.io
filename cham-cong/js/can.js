@@ -1,97 +1,117 @@
-const API =
-"https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
+const DASH_API =
+  "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
 
-function qs(id){ return document.getElementById(id); }
+let chart = null;
 
+/* ========= UTIL ========= */
 function getMaCan(){
-  return new URLSearchParams(location.search).get("ma");
+  const p = new URLSearchParams(location.search).get("ma");
+  return p ? p.toUpperCase() : null;
+}
+function fmtDate(d){
+  if(!d) return "--";
+  const [y,m,dd]=d.split("-");
+  return `${dd}-${m}-${y}`;
 }
 
+/* ========= LOAD ========= */
 async function loadCan(){
-  const ma = getMaCan();
-  if(!ma){ document.body.innerHTML="❌ Thiếu mã căn"; return; }
+  const maCan = getMaCan();
+  if(!maCan){
+    document.body.innerHTML="❌ Thiếu mã căn (?ma=)";
+    return;
+  }
 
-  const res = await fetch(API);
+  const res = await fetch(DASH_API);
   const data = await res.json();
+  const unit = data.units.find(u=>u.maCan.toUpperCase()===maCan);
 
-  const u = data.units.find(x=>x.maCan.toLowerCase()===ma.toLowerCase());
-  if(!u){ document.body.innerHTML="❌ Không tìm thấy căn"; return; }
-
-  const site = data.sites?.[u.maCan];
-
-  qs("maCan").textContent = "Mã căn: " + u.maCan;
-  qs("percent").textContent = (u.percent||0) + "%";
-  qs("statusText").textContent = u.statusText||"--";
-  qs("updatedAt").textContent = "Cập nhật: " + (u.updatedAt||"--");
-
-  qs("startDate").textContent = u.start||"--";
-  qs("endDate").textContent = u.end||"--";
-  qs("actualCong").textContent = u.actualCong||0;
-  qs("plannedCong").textContent = u.plannedCong||0;
-
-  qs("manager1").textContent = u.manager1||"--";
-  qs("manager2").textContent = u.manager2||"--";
-
-  if(u.manager3){
-    qs("phone1").textContent = u.manager3;
-    qs("phone1").href = "tel:"+u.manager3;
-  }
-  if(u.manager4){
-    qs("phone2").textContent = u.manager4;
-    qs("phone2").href = "tel:"+u.manager4;
+  if(!unit){
+    document.body.innerHTML="❌ Không tìm thấy căn";
+    return;
   }
 
-  qs("siteStatus").textContent = site
-    ? (site.diffDays===0?"Hôm nay có thi công":site.diffDays+" ngày chưa thi công")
-    : "Chưa có dữ liệu thi công";
+  const site = data.sites ? data.sites[unit.maCan] : null;
 
-  qs("ticker").innerHTML = `
-    <span>
-      ${u.maCan}: ${qs("siteStatus").textContent}
-      ${site?.summary? " – "+site.summary:""}
-    </span>
+  document.getElementById("maCanText").textContent="Mã căn: "+unit.maCan;
+  document.getElementById("percent").textContent=(unit.percent||0)+"%";
+  document.getElementById("statusText").textContent=unit.statusText||"--";
+  document.getElementById("updateTime").textContent="Cập nhật: "+(data.generatedAt||"--");
+
+  document.getElementById("startDate").textContent=fmtDate(unit.start);
+  document.getElementById("endDate").textContent=fmtDate(unit.end);
+  document.getElementById("congText").textContent=
+    `${unit.actualCong||0}/${unit.plannedCong||0}`;
+
+  document.getElementById("siteStatus").textContent =
+    site
+      ? (site.diffDays===0 ? "Hôm nay có thi công" : site.diffDays+" ngày chưa thi công")
+      : "--";
+
+  /* ===== CHỈ HUY + ĐT ===== */
+  document.getElementById("manager1").textContent = unit.manager1 || "--";
+  document.getElementById("manager2").textContent = unit.manager2 || "--";
+
+  const p1 = document.getElementById("phone1");
+  const p2 = document.getElementById("phone2");
+
+  if(unit.phone1){
+    p1.textContent = unit.phone1;
+    p1.href = "tel:"+unit.phone1;
+  }else p1.textContent="--";
+
+  if(unit.phone2){
+    p2.textContent = unit.phone2;
+    p2.href = "tel:"+unit.phone2;
+  }else p2.textContent="--";
+
+  /* ===== MARQUEE ===== */
+  document.getElementById("tickerText").textContent =
+    `${unit.maCan}: ${unit.percent||0}% – ${document.getElementById("siteStatus").textContent}`;
+
+  /* ===== LOG ===== */
+  document.getElementById("logList").innerHTML = `
+    <li>Tiến độ: ${unit.percent||0}%</li>
+    <li>Công: ${unit.actualCong||0}/${unit.plannedCong||0}</li>
+    <li>${unit.statusText||"--"}</li>
   `;
 
-  qs("logList").innerHTML = `
-    <li>Tiến độ: ${u.percent||0}%</li>
-    <li>Công: ${u.actualCong||0}/${u.plannedCong||0}</li>
-    <li>${u.statusText||""}</li>
-  `;
-
-  drawCharts(u);
+  drawChart(unit.byTeam||{});
 }
 
-function drawCharts(u){
-  new Chart(qs("progressChart"),{
-    type:"doughnut",
+/* ========= CHART ========= */
+function drawChart(byTeam){
+  const ctx = document.getElementById("teamChart");
+  if(chart) chart.destroy();
+
+  chart = new Chart(ctx,{
+    type:"bar",
     data:{
-      labels:["Hoàn thành","Còn lại"],
+      labels:Object.keys(byTeam),
       datasets:[{
-        data:[u.percent||0,100-(u.percent||0)],
-        backgroundColor:["#22c55e","#1e293b"]
+        label:"Công theo tổ",
+        data:Object.values(byTeam),
+        backgroundColor:"#38bdf8"
       }]
     },
-    options:{plugins:{legend:{display:false}}}
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      scales:{y:{beginAtZero:true}}
+    }
   });
+}
 
-  if(u.byTeam){
-    new Chart(qs("teamChart"),{
-      type:"bar",
-      data:{
-        labels:Object.keys(u.byTeam),
-        datasets:[{
-          data:Object.values(u.byTeam),
-          backgroundColor:"#38bdf8"
-        }]
-      },
-      options:{plugins:{legend:{display:false}}}
-    });
+/* ========= QR ========= */
+function toggleQR(){
+  const box=document.getElementById("qrBox");
+  if(!box.classList.contains("hidden")){
+    box.classList.add("hidden");
+    return;
   }
+  const url=location.href;
+  box.innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">`;
+  box.classList.remove("hidden");
 }
 
-function makeQR(){
-  qs("qrBox").innerHTML="";
-  new QRCode(qs("qrBox"), location.href);
-}
-
-document.addEventListener("DOMContentLoaded", loadCan);
+document.addEventListener("DOMContentLoaded",loadCan);
