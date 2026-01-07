@@ -11,6 +11,10 @@ const DASH_API =
 /* =====================================================
    UTIL
    ===================================================== */
+function getQueryParam(key) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(key);
+}
 function getMaCan() {
   const qs = new URLSearchParams(window.location.search).get("ma");
   if (qs) return qs;
