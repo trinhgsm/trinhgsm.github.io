@@ -50,66 +50,34 @@ async function loadCan(){
     site
       ? (site.diffDays===0 ? "Hôm nay có thi công" : site.diffDays+" ngày chưa thi công")
       : "--";
+/* ===== CHỈ HUY + TRỢ LÝ + SĐT (THEO API) ===== */
 
-  /* ===== CHỈ HUY + TRỢ LÝ + SĐT ===== */
+const m1 = document.getElementById("manager1");
+const m2 = document.getElementById("manager2");
+const p1 = document.getElementById("manager1Phone");
+const p2 = document.getElementById("manager2Phone");
 
-document.getElementById("manager1").textContent =
-  unit.manager1 || "--";
+// --- CHỈ HUY ---
+m1.textContent = unit.manager1 || "--";
 
-document.getElementById("manager2").textContent =
-  unit.manager2 || "--";
-
-// --- PHONE 1 ---
-const m1p = document.getElementById("manager1Phone");
 if (unit.manager1Phone) {
-  m1p.textContent = "📞 " + unit.manager1Phone;
-  m1p.href = "tel:" + unit.manager1Phone;
-  m1p.style.display = "inline-block";
+  p1.textContent = unit.manager1Phone;
+  p1.href = "tel:" + unit.manager1Phone;
+  p1.style.display = "inline-flex";
 } else {
-  m1p.style.display = "none";
+  p1.style.display = "none";
 }
 
-// --- PHONE 2 ---
-const m2p = document.getElementById("manager2Phone");
+// --- TRỢ LÝ ---
+m2.textContent = unit.manager2 || "--";
+
 if (unit.manager2Phone) {
-  m2p.textContent = "📞 " + unit.manager2Phone;
-  m2p.href = "tel:" + unit.manager2Phone;
-  m2p.style.display = "inline-block";
+  p2.textContent = unit.manager2Phone;
+  p2.href = "tel:" + unit.manager2Phone;
+  p2.style.display = "inline-flex";
 } else {
-  m2p.style.display = "none";
+  p2.style.display = "none";
 }
-
-/*
-  API hiện trả về:
-  unit.manager1 = "KTS Kiên 0912876678"
-  unit.manager2 = "Trợ lý A 0987xxxx"
-*/
-
-function renderManager(el, value) {
-  if (!el) return;
-
-  if (!value) {
-    el.textContent = "—";
-    return;
-  }
-
-  // tách số điện thoại trong chuỗi (09xxxxxxxx, 03, 07, 08…)
-  const phoneMatch = value.match(/(0[0-9]{8,10})/);
-  const phone = phoneMatch ? phoneMatch[1] : null;
-  const name = phone ? value.replace(phone, "").trim() : value;
-
-  if (phone) {
-    el.innerHTML = `
-      <span class="manager-name">${name}</span>
-      <a class="manager-phone" href="tel:${phone}">📞 ${phone}</a>
-    `;
-  } else {
-    el.textContent = name;
-  }
-}
-
-renderManager(m1El, unit.manager1);
-renderManager(m2El, unit.manager2);
 
   /* ===== MARQUEE ===== */
   document.getElementById("tickerText").textContent =
