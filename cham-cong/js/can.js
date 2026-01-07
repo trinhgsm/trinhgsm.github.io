@@ -1,91 +1,189 @@
+/************************************************************
+ * CAN VIEW – FULL LOGIC (TEAM + SITE + TIME)
+ ************************************************************/
+
 const DASH_API =
-"https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
+  "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
 
-const qs = s => document.querySelector(s);
+const $ = s => document.querySelector(s);
 
-function getMaCan(){
-  const p=new URLSearchParams(location.search).get("ma");
-  if(p) return p;
-  if(location.hash) return location.hash.replace("#","").replace("/","");
+/* =====================================================
+   UTIL
+   ===================================================== */
+function getMaCan() {
+  const qs = new URLSearchParams(location.search).get("ma");
+  if (qs) return qs;
+
+  if (location.hash) {
+    return location.hash.replace("#", "").replace("/", "");
+  }
   return null;
 }
 
-function fmtDate(d){
-  if(!d) return "--";
-  const [y,m,dd]=d.split("-");
-  return `${dd}-${m}-${y}`;
+function fmtDate(d) {
+  if (!d) return "--";
+  const [y, m, day] = d.split("-");
+  return `${day}-${m}-${y}`;
 }
 
-async function loadCan(){
-  const maCan=getMaCan();
-  if(!maCan){
-    document.body.innerHTML="❌ Thiếu mã căn (?ma=)";
+function fmtDateTime(ts) {
+  if (!ts) return "--";
+  const d = new Date(ts);
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  const MM = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+  return `${hh}:${mm} ${dd}/${MM}/${yyyy}`;
+}
+
+/* =====================================================
+   LOAD
+   ===================================================== */
+async function loadCan() {
+  const maCan = getMaCan();
+
+  if (!maCan) {
+    document.body.innerHTML = "❌ Thiếu mã căn (?ma=)";
     return;
   }
 
-  const res=await fetch(DASH_API);
-  const data=await res.json();
-  const u=data.units.find(x=>x.maCan.toLowerCase()===maCan.toLowerCase());
-  if(!u){
-    document.body.innerHTML="❌ Không tìm thấy căn";
-    return;
-  }
+  try {
+    const res = await fetch(DASH_API);
+    const data = await res.json();
 
-  render(u,data.sites||{});
+    if (!data || !data.units) throw new Error("No data");
+
+    const unit = data.units.find(
+      u => u.maCan.toLowerCase() === maCan.toLowerCase()
+    );
+
+    if (!unit) {
+      document.body.innerHTML = `❌ Không tìm thấy căn ${maCan}`;
+      return;
+    }
+
+    renderCan(unit, data.sites || {});
+  } catch (err) {
+    console.error(err);
+    document.body.innerHTML = "❌ Lỗi tải dữ liệu";
+  }
 }
 
-function render(u,siteMap){
-  qs("#canMa").textContent="Mã căn: "+u.maCan;
+/* =====================================================
+   RENDER
+   ===================================================== */
+function renderCan(u, siteMap) {
+  /* ===== HEADER ===== */
+  $("#canMa").textContent = "Mã căn: " + u.maCan;
 
-  const deg=(u.percent||0)*3.6;
-  qs("#progressCircle").style.background=
+  /* ===== PERCENT CIRCLE ===== */
+  const percent = u.percent || 0;
+  const deg = percent * 3.6;
+
+  $("#progressCircle").style.background =
     `conic-gradient(#22c55e ${deg}deg,#1e293b ${deg}deg)`;
-  qs("#circleText").textContent=(u.percent||0)+"%";
 
-  const badge=
-    u.level>=3?"badge-danger":
-    u.level===2?"badge-warn":"badge-ok";
-  qs("#statusText").className="badge "+badge;
-  qs("#statusText").textContent=u.statusText||"--";
+  $("#circleText").textContent = percent + "%";
 
-  qs("#startDate").textContent=fmtDate(u.start);
-  qs("#endDate").textContent=fmtDate(u.end);
-  qs("#actualCong").textContent=u.actualCong||0;
-  qs("#plannedCong").textContent=u.plannedCong||0;
+  /* ===== STATUS ===== */
+  const badge =
+    u.level >= 3 ? "badge-danger"
+    : u.level === 2 ? "badge-warn"
+    : "badge-ok";
 
-  const p=u.plannedCong?Math.round(u.actualCong/u.plannedCong*100):0;
-  qs("#barDone").style.width=p+"%";
+  $("#statusText").className = "badge " + badge;
+  $("#statusText").textContent = u.statusText || "—";
 
-  const site=siteMap[u.maCan];
-  qs("#siteStatus").textContent=
-    site
-      ?(site.diffDays===0?"Hôm nay có thi công":site.diffDays+" ngày chưa thi công")
-      :"Chưa có dữ liệu thi công";
+  $("#updateTime").textContent =
+    "Cập nhật: " + fmtDateTime(u.updatedAt || u.generatedAt);
 
-  qs("#logList").innerHTML=`
-    <li>Tiến độ: ${u.percent||0}%</li>
-    <li>Công: ${u.actualCong||0}/${u.plannedCong||0}</li>
-    <li>${u.statusText||""}</li>
-  `;
+  /* ===== DATE ===== */
+  $("#startDate").textContent = fmtDate(u.start);
+  $("#endDate").textContent = fmtDate(u.end);
 
-  const shareURL=location.href;
-  qs("#qrImg").src=
-    "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="
-    +encodeURIComponent(shareURL);
+  /* ===== CONG ===== */
+  $("#actualCong").textContent = u.actualCong ?? 0;
+  $("#plannedCong").textContent = u.plannedCong ?? 0;
 
-  qs("#zaloShare").href=
-    "https://zalo.me/share?url="+encodeURIComponent(shareURL);
+  const congPercent = u.plannedCong
+    ? Math.round((u.actualCong / u.plannedCong) * 100)
+    : 0;
 
-  qs("#tickerText").textContent=
-    `${u.maCan} – ${u.percent}% – ${u.statusText} – Công ${u.actualCong}/${u.plannedCong}`;
+  $("#barDone").style.width = congPercent + "%";
+
+  /* ===== SITE STATUS ===== */
+  const site = siteMap[u.maCan];
+  let siteText = "Chưa có dữ liệu thi công";
+
+  if (site) {
+    if (site.diffDays === 0) {
+      siteText = "Hôm nay có thi công";
+    } else if (site.diffDays === 1) {
+      siteText = "Hôm qua có thi công";
+    } else {
+      siteText = site.diffDays + " ngày chưa thi công";
+    }
+
+    if (site.summary) {
+      siteText += " – " + site.summary;
+    }
+  }
+
+  $("#siteStatus").textContent = siteText;
+
+  /* ===== TEAM LIST ===== */
+  const teams = u.byTeam || {};
+  const teamNames = Object.keys(teams);
+
+  /* ===== LOG LIST ===== */
+  const log = [];
+  log.push(`Tiến độ: ${percent}%`);
+  log.push(`Công: ${u.actualCong}/${u.plannedCong}`);
+
+  if (teamNames.length) {
+    teamNames.forEach(t => {
+      log.push(`Tổ ${t.toUpperCase()}: ${teams[t]} công`);
+    });
+  }
+
+  $("#logList").innerHTML = log.map(x => `<li>${x}</li>`).join("");
+
+  /* ===== TICKER ===== */
+  let ticker = `${u.maCan} – ${percent}% – ${u.statusText}`;
+
+  if (teamNames.length) {
+    ticker += " | ";
+    ticker += teamNames
+      .map(t => `Tổ ${t.toUpperCase()}: ${teams[t]}c`)
+      .join(" • ");
+  }
+
+  $("#tickerText").textContent = ticker;
+
+  /* ===== QR + ZALO ===== */
+  const url = location.href;
+
+  $("#qrImg").src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" +
+    encodeURIComponent(url);
+
+  $("#zaloShare").href =
+    "https://zalo.me/share?url=" + encodeURIComponent(url);
 }
 
-function toggleQR(){
-  qs("#qrBox").classList.toggle("hidden");
+/* =====================================================
+   ACTION
+   ===================================================== */
+function toggleQR() {
+  $("#qrBox").classList.toggle("hidden");
 }
 
-function exportPDF(){
+function exportPDF() {
   window.print();
 }
 
-document.addEventListener("DOMContentLoaded",loadCan);
+/* =====================================================
+   START
+   ===================================================== */
+document.addEventListener("DOMContentLoaded", loadCan);
