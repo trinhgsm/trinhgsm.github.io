@@ -100,3 +100,29 @@ button:hover{background:#0f172a}
 @media(max-width:600px){
   .percent{font-size:36px}
 }
+.footer{
+  margin-top:20px;
+  padding:10px 12px;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:12px;
+  opacity:.7;
+}
+
+.footer-left{
+  text-align:left;
+}
+
+.footer-right{
+  text-align:right;
+}
+
+@media(max-width:600px){
+  .footer{
+    flex-direction:column;
+    gap:4px;
+    text-align:center;
+  }
+}
