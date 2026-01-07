@@ -20,7 +20,7 @@
   /* ================= OPEN ================= */
   window.openSheetOverlay = async function () {
   if (!overlay) createOverlay();
-overlay.classList.add("show-menu"); // ✅ MENU HIỆN NGAY
+
   // ❗ CHƯA SHOW overlay
   document.dispatchEvent(new Event("sheet-overlay-open"));
 
@@ -30,7 +30,7 @@ overlay.classList.add("show-menu"); // ✅ MENU HIỆN NGAY
 
   function closeOverlay() {
     overlay.classList.remove("show");
-overlay.classList.remove("show-menu"); // ✅ dọn menu
+
     // 🔔 BÁO DASHBOARD: SHEET ĐÃ ĐÓNG
     document.dispatchEvent(new Event("sheet-overlay-close"));
   }
