@@ -1,57 +1,68 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <title>Tiến độ công trình</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="css/can.css" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="can.css" />
 </head>
-
 <body>
-  <div class="can-wrap">
 
-    <h1>TIẾN ĐỘ CÔNG TRÌNH</h1>
-    <div class="can-ma">Mã căn: --</div>
+<div class="ticker">
+  <span id="tickerText">Đang tải...</span>
+</div>
 
-    <div class="status-box">
-      <div class="status-percent">--%</div>
-      <div class="status-text">Đang tải...</div>
-      <div class="status-time">Cập nhật: --</div>
-    </div>
+<div class="wrap">
 
-    <div class="timeline">
-      <div>
-        <span>Bắt đầu</span>
-        <strong id="startDate">--/--/----</strong>
-      </div>
-      <div>
-        <span>Dự kiến hoàn thành</span>
-        <strong id="endDate">--/--/----</strong>
-      </div>
-    </div>
+  <h1>TIẾN ĐỘ CÔNG TRÌNH</h1>
+  <div class="can-ma" id="canMa">Mã căn: --</div>
 
-    <div class="work-box">
-      Công: <span id="actualCong">0</span> /
-      <span id="plannedCong">0</span>
-    </div>
-
-    <div class="site-status" id="siteStatus">
-      Đang tải tình trạng thi công...
-    </div>
-
-    <div class="log-box">
-      <h3>NHẬT KÝ GẦN NHẤT</h3>
-      <ul id="logList"></ul>
-    </div>
-
-    <div class="actions">
-      <button onclick="window.print()">In</button>
-      <button onclick="alert('PDF sẽ làm sau')">Tải PDF</button>
-      <button onclick="alert('QR sẽ làm sau')">Mã QR</button>
-    </div>
-
+  <!-- VÒNG % -->
+  <div class="circle" id="progressCircle">
+    <span id="circleText">0%</span>
   </div>
 
-  <script src="js/can.js"></script>
+  <div class="status">
+    <span id="statusText" class="badge badge-ok">--</span>
+    <div class="update" id="updateTime">Cập nhật --</div>
+  </div>
+
+  <!-- THỜI GIAN -->
+  <div class="row">
+    <div>Bắt đầu: <b id="startDate">--</b></div>
+    <div>Dự kiến xong: <b id="endDate">--</b></div>
+  </div>
+
+  <!-- CÔNG -->
+  <div class="row">
+    Công: <b id="actualCong">0</b> / <b id="plannedCong">0</b>
+  </div>
+
+  <div class="bar">
+    <div id="barDone"></div>
+  </div>
+
+  <!-- THI CÔNG -->
+  <div class="site" id="siteStatus">--</div>
+
+  <!-- NHẬT KÝ -->
+  <h3>NHẬT KÝ GẦN NHẤT</h3>
+  <ul id="logList"></ul>
+
+  <!-- ACTION -->
+  <div class="actions">
+    <button onclick="window.print()">In</button>
+    <button onclick="exportPDF()">Tải PDF</button>
+    <button onclick="toggleQR()">Mã QR</button>
+  </div>
+
+  <div id="qrBox" class="qr-box hidden">
+    <img id="qrImg" />
+    <a id="zaloShare" target="_blank">Chia sẻ Zalo</a>
+  </div>
+
+</div>
+
+<script src="can.js"></script>
 </body>
 </html>
