@@ -113,5 +113,13 @@ function toggleQR(){
   box.innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">`;
   box.classList.remove("hidden");
 }
+/* ========= FOOTER ========= */
+document.addEventListener("DOMContentLoaded", () => {
+  const y = document.getElementById("year");
+  if (y) y.textContent = new Date().getFullYear();
 
+  // đổi phiên bản tại đây
+  const v = document.getElementById("appVersion");
+  if (v) v.textContent = "v1.0.1";
+});
 document.addEventListener("DOMContentLoaded",loadCan);
