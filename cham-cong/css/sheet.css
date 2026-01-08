@@ -9,12 +9,33 @@
    OVERLAY
    ========================================================= */
 #sheetOverlay {
-  pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 999;
+
   pointer-events: none;
+  isolation: isolate;   /* 🔴 TẠO STACKING CONTEXT */
 }
+/* ===== BACKDROP SAU SHEET ===== */
+#sheetOverlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  background: rgba(2, 6, 23, 0.55);
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+/* khi sheet trồi lên */
+#sheetOverlay.show::before {
+  opacity: 1;
+}
+
 /*sheetOverlay:not(.show) .sheet-menu {
   display: none;
 }*/
