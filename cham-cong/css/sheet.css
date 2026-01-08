@@ -152,7 +152,7 @@ header.top {
     display: flex;
     align-items: center;
     justify-content: space-between; /* 🔴 CHỐT */
-    padding: 0 16px;               /* tạo khoảng thở 2 mép */
+    padding: 0 16px;
   }
 
   header.top .title {
@@ -164,8 +164,8 @@ header.top {
   header.top #genTime {
     white-space: nowrap;
     text-align: right;
-    flex-shrink: 0;                /* 🔴 không bị co */
   }
+}
   /* mờ nhẹ khi không hover */
   #sheetOverlay.show-menu .sheet-menu {
     opacity: 0.35;
