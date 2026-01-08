@@ -24,6 +24,18 @@
 #sheetOverlay.show-menu {
   pointer-events: auto;
 }
+/* ===== BACKDROP NỀN SAU SHEET ===== */
+#sheetOverlay::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55); /* nền tối */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
 /* =========================================================
    PANEL
    ========================================================= */
