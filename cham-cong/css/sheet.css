@@ -22,7 +22,8 @@
   position: fixed;
   inset: 0;
 
-  background: rgba(2, 6, 23, 0.55);
+  background: #020617;   /* hoặc màu bạn muốn */
+
   opacity: 0;
 
   transition: opacity 0.3s ease;
