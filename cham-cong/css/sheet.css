@@ -16,14 +16,17 @@
   pointer-events: none;
   isolation: isolate;   /* 🔴 TẠO STACKING CONTEXT */
 }
-/* ===== BACKDROP SAU SHEET ===== */
+/* ===== BACKDROP CHE SAU TICKER ===== */
 #sheetOverlay::before {
   content: "";
   position: fixed;
-  inset: 0;
 
-  background: #020617;   /* hoặc màu bạn muốn */
+  top: 42px;          /* 🔴 CHUI SAU CHỮ TRÔI */
+  left: 0;
+  right: 0;
+  bottom: 0;
 
+  background: #020617;   /* che kín phía sau sheet */
   opacity: 0;
 
   transition: opacity 0.3s ease;
@@ -35,7 +38,9 @@
 /* khi sheet trồi lên */
 #sheetOverlay.show::before {
   opacity: 1;
+  pointer-events: auto;
 }
+
 
 /*sheetOverlay:not(.show) .sheet-menu {
   display: none;
