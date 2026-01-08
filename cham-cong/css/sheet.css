@@ -151,20 +151,20 @@
 header.top {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* 🔴 CHỐT */
-    padding: 0 16px;               /* tạo khoảng thở 2 mép */
+    padding: 0 16px;
   }
 
   header.top .title {
+    flex: 1;                     /* 🔴 CHÌA KHOÁ */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   header.top #genTime {
+    flex-shrink: 0;              /* 🔴 KHÔNG BỊ ÉP */
     white-space: nowrap;
     text-align: right;
-    flex-shrink: 0;                /* 🔴 không bị co */
   }
   /* mờ nhẹ khi không hover */
   #sheetOverlay.show-menu .sheet-menu {
