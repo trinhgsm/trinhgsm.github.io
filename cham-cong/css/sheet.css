@@ -165,7 +165,7 @@ header.top {
     white-space: nowrap;
     text-align: right;
   }
-}
+
   /* mờ nhẹ khi không hover */
   #sheetOverlay.show-menu .sheet-menu {
     opacity: 0.35;
