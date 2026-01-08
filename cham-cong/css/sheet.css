@@ -106,9 +106,9 @@
    ========================================================= */
 @media (min-width: 769px) {
   .sheet-menu {
-    top: 50%;
-    right: 6px;
-    transform: translateY(-50%);
+    top: 72px;              /* 🔴 ĐẨY LÊN TRÊN */
+    right: 8px;
+    transform: none;        /* 🔴 BỎ căn giữa */
 
     display: flex;
     flex-direction: column;
@@ -117,17 +117,17 @@
     padding: 8px;
     border-radius: 12px 0 0 12px;
 
-    /* ẩn nhẹ */
-    
+    max-width: 190px;
     transition: opacity 0.25s;
   }
 
-  .sheet-menu:hover {
-    opacity: 1;
+  /* mờ nhẹ khi không hover */
+  #sheetOverlay.show-menu .sheet-menu {
+    opacity: 0.35;
   }
 
-  .sheet-menu select {
-    width: 160px;
+  #sheetOverlay.show-menu .sheet-menu:hover {
+    opacity: 1;
   }
 }
 
