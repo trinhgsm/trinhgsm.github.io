@@ -151,22 +151,20 @@
 header.top {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* 🔴 CHỐT */
+    padding: 0 16px;               /* tạo khoảng thở 2 mép */
   }
 
   header.top .title {
-    width: 50%;
-    flex-shrink: 0;          /* 🔴 CHỐT */
-    text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
   header.top #genTime {
-    width: 50%;
-    flex-shrink: 0;          /* 🔴 CHỐT */
-    text-align: right;
     white-space: nowrap;
+    text-align: right;
+    flex-shrink: 0;                /* 🔴 không bị co */
   }
   /* mờ nhẹ khi không hover */
   #sheetOverlay.show-menu .sheet-menu {
