@@ -284,3 +284,29 @@ header.top {
 .sheet-menu button {
   transition: background 0.15s ease, transform 0.1s ease;
 }
+/* ======================================
+   CSS-ONLY LOADING KHI SHEET TRỒI LÊN
+   ====================================== */
+
+/* khi bắt đầu trồi sheet */
+#sheetOverlay.show::after {
+  content: "Đang mở sheet…";
+  position: fixed;
+  top: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 12px;
+  color: #94a3b8;
+  pointer-events: none;
+
+  opacity: 0;
+  animation: sheetOpenHint 0.35s ease forwards;
+}
+
+@keyframes sheetOpenHint {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
