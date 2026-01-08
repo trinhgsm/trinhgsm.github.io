@@ -148,7 +148,24 @@
     max-width: 190px;
     transition: opacity 0.25s;
   }
+header.top {
+    display: flex;
+    align-items: center;
+  }
 
+  header.top .title {
+    width: 50%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  header.top #genTime {
+    width: 50%;
+    text-align: right;
+    white-space: nowrap;
+  }
   /* mờ nhẹ khi không hover */
   #sheetOverlay.show-menu .sheet-menu {
     opacity: 0.35;
