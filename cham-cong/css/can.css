@@ -1,32 +1,50 @@
+/* ================= ROOT ================= */
 :root{
   --bg:#020617;
   --card:#0f172a;
   --border:rgba(148,163,184,.25);
+
   --green:#22c55e;
   --yellow:#eab308;
   --red:#ef4444;
   --blue:#38bdf8;
+
+  --text:#e5e7eb;
 }
 
+/* ================= RESET ================= */
 *{box-sizing:border-box}
 
 body{
   margin:0;
   background:var(--bg);
-  color:#e5e7eb;
+  color:var(--text);
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
+/* ================= LAYOUT ================= */
 .wrap{
   max-width:1100px;
   margin:auto;
   padding:12px;
 }
 
-.header{text-align:center}
-.header h1{margin:4px 0;color:var(--blue)}
-.macan{opacity:.8;margin-bottom:6px}
+/* ================= HEADER ================= */
+.header{
+  text-align:center;
+}
 
+.header h1{
+  margin:4px 0;
+  color:var(--blue);
+}
+
+.macan{
+  opacity:.8;
+  margin-bottom:6px;
+}
+
+/* ================= MARQUEE ================= */
 .marquee{
   overflow:hidden;
   white-space:nowrap;
@@ -35,16 +53,19 @@ body{
   padding:6px 0;
   margin-bottom:8px;
 }
+
 .marquee span{
   display:inline-block;
   padding-left:100%;
-  animation:mar 18s linear infinite;
+  animation:marquee-run 18s linear infinite;
 }
-@keyframes mar{
+
+@keyframes marquee-run{
   from{transform:translateX(0)}
   to{transform:translateX(-100%)}
 }
 
+/* ================= CARD ================= */
 .card{
   background:var(--card);
   border:1px solid var(--border);
@@ -53,91 +74,139 @@ body{
   margin-bottom:10px;
 }
 
-.big{text-align:center}
-.percent{font-size:48px;color:var(--green);font-weight:700}
-.status-text{margin-top:4px}
-.update-time{font-size:12px;opacity:.7}
+/* ================= SUMMARY ================= */
+.big{
+  text-align:center;
+}
 
+.percent{
+  font-size:48px;
+  font-weight:700;
+  color:var(--green);
+}
+
+.status-text{
+  margin-top:4px;
+}
+
+.update-time{
+  font-size:12px;
+  opacity:.7;
+}
+
+/* ================= GRID ================= */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
   gap:8px;
 }
 
-label{font-size:12px;opacity:.7}
+label{
+  font-size:12px;
+  opacity:.7;
+}
 
+/* ================= PHONE ================= */
 .phone{
   display:block;
   margin-top:4px;
-  color:#38bdf8;
+  color:var(--blue);
   text-decoration:none;
 }
-.phone:hover{text-decoration:underline}
 
+.phone:hover{
+  text-decoration:underline;
+}
+
+/* ================= ACTIONS ================= */
 .actions{
   display:flex;
   gap:10px;
   justify-content:center;
   margin:12px 0;
 }
+
 button{
-  background:#020617;
-  color:#e5e7eb;
+  background:var(--bg);
+  color:var(--text);
   border:1px solid var(--border);
   padding:8px 14px;
   border-radius:8px;
   cursor:pointer;
 }
-button:hover{background:#0f172a}
 
+button:hover{
+  background:var(--card);
+}
+
+/* ================= QR ================= */
 .qr-box{
   display:flex;
   justify-content:center;
   margin-top:10px;
 }
-.hidden{display:none}
 
-@media(max-width:600px){
-  .percent{font-size:36px}
+.hidden{
+  display:none;
 }
+
+/* ================= FOOTER ================= */
 .footer{
   margin-top:20px;
   padding:10px 12px;
   border-top:1px solid var(--border);
+
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
+
   font-size:12px;
-  opacity:.7;
+  opacity:.75;
 }
 
-.footer-left{
-  text-align:left;
-}
-
+.footer-left,
 .footer-right{
-  text-align:right;
+  white-space:nowrap;
 }
 
+.footer .dev a{
+  color:var(--blue);
+  font-weight:600;
+  text-decoration:none;
+}
+
+.footer .dev a:hover{
+  text-decoration:underline;
+}
+
+/* ================= MANAGER ================= */
+.manager-name{
+  font-weight:600;
+}
+
+.manager-phone{
+  margin-left:8px;
+  color:var(--blue);
+  text-decoration:none;
+  font-weight:500;
+}
+
+.manager-phone:hover{
+  text-decoration:underline;
+}
+
+/* ================= MOBILE ================= */
 @media(max-width:600px){
+  .percent{font-size:36px}
+
   .footer{
     flex-direction:column;
     gap:4px;
     text-align:center;
   }
-}
-//tên sdt
-.manager-name {
-  font-weight: 600;
-}
 
-.manager-phone {
-  margin-left: 8px;
-  color: #38bdf8;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.manager-phone:hover {
-  text-decoration: underline;
+  .footer-left,
+  .footer-right{
+    white-space:normal;
+  }
 }
