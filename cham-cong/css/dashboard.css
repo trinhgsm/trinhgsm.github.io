@@ -684,11 +684,12 @@ header.top #genTime {
   align-items: center;
   justify-content: space-between;
 
-  padding: 8px 14px;
+  padding: 10px 14px;
   font-size: 0.7rem;
-  opacity: 0.65;
+  line-height: 1.4;
 
   border-top: 1px solid rgba(148,163,184,.15);
+  opacity: 0.85;
 }
 
 /* trái / phải */
@@ -697,18 +698,19 @@ header.top #genTime {
   white-space: nowrap;
 }
 
-/* link dev – dễ đọc hơn */
+/* ===== LINK DEV (HÀ TRỊNH) ===== */
 .footer .dev a {
-  color: #38bdf8;            /* xanh nhạt nổi trên nền tối */
+  color: #60a5fa;              /* xanh sáng hơn */
   font-weight: 600;
+  text-decoration: none;
 }
 
 .footer .dev a:hover {
-  color: #7dd3fc;            /* sáng hơn khi hover */
+  color: #93c5fd;
   text-decoration: underline;
 }
 
-/* ================= MOBILE ================= */
+/* ===== MOBILE ===== */
 @media (max-width: 768px) {
   .footer {
     flex-direction: column;
