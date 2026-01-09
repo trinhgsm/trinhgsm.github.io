@@ -46,10 +46,20 @@ async function loadCan(){
   document.getElementById("congText").textContent=
     `${unit.actualCong||0}/${unit.plannedCong||0}`;
 
-  document.getElementById("siteStatus").textContent =
-    site
-      ? (site.diffDays===0 ? "Hôm nay có thi công" : site.diffDays+" ngày chưa thi công")
-      : "--";
+  let siteStatusText = "--";
+
+if (site && typeof site.diffDays === "number") {
+  if (site.diffDays === 0) {
+    siteStatusText = "Hôm nay có thi công";
+  } else if (site.diffDays === 1) {
+    siteStatusText = "Hôm qua có thi công";
+  } else {
+    siteStatusText = site.diffDays + " ngày chưa thi công";
+  }
+}
+
+document.getElementById("siteStatus").textContent = siteStatusText;
+
 /* ===== CHỈ HUY + TRỢ LÝ + SĐT (THEO API) ===== */
 
 const m1 = document.getElementById("manager1");
