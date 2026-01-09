@@ -815,6 +815,8 @@ function toggleCardQR(btn) {
       location.reload();
     }
   });
+// năm footer
+document.getElementById("year").textContent = new Date().getFullYear();
 })();
 // 🚀 BẮT ĐẦU LOAD DASHBOARD
 loadDashboard();
