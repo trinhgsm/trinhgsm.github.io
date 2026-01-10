@@ -717,8 +717,8 @@ header.top .title {
     display: flex;
     align-items: center;
 
-    height: 36px;
-    line-height: 36px;          /* 🔴 KHÓA BASELINE */
+    height: 30px;
+    line-height: 30px;          /* 🔴 KHÓA BASELINE */
     padding: 0 14px;
 
     background: #020617;
@@ -768,8 +768,8 @@ header.top .title {
     right: 14px;
     top: 0;
 
-    height: 44px;
-    line-height: 44px;          /* 🔴 CÙNG DÒNG CHỮ */
+    height: 30px;
+    line-height: 30px;          /* 🔴 CÙNG DÒNG CHỮ */
 
     display: block;
     overflow: hidden;
