@@ -46,27 +46,22 @@ async function loadCan(){
   document.getElementById("congText").textContent=
     `${unit.actualCong||0}/${unit.plannedCong||0}`;
 
-  let siteStatusShort = "--";
-let siteStatusFull  = "--";
+  let siteStatusText = "--";
 
 if (site && typeof site.diffDays === "number") {
   if (site.diffDays === 0) {
-    siteStatusShort = "Hôm nay có thi công";
+    siteStatusText = "Hôm nay có thi công";
   } else if (site.diffDays === 1) {
-    siteStatusShort = "Hôm qua có thi công";
+    siteStatusText = "Hôm qua có thi công";
   } else {
-    siteStatusShort = site.diffDays + " ngày chưa thi công";
-  }
-
-  // full = ngắn + chi tiết tổ
-  siteStatusFull = siteStatusShort;
-  if (site.summary) {
-    siteStatusFull += " – " + site.summary;
+    siteStatusText = site.diffDays + " ngày chưa thi công";
   }
 }
-document.getElementById("siteStatus").textContent = siteStatusText;
 
+// ❗ TAB THI CÔNG: KHÔNG CÓ CHI TIẾT
 document.getElementById("siteStatus").textContent = siteStatusText;
+document.getElementById("tickerText").textContent =
+  `${unit.maCan}: ${unit.percent||0}% – ${document.getElementById("siteStatus").textContent}`;
 
 /* ===== CHỈ HUY + TRỢ LÝ + SĐT (THEO API) ===== */
 
