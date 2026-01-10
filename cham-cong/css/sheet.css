@@ -148,24 +148,7 @@
     max-width: 190px;
     transition: opacity 0.25s;
   }
-header.top {
-    display: flex;
-    align-items: center;
-    padding: 0 16px;
-  }
 
-  header.top .title {
-    flex: 1;                     /* 🔴 CHÌA KHOÁ */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  header.top #genTime {
-    flex-shrink: 0;              /* 🔴 KHÔNG BỊ ÉP */
-    white-space: nowrap;
-    text-align: right;
-  }
 
   /* mờ nhẹ khi không hover */
   #sheetOverlay.show-menu .sheet-menu {
