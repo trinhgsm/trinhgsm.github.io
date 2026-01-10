@@ -48,15 +48,6 @@ async function loadCan(){
 
   let siteStatusText = "--";
 
-// build chi tiết tổ (nếu có)
-let teamDetail = "";
-
-if (unit.byTeam && Object.keys(unit.byTeam).length > 0) {
-  teamDetail = Object.entries(unit.byTeam)
-    .map(([team, cong]) => `Tổ ${team} ${cong} công`)
-    .join(" | ");
-}
-
 if (site && typeof site.diffDays === "number") {
   if (site.diffDays === 0) {
     siteStatusText = "Hôm nay có thi công";
@@ -66,11 +57,13 @@ if (site && typeof site.diffDays === "number") {
     siteStatusText = site.diffDays + " ngày chưa thi công";
   }
 
-  // ✅ LUÔN HIỂN THỊ CHI TIẾT (NẾU CÓ)
-  if (teamDetail) {
-    siteStatusText += " – " + teamDetail;
+  // ✅ NỐI CHI TIẾT TỔ THỢ
+  if (site.summary) {
+    siteStatusText += " – " + site.summary;
   }
 }
+
+document.getElementById("siteStatus").textContent = siteStatusText;
 
 document.getElementById("siteStatus").textContent = siteStatusText;
 
