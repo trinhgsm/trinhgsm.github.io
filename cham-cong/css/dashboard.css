@@ -704,7 +704,7 @@ header.top .title {
   }
 }
 /* =========================================================
-   DESKTOP / TV – HEADER MASK TICKER (FINAL)
+   DESKTOP / TV – HEADER + TICKER CÙNG DÒNG (FINAL)
    ========================================================= */
 @media (min-width: 769px) {
 
@@ -718,6 +718,7 @@ header.top .title {
     align-items: center;
 
     height: 44px;
+    line-height: 44px;          /* 🔴 KHÓA BASELINE */
     padding: 0 14px;
 
     background: #020617;
@@ -742,7 +743,7 @@ header.top .title {
     text-overflow: ellipsis;
   }
 
-  /* ===== TIME (MASK PHẢI) ===== */
+  /* ===== TIME / CẬP NHẬT (MASK PHẢI) ===== */
   header.top #genTime {
     position: relative;
     z-index: 3;                 /* che ticker */
@@ -760,21 +761,21 @@ header.top .title {
     white-space: nowrap;
   }
 
-  /* ===== TICKER (CHẠY GIỮA – SAU MASK) ===== */
+  /* ===== TICKER (CHẠY SAU – CÙNG DÒNG) ===== */
   header.top .ticker {
     position: absolute;
     left: 14px;
     right: 14px;
     top: 0;
-    bottom: 0;
 
-    display: flex;
-    align-items: center;
+    height: 44px;
+    line-height: 44px;          /* 🔴 CÙNG DÒNG CHỮ */
+
+    display: block;
+    overflow: hidden;
 
     z-index: 1;                 /* dưới title + time */
-
     pointer-events: none;
-    overflow: hidden;
 
     font-size: 0.7rem;
     opacity: 0.85;
