@@ -362,17 +362,7 @@ body {
 .site-blink {
   animation: blink 95s infinite;
 }
-/* ===== HEADER BASE ===== */
-/* ===============================
-   HEADER – TITLE & TIME (FIX)
-   =============================== */
-header.top {
-  height: 44px;
-  min-height: 44px;
-  max-height: 44px;
-  padding: 0 14px;          /* bỏ padding dọc */
-  overflow: hidden;
-}
+
 
 /* tiêu đề */
 header.top .title {
@@ -386,17 +376,7 @@ header.top .title {
   text-overflow: ellipsis;
 }
 
-/* thời gian */
-header.top #genTime {
-  flex: 0 0 auto;
-  font-size: 0.7rem;
-  opacity: 0.75;
 
-  max-width: 22vw;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 /* ===============================
    MOBILE – TICKER XUỐNG DÒNG
@@ -721,5 +701,53 @@ header.top #genTime {
   .footer-left,
   .footer-right {
     white-space: normal;
+  }
+}
+/* =========================================================
+   HEADER – PC FIX (FINAL, 1 DÒNG TUYỆT ĐỐI)
+   ========================================================= */
+@media (min-width: 769px) {
+
+  header.top {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;     /* ❗ PC không bao giờ xuống dòng */
+
+    height: 44px;
+    padding: 0 14px;
+
+    overflow: hidden;
+  }
+
+  /* tiêu đề – ưu tiên hiển thị */
+  header.top .title {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* thời gian – không chiếm chỗ cứng */
+  header.top #genTime {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    text-align: right;
+
+    max-width: 140px;   /* ❗ bỏ vw */
+  }
+
+  /* ticker không tham gia layout */
+  header.top .ticker {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 18px;
+    line-height: 18px;
+
+    pointer-events: none;
   }
 }
