@@ -704,31 +704,35 @@ header.top .title {
   }
 }
 /* =========================================================
-   DESKTOP / TV – HEADER FIX (>= 769px)
+   DESKTOP / TV – HEADER MASK TICKER (FINAL)
    ========================================================= */
 @media (min-width: 769px) {
 
-  /* ===== HEADER BASE ===== */
+  /* ===== HEADER KHUNG ===== */
   header.top {
     position: sticky;
     top: 0;
-    z-index: 1002;            /* cao hơn ticker */
+    z-index: 1002;
 
     display: flex;
     align-items: center;
-    flex-wrap: nowrap;       /* ❗ không xuống dòng */
 
     height: 44px;
     padding: 0 14px;
 
-    background: #020617;     /* ❗ che chữ trôi phía sau */
-    overflow: hidden;        /* ❗ đè hoàn toàn ticker */
+    background: #020617;
   }
 
-  /* ===== TITLE (TRÁI) ===== */
+  /* ===== TITLE (MASK TRÁI) ===== */
   header.top .title {
-    flex: 1 1 auto;
-    min-width: 0;
+    position: relative;
+    z-index: 3;                 /* che ticker */
+
+    flex: 0 0 auto;
+    max-width: 45%;
+
+    padding-right: 12px;
+    background: #020617;        /* 🔴 MASK */
 
     font-size: 0.85rem;
     font-weight: 500;
@@ -738,33 +742,49 @@ header.top .title {
     text-overflow: ellipsis;
   }
 
-  /* ===== TIME (PHẢI) ===== */
+  /* ===== TIME (MASK PHẢI) ===== */
   header.top #genTime {
-    flex: 0 0 auto;
+    position: relative;
+    z-index: 3;                 /* che ticker */
+
     margin-left: auto;
+    padding-left: 12px;
+
+    background: #020617;        /* 🔴 MASK */
 
     display: flex;
     gap: 6px;
 
+    font-size: 0.7rem;
+    opacity: 0.75;
     white-space: nowrap;
-    text-align: right;
-    max-width: 140px;        /* ❗ không dùng vw */
   }
 
-  /* ===== TICKER (NẰM DƯỚI HEADER) ===== */
+  /* ===== TICKER (CHẠY GIỮA – SAU MASK) ===== */
   header.top .ticker {
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 14px;
+    right: 14px;
+    top: 0;
     bottom: 0;
 
-    height: 18px;
-    line-height: 18px;
+    display: flex;
+    align-items: center;
 
-    z-index: 1;              /* dưới header */
-    opacity: 0.35;           /* chìm nhẹ */
+    z-index: 1;                 /* dưới title + time */
 
-    pointer-events: none;    /* không bắt chuột */
+    pointer-events: none;
+    overflow: hidden;
+
+    font-size: 0.7rem;
+    opacity: 0.85;
   }
 
+  header.top .ticker span {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+
+    animation: tickerMove 130s linear infinite;
+  }
 }
