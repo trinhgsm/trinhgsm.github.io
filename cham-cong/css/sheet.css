@@ -21,7 +21,7 @@
   content: "";
   position: fixed;
 
-  top: 42px;          /* 🔴 CHUI SAU CHỮ TRÔI */
+  top: 44px;          /* 🔴 CHUI SAU CHỮ TRÔI */
   left: 0;
   right: 0;
   bottom: 0;
@@ -61,7 +61,7 @@
   right: 0;
 
   /* ❗ chạm sát ticker – không che */
-  top: 42px;
+  top: 44px;
   bottom: 0;
 
   overflow: auto;
