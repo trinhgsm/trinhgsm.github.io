@@ -797,5 +797,26 @@ function toggleCardQR(btn) {
 
   box.classList.remove("qr-hidden");
 }
+/* ===== AUTO RELOAD – CHỈ KHI TAB ĐANG MỞ ===== */
+(function () {
+  const ONE_HOUR = 3600000;
+  let needReload = false;
+
+  setTimeout(() => {
+    if (document.visibilityState === "visible") {
+      location.reload();
+    } else {
+      needReload = true;
+    }
+  }, ONE_HOUR);
+
+  document.addEventListener("visibilitychange", () => {
+    if (needReload && document.visibilityState === "visible") {
+      location.reload();
+    }
+  });
+// năm footer
+document.getElementById("year").textContent = new Date().getFullYear();
+})();
 // 🚀 BẮT ĐẦU LOAD DASHBOARD
 loadDashboard();
