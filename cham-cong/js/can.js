@@ -62,6 +62,7 @@ if (site && typeof site.diffDays === "number") {
 document.getElementById("siteStatus").textContent = siteStatusText;
 let tickerStatus = siteStatusText;
 
+// ✅ CHỈ CHỮ TRÔI MỚI CÓ CHI TIẾT
 if (site && site.summary) {
   tickerStatus += " – " + site.summary;
 }
