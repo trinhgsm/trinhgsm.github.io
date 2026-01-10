@@ -704,41 +704,54 @@ header.top .title {
   }
 }
 /* =========================================================
-   HEADER – PC FIX (FINAL, 1 DÒNG TUYỆT ĐỐI)
+   DESKTOP / TV – HEADER FIX (>= 769px)
    ========================================================= */
 @media (min-width: 769px) {
 
+  /* ===== HEADER BASE ===== */
   header.top {
+    position: sticky;
+    top: 0;
+    z-index: 1002;            /* cao hơn ticker */
+
     display: flex;
     align-items: center;
-    flex-wrap: nowrap;     /* ❗ PC không bao giờ xuống dòng */
+    flex-wrap: nowrap;       /* ❗ không xuống dòng */
 
     height: 44px;
     padding: 0 14px;
 
-    overflow: hidden;
+    background: #020617;     /* ❗ che chữ trôi phía sau */
+    overflow: hidden;        /* ❗ đè hoàn toàn ticker */
   }
 
-  /* tiêu đề – ưu tiên hiển thị */
+  /* ===== TITLE (TRÁI) ===== */
   header.top .title {
     flex: 1 1 auto;
     min-width: 0;
+
+    font-size: 0.85rem;
+    font-weight: 500;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  /* thời gian – không chiếm chỗ cứng */
+  /* ===== TIME (PHẢI) ===== */
   header.top #genTime {
     flex: 0 0 auto;
+    margin-left: auto;
+
+    display: flex;
+    gap: 6px;
+
     white-space: nowrap;
     text-align: right;
-
-    max-width: 140px;   /* ❗ bỏ vw */
+    max-width: 140px;        /* ❗ không dùng vw */
   }
 
-  /* ticker không tham gia layout */
+  /* ===== TICKER (NẰM DƯỚI HEADER) ===== */
   header.top .ticker {
     position: absolute;
     left: 0;
@@ -748,6 +761,10 @@ header.top .title {
     height: 18px;
     line-height: 18px;
 
-    pointer-events: none;
+    z-index: 1;              /* dưới header */
+    opacity: 0.35;           /* chìm nhẹ */
+
+    pointer-events: none;    /* không bắt chuột */
   }
+
 }
