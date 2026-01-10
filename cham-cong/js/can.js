@@ -46,23 +46,24 @@ async function loadCan(){
   document.getElementById("congText").textContent=
     `${unit.actualCong||0}/${unit.plannedCong||0}`;
 
-  let siteStatusText = "--";
+  let siteStatusShort = "--";
+let siteStatusFull  = "--";
 
 if (site && typeof site.diffDays === "number") {
   if (site.diffDays === 0) {
-    siteStatusText = "Hôm nay có thi công";
+    siteStatusShort = "Hôm nay có thi công";
   } else if (site.diffDays === 1) {
-    siteStatusText = "Hôm qua có thi công";
+    siteStatusShort = "Hôm qua có thi công";
   } else {
-    siteStatusText = site.diffDays + " ngày chưa thi công";
+    siteStatusShort = site.diffDays + " ngày chưa thi công";
   }
 
-  // ✅ NỐI CHI TIẾT TỔ THỢ
+  // full = ngắn + chi tiết tổ
+  siteStatusFull = siteStatusShort;
   if (site.summary) {
-    siteStatusText += " – " + site.summary;
+    siteStatusFull += " – " + site.summary;
   }
 }
-
 document.getElementById("siteStatus").textContent = siteStatusText;
 
 document.getElementById("siteStatus").textContent = siteStatusText;
