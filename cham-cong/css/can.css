@@ -1,57 +1,75 @@
-/* ================= ROOT ================= */
+/* =========================================================
+   ROOT
+   ========================================================= */
 :root{
   --bg:#020617;
-  --card:#0f172a;
-  --border:rgba(148,163,184,.25);
+  --card:#0b1222;
+  --border:rgba(148,163,184,.14);
 
-  --green:#22c55e;
-  --yellow:#eab308;
-  --red:#ef4444;
-  --blue:#38bdf8;
+  --green:#4ade80;
+  --yellow:#facc15;
+  --red:#f87171;
+  --blue:#60a5fa;
 
   --text:#e5e7eb;
 }
 
-/* ================= RESET ================= */
+/* =========================================================
+   RESET
+   ========================================================= */
 *{box-sizing:border-box}
 
 body{
   margin:0;
-  background:var(--bg);
+  background:
+    radial-gradient(1200px 600px at top,#020617,#000);
   color:var(--text);
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
-/* ================= LAYOUT ================= */
+/* =========================================================
+   LAYOUT
+   ========================================================= */
 .wrap{
   max-width:1100px;
   margin:auto;
-  padding:12px;
+  padding:14px;
 }
 
-/* ================= HEADER ================= */
+/* =========================================================
+   HEADER
+   ========================================================= */
 .header{
   text-align:center;
-}
-
-.header h1{
-  margin:4px 0;
-  color:var(--blue);
-}
-
-.macan{
-  opacity:.8;
   margin-bottom:6px;
 }
 
-/* ================= MARQUEE ================= */
+.header h1{
+  margin:6px 0 2px;
+  font-weight:700;
+  letter-spacing:1px;
+  background:linear-gradient(90deg,#38bdf8,#60a5fa);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.macan{
+  font-size:13px;
+  opacity:.75;
+}
+
+/* =========================================================
+   MARQUEE
+   ========================================================= */
 .marquee{
   overflow:hidden;
   white-space:nowrap;
   border:1px solid var(--border);
-  border-radius:8px;
+  border-radius:999px;
   padding:6px 0;
-  margin-bottom:8px;
+  margin-bottom:10px;
+  background:rgba(15,23,42,.6);
+  backdrop-filter:blur(6px);
 }
 
 .marquee span{
@@ -65,40 +83,62 @@ body{
   to{transform:translateX(-100%)}
 }
 
-/* ================= CARD ================= */
+/* =========================================================
+   CARD
+   ========================================================= */
 .card{
-  background:var(--card);
+  background:
+    linear-gradient(180deg,#0f172a 0%, #020617 100%);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:10px;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.03);
+  transition:.25s ease;
 }
 
-/* ================= SUMMARY ================= */
+.card:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 14px 36px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
 .big{
   text-align:center;
 }
 
 .percent{
-  font-size:48px;
-  font-weight:700;
+  font-size:46px;
+  font-weight:600;
+  letter-spacing:-0.5px;
   color:var(--green);
+  text-shadow:0 0 14px rgba(34,197,94,.35);
 }
 
 .status-text{
   margin-top:4px;
+  font-size:14px;
+  opacity:.9;
 }
 
 .update-time{
   font-size:12px;
-  opacity:.7;
+  opacity:.65;
 }
 
-/* ================= GRID ================= */
+/* =========================================================
+   GRID
+   ========================================================= */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:8px;
+  gap:10px;
 }
 
 label{
@@ -106,60 +146,89 @@ label{
   opacity:.7;
 }
 
-/* ================= PHONE ================= */
+.grid .card{
+  padding:12px;
+}
+
+/* =========================================================
+   PHONE
+   ========================================================= */
 .phone{
-  display:block;
-  margin-top:4px;
+  display:inline-block;
+  margin-top:6px;
   color:var(--blue);
   text-decoration:none;
+  font-weight:500;
 }
 
 .phone:hover{
   text-decoration:underline;
 }
 
-/* ================= ACTIONS ================= */
+/* =========================================================
+   ACTIONS
+   ========================================================= */
 .actions{
   display:flex;
-  gap:10px;
+  gap:12px;
   justify-content:center;
-  margin:12px 0;
+  margin:14px 0;
 }
 
 button{
-  background:var(--bg);
+  background:rgba(15,23,42,.8);
   color:var(--text);
   border:1px solid var(--border);
-  padding:8px 14px;
-  border-radius:8px;
+  padding:9px 16px;
+  border-radius:999px;
   cursor:pointer;
+  transition:.2s ease;
 }
 
 button:hover{
-  background:var(--card);
+  background:rgba(30,41,59,.9);
 }
 
-/* ================= QR ================= */
+/* =========================================================
+   QR
+   ========================================================= */
 .qr-box{
   display:flex;
   justify-content:center;
-  margin-top:10px;
+  margin-top:12px;
 }
 
 .hidden{
   display:none;
 }
 
-/* ================= FOOTER ================= */
-.footer{
-  margin-top:20px;
-  padding:10px 12px;
-  border-top:1px solid var(--border);
+/* =========================================================
+   MANAGER
+   ========================================================= */
+.manager-name{
+  font-weight:600;
+}
 
+.manager-phone{
+  margin-left:6px;
+  color:var(--blue);
+  text-decoration:none;
+}
+
+.manager-phone:hover{
+  text-decoration:underline;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.footer{
+  margin-top:22px;
+  padding:12px;
+  border-top:1px solid var(--border);
   display:flex;
   align-items:center;
   justify-content:space-between;
-
   font-size:12px;
   opacity:.75;
 }
@@ -179,29 +248,15 @@ button:hover{
   text-decoration:underline;
 }
 
-/* ================= MANAGER ================= */
-.manager-name{
-  font-weight:600;
-}
-
-.manager-phone{
-  margin-left:8px;
-  color:var(--blue);
-  text-decoration:none;
-  font-weight:500;
-}
-
-.manager-phone:hover{
-  text-decoration:underline;
-}
-
-/* ================= MOBILE ================= */
+/* =========================================================
+   MOBILE
+   ========================================================= */
 @media(max-width:600px){
-  .percent{font-size:36px}
+  .percent{font-size:34px}
 
   .footer{
     flex-direction:column;
-    gap:4px;
+    gap:6px;
     text-align:center;
   }
 
