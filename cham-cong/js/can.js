@@ -60,8 +60,14 @@ if (site && typeof site.diffDays === "number") {
 
 // ❗ TAB THI CÔNG: KHÔNG CÓ CHI TIẾT
 document.getElementById("siteStatus").textContent = siteStatusText;
+let tickerStatus = siteStatusText;
+
+if (site && site.summary) {
+  tickerStatus += " – " + site.summary;
+}
+
 document.getElementById("tickerText").textContent =
-  `${unit.maCan}: ${unit.percent||0}% – ${document.getElementById("siteStatus").textContent}`;
+  `${unit.maCan}: ${unit.percent || 0}% – ${tickerStatus}`;
 
 /* ===== CHỈ HUY + TRỢ LÝ + SĐT (THEO API) ===== */
 
