@@ -717,8 +717,8 @@ header.top .title {
     display: flex;
     align-items: center;
 
-    height: 44px;
-    line-height: 44px;          /* 🔴 KHÓA BASELINE */
+    height: 36px;
+    line-height: 36px;          /* 🔴 KHÓA BASELINE */
     padding: 0 14px;
 
     background: #020617;
