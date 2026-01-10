@@ -99,10 +99,6 @@ if (unit.manager2Phone) {
   p2.style.display = "none";
 }
 
-  /* ===== MARQUEE ===== */
-  document.getElementById("tickerText").textContent =
-    `${unit.maCan}: ${unit.percent||0}% – ${document.getElementById("siteStatus").textContent}`;
-
   /* ===== LOG ===== */
   document.getElementById("logList").innerHTML = `
     <li>Tiến độ: ${unit.percent||0}%</li>
