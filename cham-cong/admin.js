@@ -106,6 +106,51 @@ async function submitLog() {
    ====================================================== */
 fileSelect.addEventListener("change", loadSheets);
 btnSubmit.addEventListener("click", submitLog);
+/* ======================================================
+   LOAD DATA FROM SHEET → HTML
+   ====================================================== */
+async function loadSheetData() {
+  if (!currentFileId || !sheetSelect.value) return;
+
+  const url =
+    API_URL +
+    "?action=read-cells" +
+    "&fileId=" + encodeURIComponent(currentFileId) +
+    "&sheetName=" + encodeURIComponent(sheetSelect.value);
+
+  const data = await fetch(url).then(r => r.json());
+
+  // ===== CLEAR TRƯỚC =====
+  document.querySelectorAll(".cell").forEach(el => {
+    el.value = "";
+  });
+
+  // ===== A18, A20, A21, A38, A40 =====
+  ["A18","A20","A21","A38","A40"].forEach(key => {
+    if (!data[key]) return;
+
+    const el = document.querySelector(
+      `.cell[data-col="${key[0]}"][data-row="${key.slice(1)}"]`
+    );
+    if (el) el.value = data[key][0][0] || "";
+  });
+
+  // ===== BẢNG NHÂN LỰC C25:F29 =====
+  if (data["C25:F29"]) {
+    data["C25:F29"].forEach((rowData, i) => {
+      const sheetRow = 25 + i;
+      const cols = ["C","D","E","F"];
+
+      cols.forEach((col, j) => {
+        const el = document.querySelector(
+          `.cell[data-col="${col}"][data-row="${sheetRow}"]`
+        );
+        if (el) el.value = rowData[j] ?? "";
+      });
+    });
+  }
+}
+
 
 // init
 loadFiles();
