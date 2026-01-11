@@ -36,7 +36,11 @@ async function loadSheets() {
       Nhật ký ${s.maCan}
     </option>`
   ).join("");
+
+  // ✅ LOAD DỮ LIỆU NGAY KHI CHỌN
+  setTimeout(loadSheetData, 100);
 }
+
 
 /* ======================================================
    COLLECT CELL DATA (CORE)
