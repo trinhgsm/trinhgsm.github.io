@@ -1,34 +1,13 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8">
-<title>Admin – Nhập nhật ký</title>
-<style>
-body{
-  font-family:system-ui,sans-serif;
-  background:#020617;
-  color:#e5e7eb;
-  padding:16px;
-}
-select,input,button{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  background:#0f172a;
-  color:#fff;
-  border:1px solid #334155;
-  border-radius:6px;
-}
-button{
-  background:#22c55e;
-  color:#022c22;
-  font-weight:600;
-}
-</style>
+  <meta charset="utf-8">
+  <title>Admin – Nhập nhật ký</title>
+  <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
-<h2>📘 Nhập nhật ký công trình</h2>
+<h2>Nhập nhật ký công trình</h2>
 
 <select id="fileSelect"></select>
 <select id="sheetSelect"></select>
@@ -37,70 +16,8 @@ button{
 <input id="cong" type="number" placeholder="Số công">
 <input id="noiDung" placeholder="Nội dung công việc">
 
-<button onclick="submitLog()">GHI NHẬT KÝ</button>
+<button id="btnSubmit">Ghi nhật ký</button>
 
-<script>
-const API = "https://script.google.com/macros/s/XXX/exec";
-
-let currentFileId = "";
-
-async function loadFiles(){
-  const res = await fetch(API + "?action=files");
-  const files = await res.json();
-  const sel = document.getElementById("fileSelect");
-  sel.innerHTML = files.map(f =>
-    `<option value="${f.fileId}">${f.name}</option>`
-  ).join("");
-  if(files[0]){
-    currentFileId = files[0].fileId;
-    loadSheets();
-  }
-}
-
-async function loadSheets(){
-  currentFileId = fileSelect.value;
-  const res = await fetch(API + "?action=sheets&fileId=" + currentFileId);
-  const data = await res.json();
-
-  const sheets = data.sites || [];
-  const sel = document.getElementById("sheetSelect");
-
-  sel.innerHTML = sheets.map(s =>
-    `<option value="Nhật ký ${s.maCan}">
-      Nhật ký ${s.maCan}
-     </option>`
-  ).join("");
-}
-
-fileSelect.onchange = loadSheets;
-
-async function submitLog(){
-  const payload = {
-    action: "write-log",
-    fileId: currentFileId,
-    sheetName: sheetSelect.value,
-    to: to.value,
-    cong: cong.value,
-    noiDung: noiDung.value
-  };
-
-  const res = await fetch(API,{
-    method:"POST",
-    body: JSON.stringify(payload)
-  });
-  const r = await res.json();
-
-  if(r.ok){
-    alert("Đã ghi nhật ký");
-    cong.value = "";
-    noiDung.value = "";
-  }else{
-    alert("Lỗi: " + r.error);
-  }
-}
-
-loadFiles();
-</script>
-
+<script src="admin.js"></script>
 </body>
 </html>
