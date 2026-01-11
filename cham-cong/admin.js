@@ -26,19 +26,26 @@ async function loadFiles() {
 
 async function loadSheets() {
   currentFileId = fileSelect.value;
+
   const res = await fetch(
     API_URL + "?action=sheets&fileId=" + currentFileId
   );
   const data = await res.json();
 
-  sheetSelect.innerHTML = (data.sites || []).map(s =>
+  const sites = data.sites || [];
+
+  // render option
+  sheetSelect.innerHTML = sites.map(s =>
     `<option value="Nhật ký ${s.maCan}">
       Nhật ký ${s.maCan}
     </option>`
   ).join("");
 
-  // ✅ LOAD DỮ LIỆU NGAY KHI CHỌN
-  setTimeout(loadSheetData, 100);
+  // ⚠️ BẮT BUỘC: set mặc định
+  if (sites.length > 0) {
+    sheetSelect.selectedIndex = 0;
+    await loadSheetData(); // ✅ GỌI TRỰC TIẾP
+  }
 }
 
 
