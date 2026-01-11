@@ -1,9 +1,9 @@
 /************************************************************
- * ADMIN.JS – NHẬT KÝ CÔNG TRÌNH (FULL)
+ * ADMIN.JS – NHẬT KÝ CÔNG TRÌNH (FINAL)
  * - Load file
  * - Load sheet (Nhật ký XXX)
  * - Đồng bộ header (CĂN)
- * - Load dữ liệu từ Sheet → HTML
+ * - Load dữ liệu A–F (25→38) từ Sheet → HTML
  * - Ghi dữ liệu từ HTML → Sheet (MAP THEO Ô)
  ************************************************************/
 
@@ -93,24 +93,33 @@ async function loadSheetData() {
 
   const data = await fetch(url).then(r => r.json());
 
-  // clear tất cả ô
+  /* ===== CLEAR INPUT ===== */
   document.querySelectorAll(".cell").forEach(el => {
     el.value = "";
   });
 
-  // ===== Ô đơn A =====
-  ["A18","A20","A21","A38","A40"].forEach(key => {
-    if (!data[key]) return;
-    const el = document.querySelector(
-      `.cell[data-col="${key[0]}"][data-row="${key.slice(1)}"]`
-    );
-    if (el) el.value = data[key][0][0] || "";
-  });
+  /* ===== LOAD STT A25:A38 ===== */
+  if (data["A25:A38"]) {
+    data["A25:A38"].forEach((row, i) => {
+      const r = 25 + i;
+      const el = document.querySelector(`.stt[data-row="${r}"]`);
+      if (el) el.textContent = row[0] ?? "";
+    });
+  }
 
-  // ===== BẢNG C25:F29 =====
-  if (data["C25:F29"]) {
-    const cols = ["C","D","E","F"];
-    data["C25:F29"].forEach((row, i) => {
+  /* ===== LOAD TỔ B25:B38 ===== */
+  if (data["B25:B38"]) {
+    data["B25:B38"].forEach((row, i) => {
+      const r = 25 + i;
+      const el = document.querySelector(`.to[data-row="${r}"]`);
+      if (el) el.textContent = row[0] ?? "";
+    });
+  }
+
+  /* ===== LOAD C–F (25→38) ===== */
+  if (data["C25:F38"]) {
+    const cols = ["C", "D", "E", "F"];
+    data["C25:F38"].forEach((row, i) => {
       const r = 25 + i;
       cols.forEach((c, j) => {
         const el = document.querySelector(
@@ -120,6 +129,15 @@ async function loadSheetData() {
       });
     });
   }
+
+  /* ===== LOAD CÁC Ô KHÁC (NẾU CÓ) ===== */
+  ["A18","A20","A21","A38","A40"].forEach(key => {
+    if (!data[key]) return;
+    const el = document.querySelector(
+      `.cell[data-col="${key[0]}"][data-row="${key.slice(1)}"]`
+    );
+    if (el) el.value = data[key][0][0] ?? "";
+  });
 }
 
 /* ======================================================
@@ -169,7 +187,7 @@ async function submitLog() {
 
   if (r.ok) {
     alert("Đã ghi nhật ký");
-    await loadSheetData(); // reload lại để chắc chắn đồng bộ
+    await loadSheetData(); // reload để đồng bộ
   } else {
     alert("Lỗi: " + (r.error || "Không xác định"));
   }
