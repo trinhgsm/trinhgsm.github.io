@@ -7,6 +7,9 @@ const btnSubmit   = document.getElementById("btnSubmit");
 
 let currentFileId = "";
 
+/* ======================================================
+   LOAD FILE + SHEET (GIỮ NGUYÊN LOGIC CŨ)
+   ====================================================== */
 async function loadFiles() {
   const res = await fetch(API_URL + "?action=files");
   const files = await res.json();
@@ -35,14 +38,47 @@ async function loadSheets() {
   ).join("");
 }
 
+/* ======================================================
+   COLLECT CELL DATA (CORE)
+   ====================================================== */
+function collectCells() {
+  const cells = [];
+
+  document.querySelectorAll(".cell").forEach(el => {
+    const v = el.value;
+    if (v === "" || v === null) return;
+
+    const row = el.dataset.row;
+    const col = el.dataset.col;
+
+    if (!row || !col) return;
+
+    cells.push({
+      row: Number(row),
+      col: col,
+      value: isNaN(v) ? v : Number(v)
+    });
+  });
+
+  return cells;
+}
+
+/* ======================================================
+   SUBMIT TO API (WRITE CELLS)
+   ====================================================== */
 async function submitLog() {
+  const cells = collectCells();
+
+  if (!cells.length) {
+    alert("Chưa nhập dữ liệu nào");
+    return;
+  }
+
   const payload = {
-    action: "write-log",
+    action: "write-cells",
     fileId: currentFileId,
     sheetName: sheetSelect.value,
-    to: document.getElementById("to").value,
-    cong: document.getElementById("cong").value,
-    noiDung: document.getElementById("noiDung").value
+    cells: cells
   };
 
   const res = await fetch(API_URL, {
@@ -54,14 +90,22 @@ async function submitLog() {
 
   if (r.ok) {
     alert("Đã ghi nhật ký");
-    document.getElementById("cong").value = "";
-    document.getElementById("noiDung").value = "";
+
+    // clear input sau khi ghi
+    document.querySelectorAll(".cell").forEach(el => {
+      el.value = "";
+    });
+
   } else {
     alert("Lỗi: " + r.error);
   }
 }
 
+/* ======================================================
+   EVENT
+   ====================================================== */
 fileSelect.addEventListener("change", loadSheets);
 btnSubmit.addEventListener("click", submitLog);
 
+// init
 loadFiles();
