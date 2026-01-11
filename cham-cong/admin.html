@@ -2,21 +2,106 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <title>Admin – Nhập nhật ký</title>
+  <title>Nhật ký công trình</title>
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
-<h2>Nhập nhật ký công trình</h2>
+<div class="toolbar">
+  <select id="fileSelect"></select>
+  <select id="sheetSelect"></select>
+  <button id="btnSubmit">Ghi nhật ký</button>
+</div>
 
-<select id="fileSelect"></select>
-<select id="sheetSelect"></select>
+<div class="sheet">
 
-<input id="to" placeholder="Tổ / đội">
-<input id="cong" type="number" placeholder="Số công">
-<input id="noiDung" placeholder="Nội dung công việc">
+  <h1>NHẬT KÝ CÔNG TRÌNH</h1>
+  <h2>DỰ ÁN: THI CÔNG XÂY DỰNG HOÀN THIỆN NHÀ Ở</h2>
 
-<button id="btnSubmit">Ghi nhật ký</button>
+  <div class="meta">
+    KĐT VINHOMES VŨ YÊN, THỦY NGUYÊN, HẢI PHÒNG<br>
+    CĂN: <strong>DV3-26</strong>
+  </div>
+
+  <!-- ===== NGÀY ===== -->
+  <div class="row">
+    <strong>Ngày:</strong>
+    <input class="cell" data-row="18" data-col="A" placeholder="Ngày tháng năm">
+  </div>
+
+  <!-- ===== THỜI TIẾT ===== -->
+  <div class="section-title">1. Điều kiện thời tiết</div>
+  <div class="row">
+    Buổi sáng:
+    <textarea class="cell" data-row="20" data-col="A"></textarea>
+  </div>
+  <div class="row">
+    Buổi chiều:
+    <textarea class="cell" data-row="21" data-col="A"></textarea>
+  </div>
+
+  <!-- ===== NHÂN LỰC ===== -->
+  <div class="section-title">2. Nhân lực thi công</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Tổ TC</th>
+        <th>Sáng</th>
+        <th>Chiều</th>
+        <th>Công việc</th>
+        <th>Tiến độ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td><td>thợ sơn</td>
+        <td><input class="cell" data-row="25" data-col="C"></td>
+        <td><input class="cell" data-row="25" data-col="D"></td>
+        <td><input class="cell" data-row="25" data-col="E"></td>
+        <td><input class="cell" data-row="25" data-col="F"></td>
+      </tr>
+      <tr>
+        <td>2</td><td>trần tc</td>
+        <td><input class="cell" data-row="26" data-col="C"></td>
+        <td><input class="cell" data-row="26" data-col="D"></td>
+        <td><input class="cell" data-row="26" data-col="E"></td>
+        <td><input class="cell" data-row="26" data-col="F"></td>
+      </tr>
+      <tr>
+        <td>3</td><td>thợ điện</td>
+        <td><input class="cell" data-row="27" data-col="C"></td>
+        <td><input class="cell" data-row="27" data-col="D"></td>
+        <td><input class="cell" data-row="27" data-col="E"></td>
+        <td><input class="cell" data-row="27" data-col="F"></td>
+      </tr>
+      <tr>
+        <td>4</td><td>công nhật</td>
+        <td><input class="cell" data-row="28" data-col="C"></td>
+        <td><input class="cell" data-row="28" data-col="D"></td>
+        <td><input class="cell" data-row="28" data-col="E"></td>
+        <td><input class="cell" data-row="28" data-col="F"></td>
+      </tr>
+      <tr>
+        <td>5</td><td>vsc nghiệp</td>
+        <td><input class="cell" data-row="29" data-col="C"></td>
+        <td><input class="cell" data-row="29" data-col="D"></td>
+        <td><input class="cell" data-row="29" data-col="E"></td>
+        <td><input class="cell" data-row="29" data-col="F"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== SỰ CỐ ===== -->
+  <div class="section-title">3. Sự cố – tồn tại</div>
+  <textarea class="cell full" data-row="38" data-col="A"></textarea>
+
+  <!-- ===== KẾT LUẬN ===== -->
+  <div class="section-title">4. Kết luận và kiến nghị</div>
+  <textarea class="cell full" data-row="40" data-col="A"></textarea>
+
+</div>
 
 <script src="admin.js"></script>
 </body>
