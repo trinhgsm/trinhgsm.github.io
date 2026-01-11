@@ -1,0 +1,270 @@
+/************************************************************
+ * SHEET OVERLAY – DUKICO
+ * - Kéo từ đáy lên
+ * - Không che ticker
+ * - PC: menu dọc bên hông
+ * - Mobile: menu chân trang
+
+/* =========================================================
+   OVERLAY
+   ========================================================= */
+#sheetOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+
+  pointer-events: none;
+  isolation: isolate;   /* 🔴 TẠO STACKING CONTEXT */
+}
+/* ===== BACKDROP CHE SAU TICKER ===== */
+#sheetOverlay::before {
+  content: "";
+  position: fixed;
+
+  top: 44px;          /* 🔴 CHUI SAU CHỮ TRÔI */
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: #020617;   /* che kín phía sau sheet */
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+/* khi sheet trồi lên */
+#sheetOverlay.show::before {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/*sheetOverlay:not(.show) .sheet-menu {
+  display: none;
+}*/
+#sheetOverlay.show {
+  pointer-events: auto;
+}
+#sheetOverlay.show-menu {
+  pointer-events: auto;
+}
+
+/* =========================================================
+   PANEL
+   ========================================================= */
+.sheet-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+
+  /* ❗ chạm sát ticker – không che */
+  top: 44px;
+  bottom: 0;
+
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+
+  background: transparent; /* ✅ bỏ nền đen */
+  transform: translateY(100%);
+  transition: transform 0.35s ease;
+}
+
+#sheetOverlay.show .sheet-panel {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   IFRAME
+   ========================================================= */
+#sheetFrame {
+  width: 1500px;      /* WIDTH THỰC CỦA SHEET */
+  height: 100%;
+  border: none;
+
+  transform-origin: 0 0;
+}
+
+/* =========================================================
+   MENU – CHUNG
+   ========================================================= */
+.sheet-menu {
+  position: absolute;
+  pointer-events: auto;
+  z-index: 2;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(6px);
+  color: #e5e7eb;
+  font-size: 13px;
+}
+/* 🔴 MẶC ĐỊNH: MENU ẨN */
+#sheetOverlay:not(.show-menu) .sheet-menu {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+}
+/* ✅ KHI MỞ MENU */
+#sheetOverlay.show-menu .sheet-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+/* reset */
+.sheet-menu button,
+.sheet-menu select {
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 1px solid rgba(148,163,184,.25);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.sheet-menu button:hover,
+.sheet-menu select:hover {
+  background: #020617;
+  cursor: pointer;
+}
+
+/* =========================================================
+   MENU – DESKTOP (DỌC BÊN HÔNG)
+   ========================================================= */
+@media (min-width: 769px) {
+  .sheet-menu {
+    top: 72px;              /* 🔴 ĐẨY LÊN TRÊN */
+    right: 8px;
+    transform: none;        /* 🔴 BỎ căn giữa */
+
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    padding: 8px;
+    border-radius: 12px 0 0 12px;
+
+    max-width: 190px;
+    transition: opacity 0.25s;
+  }
+
+
+  /* mờ nhẹ khi không hover */
+  #sheetOverlay.show-menu .sheet-menu {
+    opacity: 0.35;
+  }
+
+  #sheetOverlay.show-menu .sheet-menu:hover {
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   MENU – MOBILE (CHÂN TRANG)
+   ========================================================= */
+@media (max-width: 768px) {
+  .sheet-menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10001;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-flow: row;   /* 🔴 CỰC KỲ QUAN TRỌNG */
+    gap: 8px;
+
+    padding: 10px;
+    background: rgba(15, 23, 42, 0.95);
+    border-top: 1px solid rgba(148,163,184,.25);
+  }
+
+  /* ===== HÀNG 1 ===== */
+  #btnFile        { grid-column: 1; }
+  #sheetFileMenu  { grid-column: 2; }
+  #sheetTabMenu   { grid-column: 3; }
+
+  /* ===== HÀNG 2 ===== */
+  #btnLog1 { grid-column: 1; }
+  #btnLog2 { grid-column: 2; }
+  #btnLog3 { grid-column: 3; }
+
+  /* ===== HÀNG 3 ===== */
+  #btnZoomIn  { grid-column: 1; }
+  #btnZoomOut { grid-column: 2; }
+  #btnClose   { grid-column: 3; }
+
+  /* đồng đều nút */
+  .sheet-menu button,
+  .sheet-menu select {
+    width: 100%;
+    height: 38px;
+    font-size: 13px;
+  }
+}
+/* =========================================================
+   ZOOM FIX (KHÔNG VỠ KHUNG)
+   ========================================================= */
+#sheetFrame {
+  transform-origin: 0 0;
+}
+
+/* =========================================================
+   DARK SCROLLBAR (OPTIONAL)
+   ========================================================= */
+#sheetFrame::-webkit-scrollbar {
+  width: 8px;
+}
+
+#sheetFrame::-webkit-scrollbar-thumb {
+  background: rgba(148,163,184,.3);
+  border-radius: 4px;
+}
+/* ===============================
+   FLOATING SHEET BUTTON (FAB)
+   =============================== */
+/* ===== FLOATING SHEET BUTTON ===== */
+.sheet-fab {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+
+  z-index: 9999;
+
+  padding: 12px 14px;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #1f2937, #020617);
+  color: #e5e7eb;
+
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  user-select: none;
+  backdrop-filter: blur(6px);
+}
+
+.sheet-fab:active {
+  transform: scale(0.96);
+}
+
+.sheet-menu button,
+.sheet-menu select,
+.sheet-fab {
+  touch-action: manipulation;
+}
+
+.sheet-menu button:active,
+.sheet-fab:active {
+  transform: scale(0.96);
+}
+
+.sheet-menu button {
+  transition: background 0.15s ease, transform 0.1s ease;
+}
