@@ -1,0 +1,27 @@
+body {
+  font-family: system-ui, sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+  padding: 16px;
+}
+
+h2 {
+  margin-bottom: 12px;
+}
+
+select, input, button {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #fff;
+}
+
+button {
+  background: #22c55e;
+  color: #022c22;
+  font-weight: 600;
+  cursor: pointer;
+}
