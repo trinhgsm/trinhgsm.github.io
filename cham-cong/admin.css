@@ -1,27 +1,88 @@
 body {
-  font-family: system-ui, sans-serif;
-  background: #020617;
-  color: #e5e7eb;
-  padding: 16px;
+  font-family: "Times New Roman", serif;
+  background: #f1f5f9;
+  margin: 0;
+  padding: 12px;
 }
 
-h2 {
+/* ===== TOOLBAR ===== */
+.toolbar {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.toolbar select,
+.toolbar button {
+  padding: 6px 10px;
+  font-size: 14px;
+}
+
+/* ===== SHEET ===== */
+.sheet {
+  max-width: 1100px;
+  margin: auto;
+  background: #fff;
+  padding: 16px;
+  border: 1px solid #000;
+}
+
+.sheet h1,
+.sheet h2 {
+  text-align: center;
+  margin: 6px 0;
+}
+
+.meta {
+  text-align: center;
+  font-weight: 600;
   margin-bottom: 12px;
 }
 
-select, input, button {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-  border-radius: 6px;
-  border: 1px solid #334155;
-  background: #0f172a;
-  color: #fff;
+.section-title {
+  font-weight: 700;
+  margin-top: 14px;
 }
 
-button {
-  background: #22c55e;
-  color: #022c22;
-  font-weight: 600;
-  cursor: pointer;
+.row {
+  margin: 6px 0;
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+}
+
+th, td {
+  border: 1px solid #000;
+  padding: 6px;
+  font-size: 14px;
+}
+
+th {
+  background: #f3f3f3;
+  text-align: center;
+}
+
+/* ===== INPUT ===== */
+.cell {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  background: transparent;
+}
+
+textarea.cell {
+  resize: vertical;
+  min-height: 40px;
+}
+
+textarea.full {
+  min-height: 60px;
 }
