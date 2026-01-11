@@ -2,45 +2,75 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8">
-  <title>Nhật ký công trình</title>
+  <title>Nhật ký công trình – Admin</title>
   <link rel="stylesheet" href="admin.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
 
+<!-- =====================================================
+     TOOLBAR
+     ===================================================== -->
 <div class="toolbar">
-  <select id="fileSelect"></select>
-  <select id="sheetSelect"></select>
-  <button id="btnSubmit">Ghi nhật ký</button>
+  <select id="fileSelect">
+    <option>Đang tải danh sách file…</option>
+  </select>
+
+  <select id="sheetSelect">
+    <option>Chọn nhật ký…</option>
+  </select>
+
+  <button id="btnSubmit">GHI NHẬT KÝ</button>
 </div>
 
+<!-- =====================================================
+     SHEET VIEW
+     ===================================================== -->
 <div class="sheet">
 
+  <!-- ===== HEADER ===== -->
   <h1>NHẬT KÝ CÔNG TRÌNH</h1>
   <h2>DỰ ÁN: THI CÔNG XÂY DỰNG HOÀN THIỆN NHÀ Ở</h2>
 
   <div class="meta">
     KĐT VINHOMES VŨ YÊN, THỦY NGUYÊN, HẢI PHÒNG<br>
-    CĂN: <strong>DV3-26</strong>
+    CĂN: <strong id="canName">---</strong>
   </div>
 
   <!-- ===== NGÀY ===== -->
   <div class="row">
     <strong>Ngày:</strong>
-    <input class="cell" data-row="18" data-col="A" placeholder="Ngày tháng năm">
+    <input
+      class="cell"
+      data-col="A"
+      data-row="18"
+      placeholder="Ngày tháng năm">
   </div>
 
-  <!-- ===== THỜI TIẾT ===== -->
+  <!-- =====================================================
+       1. ĐIỀU KIỆN THỜI TIẾT
+       ===================================================== -->
   <div class="section-title">1. Điều kiện thời tiết</div>
+
   <div class="row">
     Buổi sáng:
-    <textarea class="cell" data-row="20" data-col="A"></textarea>
-  </div>
-  <div class="row">
-    Buổi chiều:
-    <textarea class="cell" data-row="21" data-col="A"></textarea>
+    <textarea
+      class="cell"
+      data-col="A"
+      data-row="20"></textarea>
   </div>
 
-  <!-- ===== NHÂN LỰC ===== -->
+  <div class="row">
+    Buổi chiều:
+    <textarea
+      class="cell"
+      data-col="A"
+      data-row="21"></textarea>
+  </div>
+
+  <!-- =====================================================
+       2. NHÂN LỰC THI CÔNG
+       ===================================================== -->
   <div class="section-title">2. Nhân lực thi công</div>
 
   <table>
@@ -54,55 +84,78 @@
         <th>Tiến độ</th>
       </tr>
     </thead>
+
     <tbody>
       <tr>
-        <td>1</td><td>thợ sơn</td>
-        <td><input class="cell" data-row="25" data-col="C"></td>
-        <td><input class="cell" data-row="25" data-col="D"></td>
-        <td><input class="cell" data-row="25" data-col="E"></td>
-        <td><input class="cell" data-row="25" data-col="F"></td>
+        <td>1</td>
+        <td>Thợ sơn</td>
+        <td><input class="cell" data-col="C" data-row="25"></td>
+        <td><input class="cell" data-col="D" data-row="25"></td>
+        <td><input class="cell" data-col="E" data-row="25"></td>
+        <td><input class="cell" data-col="F" data-row="25"></td>
       </tr>
+
       <tr>
-        <td>2</td><td>trần tc</td>
-        <td><input class="cell" data-row="26" data-col="C"></td>
-        <td><input class="cell" data-row="26" data-col="D"></td>
-        <td><input class="cell" data-row="26" data-col="E"></td>
-        <td><input class="cell" data-row="26" data-col="F"></td>
+        <td>2</td>
+        <td>Trần thạch cao</td>
+        <td><input class="cell" data-col="C" data-row="26"></td>
+        <td><input class="cell" data-col="D" data-row="26"></td>
+        <td><input class="cell" data-col="E" data-row="26"></td>
+        <td><input class="cell" data-col="F" data-row="26"></td>
       </tr>
+
       <tr>
-        <td>3</td><td>thợ điện</td>
-        <td><input class="cell" data-row="27" data-col="C"></td>
-        <td><input class="cell" data-row="27" data-col="D"></td>
-        <td><input class="cell" data-row="27" data-col="E"></td>
-        <td><input class="cell" data-row="27" data-col="F"></td>
+        <td>3</td>
+        <td>Thợ điện</td>
+        <td><input class="cell" data-col="C" data-row="27"></td>
+        <td><input class="cell" data-col="D" data-row="27"></td>
+        <td><input class="cell" data-col="E" data-row="27"></td>
+        <td><input class="cell" data-col="F" data-row="27"></td>
       </tr>
+
       <tr>
-        <td>4</td><td>công nhật</td>
-        <td><input class="cell" data-row="28" data-col="C"></td>
-        <td><input class="cell" data-row="28" data-col="D"></td>
-        <td><input class="cell" data-row="28" data-col="E"></td>
-        <td><input class="cell" data-row="28" data-col="F"></td>
+        <td>4</td>
+        <td>Công nhật</td>
+        <td><input class="cell" data-col="C" data-row="28"></td>
+        <td><input class="cell" data-col="D" data-row="28"></td>
+        <td><input class="cell" data-col="E" data-row="28"></td>
+        <td><input class="cell" data-col="F" data-row="28"></td>
       </tr>
+
       <tr>
-        <td>5</td><td>vsc nghiệp</td>
-        <td><input class="cell" data-row="29" data-col="C"></td>
-        <td><input class="cell" data-row="29" data-col="D"></td>
-        <td><input class="cell" data-row="29" data-col="E"></td>
-        <td><input class="cell" data-row="29" data-col="F"></td>
+        <td>5</td>
+        <td>Vệ sinh công nghiệp</td>
+        <td><input class="cell" data-col="C" data-row="29"></td>
+        <td><input class="cell" data-col="D" data-row="29"></td>
+        <td><input class="cell" data-col="E" data-row="29"></td>
+        <td><input class="cell" data-col="F" data-row="29"></td>
       </tr>
     </tbody>
   </table>
 
-  <!-- ===== SỰ CỐ ===== -->
+  <!-- =====================================================
+       3. SỰ CỐ – TỒN TẠI
+       ===================================================== -->
   <div class="section-title">3. Sự cố – tồn tại</div>
-  <textarea class="cell full" data-row="38" data-col="A"></textarea>
+  <textarea
+    class="cell full"
+    data-col="A"
+    data-row="38"></textarea>
 
-  <!-- ===== KẾT LUẬN ===== -->
+  <!-- =====================================================
+       4. KẾT LUẬN – KIẾN NGHỊ
+       ===================================================== -->
   <div class="section-title">4. Kết luận và kiến nghị</div>
-  <textarea class="cell full" data-row="40" data-col="A"></textarea>
+  <textarea
+    class="cell full"
+    data-col="A"
+    data-row="40"></textarea>
 
 </div>
 
+<!-- =====================================================
+     SCRIPT
+     ===================================================== -->
 <script src="admin.js"></script>
 </body>
 </html>
