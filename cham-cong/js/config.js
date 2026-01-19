@@ -50,5 +50,5 @@ window.APP_CONFIG = {
     log3: "https://docs.google.com/spreadsheets/d/1YX7imCB3GempjY2X9z_GUc8LDl019FZvMVJ5l_aht2c/edit#gid=2"
   },
   /* ================= VERSION ================= */
-  version: "v1.0.1"
+  version: "v1.0.0"
 };
