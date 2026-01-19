@@ -7,13 +7,8 @@
   if (window.__sheetOverlayInit) return;
   window.__sheetOverlayInit = true;
 
-  const API_BASE = window.APP_CONFIG?.api?.dashboard?.replace(/\?.*$/, "");
-
-if (!API_BASE) {
-  console.error("❌ Thiếu APP_CONFIG.api.dashboard");
-  return;
-}
-
+  const API_BASE =
+    "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
 
   let overlay,
     iframe,
@@ -71,19 +66,6 @@ if (!API_BASE) {
     `;
 
     document.body.appendChild(overlay);
-/* ===== APPLY LABEL FROM CONFIG ===== */
-const SHEET_CFG = window.APP_CONFIG?.sheet || {};
-const LABELS    = SHEET_CFG.labels || {};
-
-const setText = (id, fallback) => {
-  const el = overlay.querySelector(id);
-  if (el) el.textContent = fallback;
-};
-
-setText("#btnFile",  LABELS.file  || "File");
-setText("#btnLog1",  LABELS.log1  || "Log 1");
-setText("#btnLog2",  LABELS.log2  || "Log 2");
-setText("#btnLog3",  LABELS.log3  || "Log 3");
 
     /* ====== BẮT DOM ====== */
     iframe = overlay.querySelector("#sheetFrame");
@@ -103,44 +85,38 @@ setText("#btnLog3",  LABELS.log3  || "Log 3");
       setZoom(zoomLevel - 0.1);
 
     // Mở folder Google Drive (cố định theo cấu hình của bạn)
-    const DRIVE_FOLDER = window.APP_CONFIG?.sheet?.driveFolder;
+    overlay.querySelector("#btnFile").onclick = () => {
+      if (!currentFileId) return;
+      window.open(
+        "https://drive.google.com/drive/folders/1o3n5GABxec53ANpnS_OaDU1w0M3cGeAX",
+        "_blank"
+      );
+    };
 
-overlay.querySelector("#btnFile").onclick = () => {
-  if (DRIVE_FOLDER) {
-    window.open(DRIVE_FOLDER, "_blank");
-  }
-};
+    // Ghi NK 1 (gid = 0)
+    overlay.querySelector("#btnLog1").onclick = () => {
+      if (!currentFileId) return;
+      window.open(
+        `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=0`,
+        "_blank"
+      );
+    };
 
+    // Ghi NK 2 (file cố định)
+    overlay.querySelector("#btnLog2").onclick = () => {
+      window.open(
+        "https://docs.google.com/spreadsheets/d/138SCHzhuCnaqSJVsWqVxaFEb9iLIjFguhxoJq9ASSBw/edit#gid=1",
+        "_blank"
+      );
+    };
 
-    const SHEET_CFG = window.APP_CONFIG?.sheet;
-const LOGS = SHEET_CFG?.logs || {};
-
-// LOG 1 – theo file đang mở
-overlay.querySelector("#btnLog1").onclick = () => {
-  if (!currentFileId || !LOGS.log1) return;
-  window.open(
-    `https://docs.google.com/spreadsheets/d/${currentFileId}/edit#gid=${LOGS.log1.gid}`,
-    "_blank"
-  );
-};
-
-// LOG 2 – file cố định
-overlay.querySelector("#btnLog2").onclick = () => {
-  if (!LOGS.log2) return;
-  window.open(
-    `https://docs.google.com/spreadsheets/d/${LOGS.log2.fileId}/edit#gid=${LOGS.log2.gid}`,
-    "_blank"
-  );
-};
-
-// LOG 3 – file cố định
-overlay.querySelector("#btnLog3").onclick = () => {
-  if (!LOGS.log3) return;
-  window.open(
-    `https://docs.google.com/spreadsheets/d/${LOGS.log3.fileId}/edit#gid=${LOGS.log3.gid}`,
-    "_blank"
-  );
-};
+    // Ghi NK 3 (file cố định)
+    overlay.querySelector("#btnLog3").onclick = () => {
+      window.open(
+        "https://docs.google.com/spreadsheets/d/1YX7imCB3GempjY2X9z_GUc8LDl019FZvMVJ5l_aht2c/edit#gid=2",
+        "_blank"
+      );
+    };
 
     // Chọn file
     menuFile.onchange = () => openFile(menuFile.value);
