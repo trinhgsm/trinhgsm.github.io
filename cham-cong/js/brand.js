@@ -1,42 +1,48 @@
-/* =========================================================
-   BRAND / FOOTER / TITLE – FROM APP_CONFIG
-   ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  const cfg = window.APP_CONFIG;
-  if (!cfg) return;
-
-  /* ===== TITLE / HEADER ===== */
-  const title = document.getElementById("appTitle");
-  if (title) {
-    title.innerHTML = `<strong>${cfg.brand.name}</strong> – Dashboard tổng quan`;
+/************************************************************
+ * BRAND BINDER
+ * Lấy dữ liệu từ APP_CONFIG và gắn vào HTML
+ ************************************************************/
+(function () {
+  if (!window.APP_CONFIG) {
+    console.error("❌ APP_CONFIG not found");
+    return;
   }
 
-  /* ===== LOADING LOGO ===== */
-  const loadingBrand = document.getElementById("loadingBrand");
-  if (loadingBrand) {
-    loadingBrand.textContent = cfg.brand.logoText || cfg.brand.name;
+  const { brand, footer, version } = window.APP_CONFIG;
+
+  /* ================= LOADING LOGO ================= */
+  const logoEl = document.querySelector(".dukico-logo");
+  if (logoEl && brand?.logoText) {
+    logoEl.textContent = brand.logoText;
   }
 
-  /* ===== FOOTER LEFT ===== */
-  const footerLeft = document.getElementById("footerLeft");
-  if (footerLeft) {
+  /* ================= HEADER TITLE ================= */
+  const titleEl = document.querySelector("header.top .title");
+  if (titleEl && brand?.name) {
+    titleEl.innerHTML = `<strong>${brand.name}</strong> – Dashboard tổng quan`;
+  }
+
+  /* ================= FOOTER ================= */
+  const yearEl = document.getElementById("year");
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
+
+  const footerLeft = document.querySelector(".footer-left");
+  if (footerLeft && footer) {
     footerLeft.innerHTML = `
-      © <span id="year">${new Date().getFullYear()}</span>
-      ${cfg.brand.name}
-      ${cfg.footer?.devName ? `
-        · <span class="dev">
-          Phát triển bởi
-          <a href="${cfg.footer.devUrl}" target="_blank" rel="noopener">
-            ${cfg.footer.devName}
-          </a>
-        </span>
-      ` : ""}
+      © ${new Date().getFullYear()} ${brand?.short || ""}
+      · <span class="dev">
+        ${footer.devName
+          ? `Phát triển bởi <a href="${footer.devUrl}" target="_blank" rel="noopener">${footer.devName}</a>`
+          : ""}
+      </span>
     `;
   }
 
-  /* ===== FOOTER RIGHT ===== */
-  const footerRight = document.getElementById("footerRight");
-  if (footerRight) {
-    footerRight.innerHTML = `Phiên bản ${cfg.version || ""}`;
+  const versionEl = document.getElementById("appVersion");
+  if (versionEl && version) {
+    versionEl.textContent = version;
   }
-});
+
+})();
