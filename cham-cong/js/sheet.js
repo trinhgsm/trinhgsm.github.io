@@ -7,8 +7,8 @@
   if (window.__sheetOverlayInit) return;
   window.__sheetOverlayInit = true;
 
-  const API_BASE =
-    "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec";
+ const API_BASE = window.APP_CONFIG.api.base;
+
 
   let overlay,
     iframe,
