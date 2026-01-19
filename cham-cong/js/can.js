@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // năm footer
 //document.getElementById("year").textContent = new Date().getFullYear();
   // đổi phiên bản tại đây
-  const v = document.getElementById("appVersion");
-  if (v) v.textContent = "v1.0.1";
+  //const v = document.getElementById("appVersion");
+  //if (v) v.textContent = "v1.0.1";
 });
 document.addEventListener("DOMContentLoaded",loadCan);
