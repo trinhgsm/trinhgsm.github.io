@@ -8,7 +8,7 @@ window.APP_CONFIG = {
   brand: {
     name: "PROXYMMO", //logo
     short: "PROXYMMO", //footer
-    logoText: "PROXYMMO",      // dùng cho loading + header
+    logoText: "MMO",      // dùng cho loading + header
     url: "/"                // click logo
   },
 
