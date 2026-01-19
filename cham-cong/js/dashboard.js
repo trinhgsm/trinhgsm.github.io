@@ -823,7 +823,7 @@ function toggleCardQR(btn) {
     }
   });
 // năm footer
-document.getElementById("year").textContent = new Date().getFullYear();
+//document.getElementById("year").textContent = new Date().getFullYear();
 })();
 // 🚀 BẮT ĐẦU LOAD DASHBOARD
 loadDashboard();
