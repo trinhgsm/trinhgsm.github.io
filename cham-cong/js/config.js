@@ -1,39 +1,50 @@
+/* =========================================================
+   APP CONFIG – SINGLE SOURCE OF TRUTH
+   ========================================================= */
+
 window.APP_CONFIG = {
+
+  /* ================= BRAND ================= */
   brand: {
     name: "DUKICO",
     short: "DUKICO",
-    logoText: "DUKICO",
-    url: "/"
+    logoText: "DUKICO",      // dùng cho loading + header
+    url: "/"                // click logo
   },
 
+  /* ================= FOOTER ================= */
   footer: {
     text: "Dashboard nội bộ",
     devName: "Hà Trịnh",
     devUrl: "/"
   },
 
+  /* ================= API (GAS) ================= */
   api: {
-    dashboard:
-      "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard"
-  },
+    /* 🔴 LINK GỐC – CHỈ KHAI BÁO 1 LẦN */
+    base: "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec",
 
-  /* ================= SHEET CONFIG ================= */
-  sheet: {
-    driveFolder: "https://drive.google.com/drive/folders/1o3n5GABxec53ANpnS_OaDU1w0M3cGeAX",
-
-    logs: {
-      log1: { fileId: "CURRENT", gid: 0 },   // Nhật ký chính (theo file đang mở)
-      log2: { fileId: "138SCHzhuCnaqSJVsWqVxaFEb9iLIjFguhxoJq9ASSBw", gid: 1 },
-      log3: { fileId: "1YX7imCB3GempjY2X9z_GUc8LDl019FZvMVJ5l_aht2c", gid: 2 }
+    /* ===== CASE 1: GỌI GỐC /exec ===== */
+    root() {
+      return this.base;
     },
 
-    labels: {
-      file: "File",
-      log1: "Ghi nhật ký",
-      log2: "Thu chi",
-      log3: "Cấu hình"
+    /* ===== CASE 2: DASHBOARD ===== */
+    dashboard() {
+      return this.base + "?action=dashboard";
+    },
+
+    /* ===== CASE 3: CHI TIẾT 1 CĂN ===== */
+    unit(maCan) {
+      return this.base + "?action=unit&ma=" + encodeURIComponent(maCan);
+    },
+
+    /* ===== CASE 4: CONFIG (SAU NÀY DÙNG) ===== */
+    config() {
+      return this.base + "?action=config";
     }
   },
 
+  /* ================= VERSION ================= */
   version: "v1.0.1"
 };
