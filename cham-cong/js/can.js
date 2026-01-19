@@ -25,7 +25,7 @@ async function loadCan(){
     return;
   }
 
-  const res = await fetch(DASH_API);
+  const res = await fetch(APP_CONFIG);
   const data = await res.json();
   const unit = data.units.find(u=>u.maCan.toUpperCase()===maCan);
 
