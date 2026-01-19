@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title id="pageTitle">Tiến độ công trình</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/can.css">
+
+  <!-- Chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <!-- ================= HEADER ================= -->
+  <header class="header">
+    <h1 id="brandTitle">TIẾN ĐỘ CÔNG TRÌNH</h1>
+
+    <div class="marquee">
+      <span id="tickerText">Đang tải dữ liệu...</span>
+    </div>
+
+    <div class="macan" id="maCanText">Mã căn: --</div>
+  </header>
+
+  <!-- ================= SUMMARY ================= -->
+  <section class="card big">
+    <div class="percent" id="percent">--%</div>
+    <div class="status-text" id="statusText">--</div>
+    <div class="update-time" id="updateTime">Cập nhật: --</div>
+  </section>
+
+  <!-- ================= BASIC INFO ================= -->
+  <section class="grid">
+    <div class="card">
+      <label>Bắt đầu</label>
+      <div id="startDate">--</div>
+    </div>
+
+    <div class="card">
+      <label>Dự kiến hoàn thành</label>
+      <div id="endDate">--</div>
+    </div>
+
+    <div class="card">
+      <label>Công</label>
+      <div id="congText">--</div>
+    </div>
+
+    <div class="card">
+      <label>Thi công</label>
+      <div id="siteStatus">--</div>
+    </div>
+  </section>
+
+  <!-- ================= MANAGER ================= -->
+  <section class="grid">
+    <div class="card">
+      <label>Chỉ huy trưởng</label>
+      <div id="manager1">--</div>
+      <a id="manager1Phone" class="phone" href="#" style="display:none"></a>
+    </div>
+
+    <div class="card">
+      <label>Trợ lý</label>
+      <div id="manager2">--</div>
+      <a id="manager2Phone" class="phone" href="#" style="display:none"></a>
+    </div>
+  </section>
+
+  <!-- ================= CHART ================= -->
+  <section class="card">
+    <canvas id="teamChart"></canvas>
+  </section>
+
+  <!-- ================= LOG ================= -->
+  <section class="card">
+    <h3>NHẬT KÝ GẦN NHẤT</h3>
+    <ul id="logList"></ul>
+  </section>
+
+  <!-- ================= ACTIONS ================= -->
+  <section class="actions">
+    <button onclick="window.print()">In</button>
+    <button onclick="toggleQR()">Mã QR</button>
+  </section>
+
+  <div id="qrBox" class="qr-box hidden"></div>
+
+</div>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="footer-left">
+    © <span id="year"></span>
+    <span id="footerBrand"></span>
+    ·
+    <span class="dev">
+      <span id="footerDevText"></span>
+      <a id="footerDevLink" href="#" target="_blank" rel="noopener"></a>
+    </span>
+  </div>
+
+  <div class="footer-right">
+    Phiên bản <span id="appVersion"></span>
+  </div>
+</footer>
+
+<!-- ================= JS (ORDER IS IMPORTANT) ================= -->
+<script src="js/config.js"></script>
+<script src="js/brand.js"></script>
+<script src="js/can.js"></script>
+<script src="js/logo.js"></script>
+
+</body>
+</html>
