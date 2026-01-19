@@ -824,6 +824,39 @@ function toggleCardQR(btn) {
   });
 // năm footer
 //document.getElementById("year").textContent = new Date().getFullYear();
+/* =========================================================
+   FOOTER – RENDER TỪ APP_CONFIG
+   ========================================================= */
+(function renderFooterFromConfig() {
+  if (!window.APP_CONFIG?.footer) return;
+
+  const yearEl = document.getElementById("year");
+  const footerLeft = document.querySelector(".footer-left .dev");
+  const versionEl = document.getElementById("appVersion");
+
+  // năm
+  if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+  }
+
+  // dev name + link
+  if (footerLeft) {
+    const { devName, devUrl } = window.APP_CONFIG.footer;
+    if (devName && devUrl) {
+      footerLeft.innerHTML = `
+        Phát triển bởi
+        <a href="${devUrl}" target="_blank" rel="noopener">
+          ${devName}
+        </a>
+      `;
+    }
+  }
+
+  // version
+  if (versionEl && window.APP_CONFIG.version) {
+    versionEl.textContent = window.APP_CONFIG.version;
+  }
 })();
+
 // 🚀 BẮT ĐẦU LOAD DASHBOARD
 loadDashboard();
