@@ -6,9 +6,9 @@ window.APP_CONFIG = {
 
   /* ================= BRAND ================= */
   brand: {
-    name: "DUKICO",
-    short: "DUKICO",
-    logoText: "DUKICO",      // dùng cho loading + header
+    name: "DUKICO1",
+    short: "DUKICO2",
+    logoText: "DUKICO3",      // dùng cho loading + header
     url: "/"                // click logo
   },
 
