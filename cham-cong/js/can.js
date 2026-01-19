@@ -1,10 +1,18 @@
-const DASH_API =
-  "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
+/* ========= CONFIG ========= */
+const DASH_API = window.APP_CONFIG?.api?.dashboard;
+
+if (!DASH_API) {
+  document.body.innerHTML = "❌ Thiếu cấu hình API dashboard";
+  throw new Error("APP_CONFIG.api.dashboard not found");
+}
+
+/* ========= DOM ========= */
 const m1e1 = document.getElementById("manager1");
 const m2e2 = document.getElementById("manager2");
 const p1   = document.getElementById("phone1");
 const p2   = document.getElementById("phone2");
 let chart = null;
+
 
 /* ========= UTIL ========= */
 function getMaCan(){
