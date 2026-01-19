@@ -2,94 +2,89 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>DUKICO – Dashboard Tiến Độ & Tài Chính</title>
+  <title>Dashboard</title>
 
   <!-- Viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- CSS -->
   <link rel="stylesheet" href="css/dashboard.css" />
-  <link rel="stylesheet" href="css/sheet.css">
-  <link rel="stylesheet" href="css/logo.css">
+  <link rel="stylesheet" href="css/sheet.css" />
+  <link rel="stylesheet" href="css/logo.css" />
+
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- == <script src="https://cdn.jsdelivr.net/npm/blueimp-md5/js/md5.min.js"></script> == -->
-
 </head>
+
 <body>
-<!-- ===== LOADING OVERLAY ===== -->
-  <div id="loadingOverlay">
-    <div class="loading-wrap">
-      <div class="loading-ring"></div>
 
-      <div class="loading-core">
-        <div class="dukico-logo">
-          D<span class="uk">
-            <span class="u">U</span><span class="k">K</span>
-          </span>ICO
-        </div>
-      </div>
+<!-- ================= LOADING OVERLAY ================= -->
+<div id="loadingOverlay">
+  <div class="loading-wrap">
+    <div class="loading-ring"></div>
 
-      <div class="loading-text">ĐANG TẢI…</div>
+    <div class="loading-core">
+      <!-- LOGO TEXT – LẤY TỪ CONFIG -->
+      <div class="dukico-logo" id="brandLogo"></div>
     </div>
+
+    <div class="loading-text">ĐANG TẢI…</div>
   </div>
+</div>
 
-  <!-- ===== LOCK SCREEN ===== -->
-  <div id="lockScreen">
-    <div id="lockBox">
-      <h2>Mật khẩu</h2>
-      <p>Nhập mật khẩu để tiếp tục</p>
+<!-- ================= LOCK SCREEN ================= -->
+<div id="lockScreen">
+  <div id="lockBox">
+    <h2>Mật khẩu</h2>
+    <p>Nhập mật khẩu để tiếp tục</p>
 
-      <input
-        id="passwordInput"
-        type="password"
-        placeholder="Mật khẩu..."
-      />
+    <input
+      id="passwordInput"
+      type="password"
+      placeholder="Mật khẩu..."
+    />
 
-      <div id="passwordError"></div>
+    <div id="passwordError"></div>
 
-      <button id="unlockBtn">MỞ</button>
-    </div>
+    <button id="unlockBtn">MỞ</button>
   </div>
-  <!-- ================= TOP BAR ================= -->
-  <header class="top">
-  <div class="title">
-    <strong>DUKICO</strong> – Dashboard tổng quan
-  </div>
+</div>
+
+<!-- ================= TOP BAR ================= -->
+<header class="top">
+  <!-- TITLE – LẤY TỪ CONFIG -->
+  <div class="title" id="brandHeader"></div>
 
   <div id="genTime">Đang tải dữ liệu…</div>
 
   <div id="activityTicker" class="ticker"></div>
 </header>
 
-  <!-- ================= DASHBOARD ================= -->
-  <main id="dashboard" class="dashboard loading">
+<!-- ================= DASHBOARD ================= -->
+<main id="dashboard" class="dashboard loading">
 
   <!-- ===== HÀNG TRÊN ===== -->
   <section class="top-row">
 
-  <!-- Cột 1: Tổng dự án -->
-  <div class="card">
-  <div id="projectCard">
-    <h2>TỔNG DỰ ÁN</h2>
-
-    <div class="chart-wrap" style="height:240px">
-      <canvas id="projectStatusChart"></canvas>
+    <!-- Tổng dự án -->
+    <div class="card">
+      <div id="projectCard">
+        <h2>TỔNG DỰ ÁN</h2>
+        <div class="chart-wrap" style="height:240px">
+          <canvas id="projectStatusChart"></canvas>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
 
-
-  <!-- Cột 2: Tổng quan tiến độ -->
-  <div class="card card--stretch">
-    <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
-    <div class="chart-wrap">
-      <canvas id="unitOverviewChart"></canvas>
+    <!-- Tổng quan tiến độ -->
+    <div class="card card--stretch">
+      <h2>TỔNG QUAN TIẾN ĐỘ CÁC CĂN</h2>
+      <div class="chart-wrap">
+        <canvas id="unitOverviewChart"></canvas>
+      </div>
     </div>
-  </div>
 
-</section>
-
+  </section>
 
   <!-- ===== HÀNG DƯỚI ===== -->
   <section class="bottom-row">
@@ -100,18 +95,17 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
 
-      <!-- Widget 1: Cảnh báo -->
+      <!-- Cảnh báo -->
       <div class="card sidebar-widget">
         <h2>CẢNH BÁO TIẾN ĐỘ</h2>
         <div class="widget-body" id="sidebarSummary"></div>
       </div>
 
-      <!-- Widget 2: Phân bổ theo tổ -->
-     <div class="card sidebar-widget sidebar-widget--stretch">
-  <h2>PHÂN BỔ CÔNG THEO TỔ</h2>
-  <div class="widget-body" id="sidebarDetail"></div>
-</div>
-
+      <!-- Phân bổ công theo tổ -->
+      <div class="card sidebar-widget sidebar-widget--stretch">
+        <h2>PHÂN BỔ CÔNG THEO TỔ</h2>
+        <div class="widget-body" id="sidebarDetail"></div>
+      </div>
 
     </aside>
 
@@ -119,29 +113,28 @@
 
 </main>
 
-
-  <!-- ================= FOOTER ================= -->
+<!-- ================= FOOTER ================= -->
 <footer class="footer">
   <div class="footer-left">
-    © <span id="year"></span> DUKICO ·
+    © <span id="year"></span>
     <span class="dev">
-      Phát triển bởi
-      <a href="/" target="_blank" rel="noopener">
-        Hà Trịnh
-      </a>
+      <a href="#" target="_blank" rel="noopener"></a>
     </span>
   </div>
 
   <div class="footer-right">
-    Phiên bản <span id="appVersion">v1.0.0</span>
+    Phiên bản <span id="appVersion"></span>
   </div>
 </footer>
 
-  <!-- ================= JS ================= -->
-  <script src="js/config.js"></script>
-  <script src="js/dashboard.js"></script>
-  <script src="js/logo.js"></script>
+<!-- ================= FLOATING BUTTON ================= -->
 <button id="openSheetBtn" class="sheet-fab">📄 Sheet</button>
+
+<!-- ================= JS ================= -->
+<script src="js/config.js"></script>
+<script src="js/brand.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/logo.js"></script>
 
 </body>
 </html>
