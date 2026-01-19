@@ -1,22 +1,42 @@
-(function () {
-  if (!window.APP_CONFIG) return;
+/* =========================================================
+   BRAND / FOOTER / TITLE – FROM APP_CONFIG
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+  const cfg = window.APP_CONFIG;
+  if (!cfg) return;
 
-  const { brand, version } = window.APP_CONFIG;
-
-  /* ===== TITLE ===== */
-  document.title = `${brand.name} – Dashboard`;
-
-  /* ===== LOGO LOADING ===== */
-  const logo = document.getElementById("brandLogo");
-  if (logo) logo.textContent = brand.logoText || brand.name;
-
-  /* ===== HEADER ===== */
-  const header = document.getElementById("brandHeader");
-  if (header) {
-    header.innerHTML = `<strong>${brand.short}</strong> – Dashboard tổng quan`;
+  /* ===== TITLE / HEADER ===== */
+  const title = document.getElementById("appTitle");
+  if (title) {
+    title.innerHTML = `<strong>${cfg.brand.name}</strong> – Dashboard tổng quan`;
   }
 
-  /* ===== VERSION ===== */
-  const v = document.getElementById("appVersion");
-  if (v) v.textContent = version;
-})();
+  /* ===== LOADING LOGO ===== */
+  const loadingBrand = document.getElementById("loadingBrand");
+  if (loadingBrand) {
+    loadingBrand.textContent = cfg.brand.logoText || cfg.brand.name;
+  }
+
+  /* ===== FOOTER LEFT ===== */
+  const footerLeft = document.getElementById("footerLeft");
+  if (footerLeft) {
+    footerLeft.innerHTML = `
+      © <span id="year">${new Date().getFullYear()}</span>
+      ${cfg.brand.name}
+      ${cfg.footer?.devName ? `
+        · <span class="dev">
+          Phát triển bởi
+          <a href="${cfg.footer.devUrl}" target="_blank" rel="noopener">
+            ${cfg.footer.devName}
+          </a>
+        </span>
+      ` : ""}
+    `;
+  }
+
+  /* ===== FOOTER RIGHT ===== */
+  const footerRight = document.getElementById("footerRight");
+  if (footerRight) {
+    footerRight.innerHTML = `Phiên bản ${cfg.version || ""}`;
+  }
+});
