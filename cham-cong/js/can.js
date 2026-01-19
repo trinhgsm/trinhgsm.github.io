@@ -25,7 +25,7 @@ async function loadCan(){
     return;
   }
 
-  const res = await fetch(APP_CONFIG);
+  const res = await fetch(API_URL);
   const data = await res.json();
   const unit = data.units.find(u=>u.maCan.toUpperCase()===maCan);
 
