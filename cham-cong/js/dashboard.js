@@ -3,12 +3,19 @@
  * QUẢN LÝ UI + DASHBOARD + NÚT SHEET
  ************************************************************/
 
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbyoQOB3un6fU-bMkeIiU6s7Jy9zWSoi-JDCq2Db-YQyB2uW9gUKZv9kTr9TBpZHXVRD/exec?action=dashboard";
+/* ========= CONFIG ========= */
+const API_URL = window.APP_CONFIG?.api?.dashboard;
 
+if (!API_URL) {
+  console.error("❌ Thiếu cấu hình API dashboard trong APP_CONFIG");
+  throw new Error("APP_CONFIG.api.dashboard not found");
+}
+
+/* ========= STATE ========= */
 let projectChart = null;
 let unitOverviewChart = null;
 let SITE_MAP = {};
+
 /* =========================================================
    🔴 TRUNG TÂM QUẢN LÝ NÚT SHEET (DUY NHẤT)
    ========================================================= */
