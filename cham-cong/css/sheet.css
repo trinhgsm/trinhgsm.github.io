@@ -134,7 +134,7 @@
    ========================================================= */
 @media (min-width: 769px) {
   .sheet-menu {
-    top: 52px;              /* 🔴 ĐẨY LÊN TRÊN */
+    top: 44px;              /* 🔴 ĐẨY LÊN TRÊN */
     right: 8px;
     transform: none;        /* 🔴 BỎ căn giữa */
 
