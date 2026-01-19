@@ -102,21 +102,14 @@
       );
     };
 
-    // Ghi NK 2 (file cố định)
-    overlay.querySelector("#btnLog2").onclick = () => {
-      window.open(
-        "https://docs.google.com/spreadsheets/d/138SCHzhuCnaqSJVsWqVxaFEb9iLIjFguhxoJq9ASSBw/edit#gid=1",
-        "_blank"
-      );
-    };
+   overlay.querySelector("#btnLog2").onclick = () => {
+  window.open(window.APP_CONFIG.sheets.log2, "_blank");
+};
 
-    // Ghi NK 3 (file cố định)
-    overlay.querySelector("#btnLog3").onclick = () => {
-      window.open(
-        "https://docs.google.com/spreadsheets/d/1YX7imCB3GempjY2X9z_GUc8LDl019FZvMVJ5l_aht2c/edit#gid=2",
-        "_blank"
-      );
-    };
+overlay.querySelector("#btnLog3").onclick = () => {
+  window.open(window.APP_CONFIG.sheets.log3, "_blank");
+};
+
 
     // Chọn file
     menuFile.onchange = () => openFile(menuFile.value);
