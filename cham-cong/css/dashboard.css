@@ -826,6 +826,22 @@ header.top .title {
   font-size: 0.7rem;
   opacity: 0.85;
 }
+/* ===== KẺ DỌC PHÂN 2 CỘT – PHÂN BỔ CÔNG THEO TỔ ===== */
+.sidebar-widget--stretch .widget-body {
+  position: relative;
+}
+
+/* đường kẻ giữa */
+.sidebar-widget--stretch .widget-body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+
+  width: 1px;
+  background: rgba(148,163,184,.25);
+}
 
 /* mobile */
 @media (max-width: 1024px) {
