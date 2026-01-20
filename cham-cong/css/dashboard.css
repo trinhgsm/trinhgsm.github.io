@@ -789,3 +789,29 @@ header.top .title {
     animation: tickerMove 130s linear infinite;
   }
 }
+
+
+
+/* ===== FIX: CHỈ WIDGET PHÂN BỔ ĐƯỢC CUỘN ===== */
+
+/* 1. KHÓA CHIỀU CAO HÀNG DƯỚI */
+.bottom-row {
+  height: calc(100vh - 360px); /* 👈 điều chỉnh 360 nếu cần */
+}
+
+/* 2. SIDEBAR CHIẾM ĐẦY CHIỀU CAO */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 3. CHỈ WIDGET PHÂN BỔ CUỘN */
+.sidebar-widget--stretch {
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar-widget--stretch .widget-body {
+  overflow-y: auto;
+}
