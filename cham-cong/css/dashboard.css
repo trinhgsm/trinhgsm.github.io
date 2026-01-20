@@ -797,55 +797,31 @@ header.top .title {
 
 
 
-/* =========================================================
-   PHÂN BỔ CÔNG THEO TỔ – 2 CỘT, 1 CĂN = 1 BLOCK
-   - Đổ hết cột 1 → mới sang cột 2
-   - KHÔNG cắt giữa căn
-   - KHÔNG grid
-   ========================================================= */
-
-/* widget phân bổ */
+/* widget body */
 .sidebar-widget--stretch .widget-body {
-  column-count: 2;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   column-gap: 20px;
+  row-gap: 12px;
 
-  /* cho phép cuộn nếu cực dài */
   overflow-y: auto;
-  min-height: 0;
 }
 
-/* ===== ĐỊNH NGHĨA 1 CĂN = 1 BLOCK ===== */
-/* giả định: mỗi căn bắt đầu bằng <strong> */
-.sidebar-widget--stretch .widget-body strong {
-  display: block;
-
-  margin-top: 10px;
-  padding-top: 6px;
-
-  font-weight: 600;
-
-  /* 🔒 KHÓA KHÔNG CHO BỊ CẮT */
-  break-before: avoid;
-  break-after: avoid;
-  break-inside: avoid;
-}
-
-/* toàn bộ nội dung thuộc cùng căn
-   (các dòng ngay sau strong) */
-.sidebar-widget--stretch .widget-body strong,
-.sidebar-widget--stretch .widget-body strong + * {
-  break-inside: avoid;
-}
-
-/* đường phân cách nhẹ giữa các căn */
-.sidebar-widget--stretch .widget-body strong {
+/* mỗi căn = 1 block */
+.can-block {
+  padding-bottom: 6px;
   border-bottom: 1px dashed rgba(148,163,184,.2);
-  padding-bottom: 4px;
 }
 
-/* ===== RESPONSIVE ===== */
+/* tiêu đề căn */
+.can-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* mobile */
 @media (max-width: 1024px) {
   .sidebar-widget--stretch .widget-body {
-    column-count: 1;
+    grid-template-columns: 1fr;
   }
 }
