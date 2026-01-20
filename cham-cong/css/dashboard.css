@@ -789,3 +789,32 @@ header.top .title {
     animation: tickerMove 130s linear infinite;
   }
 }
+
+
+
+
+
+
+
+
+/* =========================================================
+   PHÂN BỔ CÔNG THEO TỔ – CHIA 2 CỘT (CHỈ WIDGET NÀY)
+   ========================================================= */
+.sidebar-widget--stretch .widget-body {
+  column-count: 2;
+  column-gap: 16px;
+
+  /* giữ layout ổn định */
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* mỗi block không bị cắt giữa 2 cột */
+.sidebar-widget--stretch .widget-body > * {
+  break-inside: avoid;
+}
+@media (max-width: 1024px) {
+  .sidebar-widget--stretch .widget-body {
+    column-count: 1;
+  }
+}
