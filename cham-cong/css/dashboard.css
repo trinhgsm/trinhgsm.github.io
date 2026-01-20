@@ -798,23 +798,28 @@ header.top .title {
 
 
 /* =========================================================
-   PHÂN BỔ CÔNG THEO TỔ – CHIA 2 CỘT (CHỈ WIDGET NÀY)
+   PHÂN BỔ CÔNG THEO TỔ – GRID 2 CỘT (THEO CĂN)
    ========================================================= */
-.sidebar-widget--stretch .widget-body {
-  column-count: 2;
-  column-gap: 16px;
 
-  /* giữ layout ổn định */
+/* widget body thành grid */
+.sidebar-widget--stretch .widget-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;   /* 2 cột rõ ràng */
+  column-gap: 20px;
+  row-gap: 10px;
+
   overflow-y: auto;
   min-height: 0;
 }
 
-/* mỗi block không bị cắt giữa 2 cột */
+/* mỗi căn là 1 block riêng */
 .sidebar-widget--stretch .widget-body > * {
   break-inside: avoid;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed rgba(148,163,184,.15);
 }
 @media (max-width: 1024px) {
   .sidebar-widget--stretch .widget-body {
-    column-count: 1;
+    grid-template-columns: 1fr; /* mobile = 1 cột */
   }
 }
