@@ -798,28 +798,54 @@ header.top .title {
 
 
 /* =========================================================
-   PHÂN BỔ CÔNG THEO TỔ – GRID 2 CỘT (THEO CĂN)
+   PHÂN BỔ CÔNG THEO TỔ – 2 CỘT, 1 CĂN = 1 BLOCK
+   - Đổ hết cột 1 → mới sang cột 2
+   - KHÔNG cắt giữa căn
+   - KHÔNG grid
    ========================================================= */
 
-/* widget body thành grid */
+/* widget phân bổ */
 .sidebar-widget--stretch .widget-body {
-  display: grid;
-  grid-template-columns: 1fr 1fr;   /* 2 cột rõ ràng */
+  column-count: 2;
   column-gap: 20px;
-  row-gap: 10px;
 
+  /* cho phép cuộn nếu cực dài */
   overflow-y: auto;
   min-height: 0;
 }
 
-/* mỗi căn là 1 block riêng */
-.sidebar-widget--stretch .widget-body > * {
+/* ===== ĐỊNH NGHĨA 1 CĂN = 1 BLOCK ===== */
+/* giả định: mỗi căn bắt đầu bằng <strong> */
+.sidebar-widget--stretch .widget-body strong {
+  display: block;
+
+  margin-top: 10px;
+  padding-top: 6px;
+
+  font-weight: 600;
+
+  /* 🔒 KHÓA KHÔNG CHO BỊ CẮT */
+  break-before: avoid;
+  break-after: avoid;
   break-inside: avoid;
-  padding-bottom: 6px;
-  border-bottom: 1px dashed rgba(148,163,184,.15);
 }
+
+/* toàn bộ nội dung thuộc cùng căn
+   (các dòng ngay sau strong) */
+.sidebar-widget--stretch .widget-body strong,
+.sidebar-widget--stretch .widget-body strong + * {
+  break-inside: avoid;
+}
+
+/* đường phân cách nhẹ giữa các căn */
+.sidebar-widget--stretch .widget-body strong {
+  border-bottom: 1px dashed rgba(148,163,184,.2);
+  padding-bottom: 4px;
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
   .sidebar-widget--stretch .widget-body {
-    grid-template-columns: 1fr; /* mobile = 1 cột */
+    column-count: 1;
   }
 }
