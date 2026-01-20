@@ -452,33 +452,38 @@ ${site ? `
 }
 
 /* =========================================================
-   SIDEBAR DETAIL – TỔ ĐỘI
+   SIDEBAR DETAIL – TỔ ĐỘI (BLOCK SAFE – 2 CỘT)
    ========================================================= */
 function renderSidebarDetail(units) {
   const box = document.getElementById("sidebarDetail");
   if (!box) return;
 
-  let html = "";
+  box.innerHTML = "";
 
   units.forEach(u => {
-    html += `
-      <div class="legend-item">
-        <strong>${u.maCan}</strong> – ${u.actualCong} công
+    // 🔒 1 căn = 1 block (KHÔNG BAO GIỜ BỊ CHIA)
+    const block = document.createElement("div");
+    block.className = "can-block";
+
+    let inner = `
+      <div class="can-title">
+        ${u.maCan} – ${u.actualCong} công
       </div>
     `;
 
     if (u.byTeam) {
       Object.keys(u.byTeam).forEach(team => {
-        html += `
-          <div class="legend-sub">
+        inner += `
+          <div class="can-row">
             Tổ ${team.toUpperCase()}: ${u.byTeam[team]} công
           </div>
         `;
       });
     }
-  });
 
-  box.innerHTML = html;
+    block.innerHTML = inner;
+    box.appendChild(block);
+  });
 }
 
 /* =========================================================
