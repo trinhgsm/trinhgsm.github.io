@@ -136,11 +136,17 @@ body {
    WIDGET BODY (SIDEBAR / CẢNH BÁO)
    ========================================================= */
 .widget-body {
-  flex: 1;
-  overflow-y: auto;     /* 👈 chỉ cuộn khi thiếu */
-  min-height: 0;        /* 👈 BẮT BUỘC cho flex scroll */
+  flex: 1 1 auto;
+
+  max-height: 100%;     /* 🔒 KHÓA TRONG CARD */
+  min-height: 0;        /* 🔴 BẮT BUỘC */
+
+  overflow-y: auto;     /* ✅ CUỘN NỘI BỘ */
+  overflow-x: hidden;
+
   padding-right: 4px;
 }
+
 
 /* =========================================================
    CẢNH BÁO TIẾN ĐỘ
