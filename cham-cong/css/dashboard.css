@@ -797,21 +797,25 @@ header.top .title {
 
 
 
-/* ===============================
-   PHÂN BỔ CÔNG THEO TỔ – 2 CỘT BLOCK
-   =============================== */
+/* =========================================================
+   PHÂN BỔ CÔNG THEO TỔ – BLOCK + RESPONSIVE (FINAL)
+   ========================================================= */
+
+/* ===== WIDGET BODY ===== */
 .sidebar-widget--stretch .widget-body {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;   /* PC: 2 cột */
   gap: 16px;
 
   overflow-y: auto;
+  min-height: 0;
+  position: relative;
 }
 
-/* 1 căn = 1 block */
+/* ===== 1 CĂN = 1 BLOCK ===== */
 .can-block {
+  padding-bottom: 8px;
   border-bottom: 1px dashed rgba(148,163,184,.25);
-  padding-bottom: 6px;
 }
 
 /* tiêu đề căn */
@@ -819,33 +823,59 @@ header.top .title {
   font-weight: 600;
   font-size: 0.75rem;
   margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* dòng tổ */
 .can-row {
   font-size: 0.7rem;
   opacity: 0.85;
-}
-/* ===== KẺ DỌC PHÂN 2 CỘT – PHÂN BỔ CÔNG THEO TỔ ===== */
-.sidebar-widget--stretch .widget-body {
-  position: relative;
+  line-height: 1.4;
 }
 
-/* đường kẻ giữa */
-.sidebar-widget--stretch .widget-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
+/* =========================================================
+   PC / DESKTOP – KẺ DỌC PHÂN CỘT
+   ========================================================= */
+@media (min-width: 1025px) {
+  .sidebar-widget--stretch .widget-body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
 
-  width: 1px;
-  background: rgba(148,163,184,.25);
+    width: 1px;
+    background: rgba(148,163,184,.25);
+    pointer-events: none;
+  }
 }
 
-/* mobile */
+/* =========================================================
+   MOBILE / TABLET – 1 CỘT, BLOCK TO, DỄ ĐỌC
+   ========================================================= */
 @media (max-width: 1024px) {
+
   .sidebar-widget--stretch .widget-body {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;   /* 1 cột */
+    row-gap: 14px;
+  }
+
+  /* bỏ kẻ dọc */
+  .sidebar-widget--stretch .widget-body::before {
+    display: none;
+  }
+
+  .can-block {
+    padding-bottom: 12px;
+  }
+
+  .can-title {
+    font-size: 0.85rem;           /* to hơn cho mobile */
+  }
+
+  .can-row {
+    font-size: 0.8rem;            /* to hơn cho mobile */
   }
 }
