@@ -797,26 +797,34 @@ header.top .title {
 
 
 
-/* widget body */
+/* ===============================
+   PHÂN BỔ CÔNG THEO TỔ – 2 CỘT BLOCK
+   =============================== */
 .sidebar-widget--stretch .widget-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  column-gap: 20px;
-  row-gap: 12px;
+  gap: 16px;
 
   overflow-y: auto;
 }
 
-/* mỗi căn = 1 block */
+/* 1 căn = 1 block */
 .can-block {
+  border-bottom: 1px dashed rgba(148,163,184,.25);
   padding-bottom: 6px;
-  border-bottom: 1px dashed rgba(148,163,184,.2);
 }
 
 /* tiêu đề căn */
 .can-title {
   font-weight: 600;
+  font-size: 0.75rem;
   margin-bottom: 4px;
+}
+
+/* dòng tổ */
+.can-row {
+  font-size: 0.7rem;
+  opacity: 0.85;
 }
 
 /* mobile */
