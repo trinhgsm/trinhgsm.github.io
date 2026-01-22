@@ -155,26 +155,51 @@ document.addEventListener("DOMContentLoaded", () => {
   //if (v) v.textContent = "v1.0.1";
 
 });
-/* ========= CALENDAR ========= */
-async function renderCalendar(unit) {
+/* ========= CALENDAR + PDF ========= */
+
+let calYear, calMonth; // month: 0-11
+
+function initCalendar(unit){
+  const now = new Date();
+  calYear  = now.getFullYear();
+  calMonth = now.getMonth();
+
+  document.getElementById("calPrev").onclick = () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendar(unit);
+  };
+
+  document.getElementById("calNext").onclick = () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendar(unit);
+  };
+
+  renderCalendar(unit);
+}
+
+async function renderCalendar(unit){
   const box = document.getElementById("calendar");
+  const title = document.getElementById("calTitle");
   if (!box) return;
 
   box.innerHTML = "";
+  title.textContent = `${calMonth + 1}-${calYear}`;
 
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth(); // tháng hiện tại
-
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
 
   for (let d = 1; d <= daysInMonth; d++) {
     const el = document.createElement("div");
     el.className = "cal-day no-pdf";
-    el.textContent = d;
 
-    const monthKey = (month + 1) + "-" + year;
-    const dayStr = String(d).padStart(2, "0");
+    const dayStr = String(d).padStart(2,"0");
+    const monthKey = (calMonth + 1) + "-" + calYear;
+
+    el.innerHTML = `
+      <div class="solar">${d}</div>
+      <div class="lunar">${getLunar(d, calMonth + 1, calYear)}</div>
+    `;
 
     const pdfUrl =
       window.APP_CONFIG.api.root() +
@@ -185,19 +210,27 @@ async function renderCalendar(unit) {
 
     try {
       const res = await fetch(pdfUrl);
-      const text = await res.text();
-
-      if (text.startsWith("{")) {
-        const js = JSON.parse(text);
+      const txt = await res.text();
+      if (txt.startsWith("{")) {
+        const js = JSON.parse(txt);
         if (js.url) {
           el.classList.remove("no-pdf");
           el.classList.add("has-pdf");
           el.onclick = () => window.open(js.url, "_blank");
         }
       }
-    } catch (e) {}
-    
+    } catch(e){}
+
     box.appendChild(el);
   }
 }
+
+/* ========= LUNAR (RÚT GỌN – HIỂN THỊ) ========= */
+function getLunar(d,m,y){
+  // chỉ hiển thị tượng trưng, KHÔNG ảnh hưởng logic
+  // (bạn có thể thay bằng lunar.js chuẩn sau)
+  const fake = (d + m) % 30 || 30;
+  return fake;
+}
+
 document.addEventListener("DOMContentLoaded",loadCan);
