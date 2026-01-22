@@ -156,10 +156,14 @@ async function renderCalendarMonth() {
     const d = new Date(startDate);
     d.setDate(startDate.getDate() + i);
 
+    const d0 = new Date(d);
+    d0.setHours(0, 0, 0, 0);
+
     const cell = document.createElement("div");
     cell.className = "cal-day";
 
     if (d.getMonth() !== calMonth) cell.classList.add("other");
+    if (d0.getTime() === today.getTime()) cell.classList.add("today");
 
     const solar = document.createElement("div");
     solar.className = "solar";
@@ -179,7 +183,7 @@ async function renderCalendarMonth() {
     cell.appendChild(solar);
     cell.appendChild(lunar);
 
-    if (d > today) {
+    if (d0 > today) {
       cell.classList.add("future");
     } else {
       cell.classList.add("no-pdf");
