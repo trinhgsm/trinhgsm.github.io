@@ -265,3 +265,37 @@ button:hover{
     white-space:normal;
   }
 }
+/* ===== CALENDAR ===== */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.calendar .day {
+  padding: 10px 0;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 🟢 có PDF */
+.calendar .has-pdf {
+  background: #22c55e;
+  color: #022c22;
+  font-weight: 600;
+}
+
+/* 🟡 không có PDF */
+.calendar .no-pdf {
+  background: #facc15;
+  color: #422006;
+}
+
+/* hover */
+.calendar .day:hover {
+  opacity: 0.85;
+}
