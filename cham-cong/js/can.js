@@ -210,10 +210,10 @@ async function renderCalendarMonth() {
     solar.className = "solar";
     solar.textContent = d;
 
-    const lunarObj = getLunarDate(d, calMonth + 1, calYear);
+    const [ld] = solar2lunar(d, calMonth + 1, calYear, 7);
     const lunar = document.createElement("div");
     lunar.className = "lunar";
-    lunar.textContent = lunarObj.day;
+    lunar.textContent = ld;
 
     cell.appendChild(solar);
     cell.appendChild(lunar);
