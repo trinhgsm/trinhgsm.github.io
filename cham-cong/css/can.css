@@ -266,36 +266,31 @@ button:hover{
   }
 }
 /* ===== CALENDAR ===== */
-.calendar {
+#calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
   margin-top: 10px;
 }
 
-.calendar .day {
-  padding: 10px 0;
+.cal-day {
+  padding: 8px 0;
   text-align: center;
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
-  user-select: none;
+  background: #334155;
+  color: #fff;
 }
 
-/* 🟢 có PDF */
-.calendar .has-pdf {
-  background: #22c55e;
-  color: #022c22;
-  font-weight: 600;
+.cal-day.has-pdf {
+  background: #16a34a; /* xanh */
 }
 
-/* 🟡 không có PDF */
-.calendar .no-pdf {
-  background: #facc15;
-  color: #422006;
+.cal-day.no-pdf {
+  background: #ca8a04; /* vàng */
 }
 
-/* hover */
-.calendar .day:hover {
+.cal-day:hover {
   opacity: 0.85;
 }
