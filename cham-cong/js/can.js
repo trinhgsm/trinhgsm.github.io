@@ -153,55 +153,52 @@ document.addEventListener("DOMContentLoaded", () => {
   // đổi phiên bản tại đây
   //const v = document.getElementById("appVersion");
   //if (v) v.textContent = "v1.0.1";
-/* =========================================================
-   CALENDAR + PDF (LOGIC DUY NHẤT)
-   Có PDF  -> xanh
-   Không  -> vàng
-   ========================================================= */
-
-async function renderCalendar() {
-  const box = document.getElementById("workCalendar");
+/* ========= CALENDAR ========= */
+async function renderCalendar(unit) {
+  const box = document.getElementById("calendar");
   if (!box) return;
-
-  const maCan = getMaCan();
-  if (!maCan) return;
-
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1; // 1-12
-  const daysInMonth = new Date(year, month, 0).getDate();
 
   box.innerHTML = "";
 
-  for (let d = 1; d <= daysInMonth; d++) {
-    const day = String(d).padStart(2, "0");
-    const monthKey = `${month}-${year}`;
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth(); // tháng hiện tại
 
-    const div = document.createElement("div");
-    div.className = "day no-pdf";
-    div.textContent = d;
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement("div");
+    el.className = "cal-day no-pdf";
+    el.textContent = d;
+
+    // build URL kiểm tra pdf
+    const monthKey = (month + 1) + "-" + year;
+    const dayStr = String(d).padStart(2, "0");
+
+    const pdfUrl =
+      window.APP_CONFIG.api.root() +
+      "?action=pdf" +
+      "&month=" + encodeURIComponent(monthKey) +
+      "&unit=" + encodeURIComponent(unit.maCan) +
+      "&day=" + dayStr;
 
     try {
-      const res = await fetch(
-        window.APP_CONFIG.api.root() +
-        `?action=pdf&month=${monthKey}&unit=${maCan}&day=${day}`
-      );
+      const res = await fetch(pdfUrl);
+      const text = await res.text();
 
-      if (res.ok) {
-        const txt = await res.text();
-
-        // nếu trả JSON => có PDF
-        if (txt.trim().startsWith("{")) {
-          const data = JSON.parse(txt);
-          if (data.url) {
-            div.className = "day has-pdf";
-            div.onclick = () => window.open(data.url, "_blank");
-          }
+      if (text.startsWith("{")) {
+        const js = JSON.parse(text);
+        if (js.url) {
+          el.classList.remove("no-pdf");
+          el.classList.add("has-pdf");
+          el.onclick = () => window.open(js.url, "_blank");
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      // im lặng, coi như không có pdf
+    }
 
-    box.appendChild(div);
+    box.appendChild(el);
   }
 }
 });
