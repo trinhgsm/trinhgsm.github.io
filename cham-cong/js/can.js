@@ -107,7 +107,7 @@ if (unit.manager2Phone) {
   `;
 
   drawChart(unit.byTeam||{});
-renderCalendar();
+renderCalendar(unit);
 }
 
 /* ========= CHART ========= */
