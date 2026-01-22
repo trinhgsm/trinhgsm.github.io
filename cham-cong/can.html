@@ -56,18 +56,22 @@
     <h3>NHẬT KÝ GẦN NHẤT</h3>
     <ul id="logList"></ul>
   </section>
-<!-- ===== LỊCH NHẬT KÝ PDF ===== -->
-<section class="card">
-  <div class="cal-header">
-    <button id="calPrev">‹</button>
-    <div id="calTitle">--/----</div>
-    <button id="calNext">›</button>
+<!-- ===== CALENDAR ===== -->
+<section class="card calendar-card">
+  <div class="calendar-header">
+    <button id="prevMonth">‹</button>
+    <div id="calTitle">--</div>
+    <button id="nextMonth">›</button>
+  </div>
+
+  <div class="calendar-week">
+    <span>T2</span><span>T3</span><span>T4</span>
+    <span>T5</span><span>T6</span><span>T7</span><span>CN</span>
   </div>
 
   <div id="calendar" class="calendar-grid"></div>
 </section>
-
-  <section class="actions">
+<section class="actions">
     <button onclick="window.print()">In</button>
     <button onclick="toggleQR()">Mã QR</button>
   </section>
@@ -95,6 +99,8 @@
 <script src="js/brand.js"></script>
 <script src="js/can.js"></script>
 <script src="js/logo.js"></script>
+  <!-- 🔴 THƯ VIỆN LỊCH ÂM (BẮT BUỘC) -->
+<script src="https://cdn.jsdelivr.net/gh/hoangtran0410/amlich.js/amlich.min.js"></script>
 
 </body>
 </html>
