@@ -266,50 +266,75 @@ button:hover{
   }
 }
 /* ===== CALENDAR ===== */
-.cal-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:8px;
-}
-.cal-header button{
-  background:#0f172a;
-  color:#e5e7eb;
-  border:1px solid rgba(148,163,184,.25);
-  padding:4px 10px;
-  border-radius:6px;
-  cursor:pointer;
+.calendar-card {
+  padding: 12px;
 }
 
-.calendar-grid{
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
-.cal-day{
-  border-radius:6px;
-  padding:6px 0;
-  text-align:center;
-  font-size:13px;
-  cursor:pointer;
+.calendar-header button {
+  background: none;
+  border: 1px solid var(--border);
+  color: #e5e7eb;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-.cal-day .solar{
-  font-weight:600;
+#calTitle {
+  font-weight: 600;
 }
 
-.cal-day .lunar{
-  font-size:10px;
-  opacity:.6;
+.calendar-week,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
 }
 
-.cal-day.has-pdf{
-  background:#16a34a;
-  color:#fff;
+.calendar-week span {
+  text-align: center;
+  font-size: 12px;
+  opacity: .6;
 }
 
-.cal-day.no-pdf{
-  background:#eab308;
-  color:#000;
+.cal-day {
+  border-radius: 8px;
+  padding: 6px 4px;
+  min-height: 48px;
+  text-align: center;
+  cursor: pointer;
+  background: #0f172a;
+}
+
+.cal-day.other {
+  opacity: .3;
+}
+
+.cal-day.has-pdf {
+  background: #16a34a;
+}
+
+.cal-day.no-pdf {
+  background: #92400e;
+}
+
+.cal-day.future {
+  background: #1e293b;
+}
+
+.cal-day .solar {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cal-day .lunar {
+  font-size: 10px;
+  opacity: .6;
 }
