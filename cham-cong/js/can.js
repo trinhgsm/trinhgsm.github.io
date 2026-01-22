@@ -108,8 +108,6 @@ if (unit.manager2Phone) {
   `;
 
   drawChart(unit.byTeam||{});
-initCalendar(unit);
-
 }
 
 /* ========= CHART ========= */
@@ -157,76 +155,109 @@ document.addEventListener("DOMContentLoaded", () => {
   //if (v) v.textContent = "v1.0.1";
 
 });
-/* ================= CALENDAR ================= */
+/* ================= CALENDAR + PDF ================= */
 
+let calYear, calMonth;
+
+/* ===== INIT ===== */
 function initCalendar() {
   const today = new Date();
   calYear = today.getFullYear();
   calMonth = today.getMonth();
 
-  document.getElementById("prevMonth").onclick = () => {
-    calMonth--;
-    if (calMonth < 0) { calMonth = 11; calYear--; }
-    renderCalendarMonth();
-  };
+  const prev = document.getElementById("prevMonth");
+  const next = document.getElementById("nextMonth");
 
-  document.getElementById("nextMonth").onclick = () => {
-    calMonth++;
-    if (calMonth > 11) { calMonth = 0; calYear++; }
-    renderCalendarMonth();
-  };
+  if (prev) {
+    prev.onclick = () => {
+      calMonth--;
+      if (calMonth < 0) {
+        calMonth = 11;
+        calYear--;
+      }
+      renderCalendarMonth();
+    };
+  }
+
+  if (next) {
+    next.onclick = () => {
+      calMonth++;
+      if (calMonth > 11) {
+        calMonth = 0;
+        calYear++;
+      }
+      renderCalendarMonth();
+    };
+  }
 
   renderCalendarMonth();
 }
 
+/* ===== RENDER MONTH (DƯƠNG LỊCH CHUẨN) ===== */
 async function renderCalendarMonth() {
   const box = document.getElementById("calendar");
   if (!box) return;
-
   box.innerHTML = "";
 
-  document.getElementById("calTitle").textContent =
-    `Tháng ${calMonth + 1}/${calYear}`;
-
-  const firstDay = new Date(calYear, calMonth, 1);
-  const startWeekday = (firstDay.getDay() + 6) % 7;
-  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-
-  // padding đầu tháng
-  for (let i = 0; i < startWeekday; i++) {
-    const pad = document.createElement("div");
-    pad.className = "cal-day other";
-    box.appendChild(pad);
+  const title = document.getElementById("calTitle");
+  if (title) {
+    title.textContent = `Tháng ${calMonth + 1}/${calYear}`;
   }
 
-  const maCan = getMaCan();
+  /* ===== TÍNH NGÀY BẮT ĐẦU (THỨ 2 ĐẦU TUẦN) ===== */
+  const firstOfMonth = new Date(calYear, calMonth, 1);
+  const weekday = (firstOfMonth.getDay() + 6) % 7; // Thứ 2 = 0
+  const startDate = new Date(firstOfMonth);
+  startDate.setDate(firstOfMonth.getDate() - weekday);
+
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  for (let d = 1; d <= daysInMonth; d++) {
+  const maCan = getMaCan();
+
+  /* ===== RENDER 42 Ô (6×7) ===== */
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(startDate);
+    d.setDate(startDate.getDate() + i);
+
     const cell = document.createElement("div");
-    cell.className = "cal-day future";
+    cell.className = "cal-day";
 
+    // khác tháng → mờ
+    if (d.getMonth() !== calMonth) {
+      cell.classList.add("other");
+    }
+
+    /* ===== DƯƠNG LỊCH (SỐ TO) ===== */
     const solar = document.createElement("div");
     solar.className = "solar";
-    solar.textContent = d;
+    solar.textContent = d.getDate();
 
-    const [ld] = solar2lunar(d, calMonth + 1, calYear, 7);
+    /* ===== ÂM LỊCH (SỐ NHỎ) ===== */
+    const lunarArr = solar2lunar(
+      d.getDate(),
+      d.getMonth() + 1,
+      d.getFullYear(),
+      7
+    );
+
     const lunar = document.createElement("div");
     lunar.className = "lunar";
-    lunar.textContent = ld;
+    lunar.textContent = lunarArr[0]; // ngày âm
 
     cell.appendChild(solar);
     cell.appendChild(lunar);
 
-    const dayDate = new Date(calYear, calMonth, d);
-    if (dayDate <= today) {
-      cell.classList.remove("future");
-      cell.classList.add("no-pdf");
+    /* ===== TRẠNG THÁI MẶC ĐỊNH ===== */
+    if (d > today) {
+      cell.classList.add("future"); // tương lai
+    } else {
+      cell.classList.add("no-pdf"); // quá khứ nhưng chưa biết có pdf
     }
 
-    // 🔴 KIỂM TRA PDF
-    const monthKey = (calMonth + 1) + "-" + calYear;
-    const dayStr = String(d).padStart(2, "0");
+    /* ===== KIỂM TRA PDF (SAU KHI RENDER XONG Ô) ===== */
+    const monthKey = (d.getMonth() + 1) + "-" + d.getFullYear();
+    const dayStr = String(d.getDate()).padStart(2, "0");
 
     const pdfUrl =
       window.APP_CONFIG.api.root() +
@@ -238,6 +269,7 @@ async function renderCalendarMonth() {
     try {
       const res = await fetch(pdfUrl);
       const text = await res.text();
+
       if (text.startsWith("{")) {
         const js = JSON.parse(text);
         if (js.url) {
@@ -246,13 +278,15 @@ async function renderCalendarMonth() {
           cell.onclick = () => window.open(js.url, "_blank");
         }
       }
-    } catch(e){}
+    } catch (e) {
+      // im lặng, coi như không có pdf
+    }
 
     box.appendChild(cell);
   }
 }
 
-/* GỌI 1 LẦN DUY NHẤT */
+/* ===== GỌI 1 LẦN ===== */
 document.addEventListener("DOMContentLoaded", initCalendar);
 
 document.addEventListener("DOMContentLoaded",loadCan);
