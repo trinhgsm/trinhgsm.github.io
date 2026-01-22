@@ -153,6 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // đổi phiên bản tại đây
   //const v = document.getElementById("appVersion");
   //if (v) v.textContent = "v1.0.1";
+
+});
 /* ========= CALENDAR ========= */
 async function renderCalendar(unit) {
   const box = document.getElementById("calendar");
@@ -171,7 +173,6 @@ async function renderCalendar(unit) {
     el.className = "cal-day no-pdf";
     el.textContent = d;
 
-    // build URL kiểm tra pdf
     const monthKey = (month + 1) + "-" + year;
     const dayStr = String(d).padStart(2, "0");
 
@@ -194,12 +195,9 @@ async function renderCalendar(unit) {
           el.onclick = () => window.open(js.url, "_blank");
         }
       }
-    } catch (e) {
-      // im lặng, coi như không có pdf
-    }
-
+    } catch (e) {}
+    
     box.appendChild(el);
   }
 }
-});
 document.addEventListener("DOMContentLoaded",loadCan);
