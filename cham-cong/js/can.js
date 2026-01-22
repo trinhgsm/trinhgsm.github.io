@@ -107,6 +107,7 @@ if (unit.manager2Phone) {
   `;
 
   drawChart(unit.byTeam||{});
+renderCalendar();
 }
 
 /* ========= CHART ========= */
@@ -152,5 +153,56 @@ document.addEventListener("DOMContentLoaded", () => {
   // đổi phiên bản tại đây
   //const v = document.getElementById("appVersion");
   //if (v) v.textContent = "v1.0.1";
+/* =========================================================
+   CALENDAR + PDF (LOGIC DUY NHẤT)
+   Có PDF  -> xanh
+   Không  -> vàng
+   ========================================================= */
+
+async function renderCalendar() {
+  const box = document.getElementById("workCalendar");
+  if (!box) return;
+
+  const maCan = getMaCan();
+  if (!maCan) return;
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1; // 1-12
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  box.innerHTML = "";
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const day = String(d).padStart(2, "0");
+    const monthKey = `${month}-${year}`;
+
+    const div = document.createElement("div");
+    div.className = "day no-pdf";
+    div.textContent = d;
+
+    try {
+      const res = await fetch(
+        window.APP_CONFIG.api.root() +
+        `?action=pdf&month=${monthKey}&unit=${maCan}&day=${day}`
+      );
+
+      if (res.ok) {
+        const txt = await res.text();
+
+        // nếu trả JSON => có PDF
+        if (txt.trim().startsWith("{")) {
+          const data = JSON.parse(txt);
+          if (data.url) {
+            div.className = "day has-pdf";
+            div.onclick = () => window.open(data.url, "_blank");
+          }
+        }
+      }
+    } catch (e) {}
+
+    box.appendChild(div);
+  }
+}
 });
 document.addEventListener("DOMContentLoaded",loadCan);
