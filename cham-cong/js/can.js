@@ -157,82 +157,102 @@ document.addEventListener("DOMContentLoaded", () => {
   //if (v) v.textContent = "v1.0.1";
 
 });
-/* ========= CALENDAR + PDF ========= */
+/* ================= CALENDAR ================= */
 
-let calYear, calMonth; // month: 0-11
+function initCalendar() {
+  const today = new Date();
+  calYear = today.getFullYear();
+  calMonth = today.getMonth();
 
-function initCalendar(unit){
-  const now = new Date();
-  calYear  = now.getFullYear();
-  calMonth = now.getMonth();
-
-  document.getElementById("calPrev").onclick = () => {
+  document.getElementById("prevMonth").onclick = () => {
     calMonth--;
     if (calMonth < 0) { calMonth = 11; calYear--; }
-    renderCalendar(unit);
+    renderCalendarMonth();
   };
 
-  document.getElementById("calNext").onclick = () => {
+  document.getElementById("nextMonth").onclick = () => {
     calMonth++;
     if (calMonth > 11) { calMonth = 0; calYear++; }
-    renderCalendar(unit);
+    renderCalendarMonth();
   };
 
-  renderCalendar(unit);
+  renderCalendarMonth();
 }
 
-async function renderCalendar(unit){
+async function renderCalendarMonth() {
   const box = document.getElementById("calendar");
-  const title = document.getElementById("calTitle");
   if (!box) return;
 
   box.innerHTML = "";
-  title.textContent = `${calMonth + 1}-${calYear}`;
 
+  document.getElementById("calTitle").textContent =
+    `Tháng ${calMonth + 1}/${calYear}`;
+
+  const firstDay = new Date(calYear, calMonth, 1);
+  const startWeekday = (firstDay.getDay() + 6) % 7;
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
 
+  // padding đầu tháng
+  for (let i = 0; i < startWeekday; i++) {
+    const pad = document.createElement("div");
+    pad.className = "cal-day other";
+    box.appendChild(pad);
+  }
+
+  const maCan = getMaCan();
+  const today = new Date();
+
   for (let d = 1; d <= daysInMonth; d++) {
-    const el = document.createElement("div");
-    el.className = "cal-day no-pdf";
+    const cell = document.createElement("div");
+    cell.className = "cal-day future";
 
-    const dayStr = String(d).padStart(2,"0");
+    const solar = document.createElement("div");
+    solar.className = "solar";
+    solar.textContent = d;
+
+    const lunarObj = getLunarDate(d, calMonth + 1, calYear);
+    const lunar = document.createElement("div");
+    lunar.className = "lunar";
+    lunar.textContent = lunarObj.day;
+
+    cell.appendChild(solar);
+    cell.appendChild(lunar);
+
+    const dayDate = new Date(calYear, calMonth, d);
+    if (dayDate <= today) {
+      cell.classList.remove("future");
+      cell.classList.add("no-pdf");
+    }
+
+    // 🔴 KIỂM TRA PDF
     const monthKey = (calMonth + 1) + "-" + calYear;
-
-    el.innerHTML = `
-      <div class="solar">${d}</div>
-      <div class="lunar">${getLunar(d, calMonth + 1, calYear)}</div>
-    `;
+    const dayStr = String(d).padStart(2, "0");
 
     const pdfUrl =
       window.APP_CONFIG.api.root() +
       "?action=pdf" +
       "&month=" + encodeURIComponent(monthKey) +
-      "&unit=" + encodeURIComponent(unit.maCan) +
+      "&unit=" + encodeURIComponent(maCan) +
       "&day=" + dayStr;
 
     try {
       const res = await fetch(pdfUrl);
-      const txt = await res.text();
-      if (txt.startsWith("{")) {
-        const js = JSON.parse(txt);
+      const text = await res.text();
+      if (text.startsWith("{")) {
+        const js = JSON.parse(text);
         if (js.url) {
-          el.classList.remove("no-pdf");
-          el.classList.add("has-pdf");
-          el.onclick = () => window.open(js.url, "_blank");
+          cell.classList.remove("no-pdf");
+          cell.classList.add("has-pdf");
+          cell.onclick = () => window.open(js.url, "_blank");
         }
       }
     } catch(e){}
 
-    box.appendChild(el);
+    box.appendChild(cell);
   }
 }
 
-/* ========= LUNAR (RÚT GỌN – HIỂN THỊ) ========= */
-function getLunar(d,m,y){
-  // chỉ hiển thị tượng trưng, KHÔNG ảnh hưởng logic
-  // (bạn có thể thay bằng lunar.js chuẩn sau)
-  const fake = (d + m) % 30 || 30;
-  return fake;
-}
+/* GỌI 1 LẦN DUY NHẤT */
+document.addEventListener("DOMContentLoaded", initCalendar);
 
 document.addEventListener("DOMContentLoaded",loadCan);
