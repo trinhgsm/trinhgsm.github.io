@@ -1,221 +1,157 @@
 const API_URL = window.APP_CONFIG.api.dashboard();
 
-const m1e1 = document.getElementById("manager1");
-const m2e2 = document.getElementById("manager2");
-const p1   = document.getElementById("phone1");
-const p2   = document.getElementById("phone2");
 let chart = null;
 let calYear, calMonth;
 
 /* ========= UTIL ========= */
-function getMaCan(){
+function getMaCan() {
   const p = new URLSearchParams(location.search).get("ma");
   return p ? p.toUpperCase() : null;
 }
-function fmtDate(d){
-  if(!d) return "--";
-  const [y,m,dd]=d.split("-");
+
+function fmtDate(d) {
+  if (!d) return "--";
+  const [y, m, dd] = d.split("-");
   return `${dd}-${m}-${y}`;
 }
 
 /* ========= LOAD ========= */
-async function loadCan(){
+async function loadCan() {
   const maCan = getMaCan();
-  if(!maCan){
-    document.body.innerHTML="❌ Thiếu mã căn (?ma=)";
+  if (!maCan) {
+    document.body.innerHTML = "❌ Thiếu mã căn (?ma=)";
     return;
   }
 
   const res = await fetch(API_URL);
   const data = await res.json();
-  const unit = data.units.find(u=>u.maCan.toUpperCase()===maCan);
+  const unit = data.units.find(u => u.maCan.toUpperCase() === maCan);
 
-  if(!unit){
-    document.body.innerHTML="❌ Không tìm thấy căn";
+  if (!unit) {
+    document.body.innerHTML = "❌ Không tìm thấy căn";
     return;
   }
 
   const site = data.sites ? data.sites[unit.maCan] : null;
 
-  document.getElementById("maCanText").textContent="Mã căn: "+unit.maCan;
-  document.getElementById("percent").textContent=(unit.percent||0)+"%";
-  document.getElementById("statusText").textContent=unit.statusText||"--";
-  document.getElementById("updateTime").textContent="Cập nhật: "+(data.generatedAt||"--");
+  document.getElementById("maCanText").textContent = "Mã căn: " + unit.maCan;
+  document.getElementById("percent").textContent = (unit.percent || 0) + "%";
+  document.getElementById("statusText").textContent = unit.statusText || "--";
+  document.getElementById("updateTime").textContent =
+    "Cập nhật: " + (data.generatedAt || "--");
 
-  document.getElementById("startDate").textContent=fmtDate(unit.start);
-  document.getElementById("endDate").textContent=fmtDate(unit.end);
-  document.getElementById("congText").textContent=
-    `${unit.actualCong||0}/${unit.plannedCong||0}`;
+  document.getElementById("startDate").textContent = fmtDate(unit.start);
+  document.getElementById("endDate").textContent = fmtDate(unit.end);
+  document.getElementById("congText").textContent =
+    `${unit.actualCong || 0}/${unit.plannedCong || 0}`;
 
   let siteStatusText = "--";
-
-if (site && typeof site.diffDays === "number") {
-  if (site.diffDays === 0) {
-    siteStatusText = "Hôm nay có thi công";
-  } else if (site.diffDays === 1) {
-    siteStatusText = "Hôm qua có thi công";
-  } else {
-    siteStatusText = site.diffDays + " ngày chưa thi công";
+  if (site && typeof site.diffDays === "number") {
+    if (site.diffDays === 0) siteStatusText = "Hôm nay có thi công";
+    else if (site.diffDays === 1) siteStatusText = "Hôm qua có thi công";
+    else siteStatusText = site.diffDays + " ngày chưa thi công";
   }
-}
 
-// ❗ TAB THI CÔNG: KHÔNG CÓ CHI TIẾT
-document.getElementById("siteStatus").textContent = siteStatusText;
-let tickerStatus = siteStatusText;
+  document.getElementById("siteStatus").textContent = siteStatusText;
 
-// ✅ CHỈ CHỮ TRÔI MỚI CÓ CHI TIẾT
-if (site && site.summary) {
-  tickerStatus += " – " + site.summary;
-}
+  let tickerStatus = siteStatusText;
+  if (site && site.summary) {
+    tickerStatus += " – " + site.summary;
+  }
 
-document.getElementById("tickerText").textContent =
-  `${unit.maCan}: ${unit.percent || 0}% – ${tickerStatus}`;
+  document.getElementById("tickerText").textContent =
+    `${unit.maCan}: ${unit.percent || 0}% – ${tickerStatus}`;
 
-/* ===== CHỈ HUY + TRỢ LÝ + SĐT (THEO API) ===== */
+  const m1 = document.getElementById("manager1");
+  const m2 = document.getElementById("manager2");
+  const p1 = document.getElementById("manager1Phone");
+  const p2 = document.getElementById("manager2Phone");
 
-const m1 = document.getElementById("manager1");
-const m2 = document.getElementById("manager2");
-const p1 = document.getElementById("manager1Phone");
-const p2 = document.getElementById("manager2Phone");
+  m1.textContent = unit.manager1 || "--";
+  if (unit.manager1Phone) {
+    p1.textContent = unit.manager1Phone;
+    p1.href = "tel:" + unit.manager1Phone;
+    p1.style.display = "inline-flex";
+  } else p1.style.display = "none";
 
-// --- CHỈ HUY ---
-m1.textContent = unit.manager1 || "--";
+  m2.textContent = unit.manager2 || "--";
+  if (unit.manager2Phone) {
+    p2.textContent = unit.manager2Phone;
+    p2.href = "tel:" + unit.manager2Phone;
+    p2.style.display = "inline-flex";
+  } else p2.style.display = "none";
 
-if (unit.manager1Phone) {
-  p1.textContent = unit.manager1Phone;
-  p1.href = "tel:" + unit.manager1Phone;
-  p1.style.display = "inline-flex";
-} else {
-  p1.style.display = "none";
-}
-
-// --- TRỢ LÝ ---
-m2.textContent = unit.manager2 || "--";
-
-if (unit.manager2Phone) {
-  p2.textContent = unit.manager2Phone;
-  p2.href = "tel:" + unit.manager2Phone;
-  p2.style.display = "inline-flex";
-} else {
-  p2.style.display = "none";
-}
-
-  /* ===== LOG ===== */
   document.getElementById("logList").innerHTML = `
-    <li>Tiến độ: ${unit.percent||0}%</li>
-    <li>Công: ${unit.actualCong||0}/${unit.plannedCong||0}</li>
-    <li>${unit.statusText||"--"}</li>
+    <li>Tiến độ: ${unit.percent || 0}%</li>
+    <li>Công: ${unit.actualCong || 0}/${unit.plannedCong || 0}</li>
+    <li>${unit.statusText || "--"}</li>
   `;
 
-  drawChart(unit.byTeam||{});
+  drawChart(unit.byTeam || {});
 }
 
 /* ========= CHART ========= */
-function drawChart(byTeam){
+function drawChart(byTeam) {
   const ctx = document.getElementById("teamChart");
-  if(chart) chart.destroy();
+  if (chart) chart.destroy();
 
-  chart = new Chart(ctx,{
-    type:"bar",
-    data:{
-      labels:Object.keys(byTeam),
-      datasets:[{
-        label:"Công theo tổ",
-        data:Object.values(byTeam),
-        backgroundColor:"#38bdf8"
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: Object.keys(byTeam),
+      datasets: [{
+        label: "Công theo tổ",
+        data: Object.values(byTeam),
+        backgroundColor: "#38bdf8"
       }]
     },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      scales:{y:{beginAtZero:true}}
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: { y: { beginAtZero: true } }
     }
   });
 }
 
-/* ========= QR ========= */
-function toggleQR(){
-  const box=document.getElementById("qrBox");
-  if(!box.classList.contains("hidden")){
-    box.classList.add("hidden");
-    return;
-  }
-  const url=location.href;
-  box.innerHTML=`<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">`;
-  box.classList.remove("hidden");
-}
-/* ========= FOOTER ========= */
-document.addEventListener("DOMContentLoaded", () => {
-  const y = document.getElementById("year");
-  if (y) y.textContent = new Date().getFullYear();
-// năm footer
-//document.getElementById("year").textContent = new Date().getFullYear();
-  // đổi phiên bản tại đây
-  //const v = document.getElementById("appVersion");
-  //if (v) v.textContent = "v1.0.1";
-
-});
 /* ================= CALENDAR + PDF ================= */
 
-let calYear, calMonth;
-
-/* ===== INIT ===== */
 function initCalendar() {
   const today = new Date();
   calYear = today.getFullYear();
   calMonth = today.getMonth();
 
-  const prev = document.getElementById("prevMonth");
-  const next = document.getElementById("nextMonth");
+  document.getElementById("prevMonth").onclick = () => {
+    calMonth--;
+    if (calMonth < 0) { calMonth = 11; calYear--; }
+    renderCalendarMonth();
+  };
 
-  if (prev) {
-    prev.onclick = () => {
-      calMonth--;
-      if (calMonth < 0) {
-        calMonth = 11;
-        calYear--;
-      }
-      renderCalendarMonth();
-    };
-  }
-
-  if (next) {
-    next.onclick = () => {
-      calMonth++;
-      if (calMonth > 11) {
-        calMonth = 0;
-        calYear++;
-      }
-      renderCalendarMonth();
-    };
-  }
+  document.getElementById("nextMonth").onclick = () => {
+    calMonth++;
+    if (calMonth > 11) { calMonth = 0; calYear++; }
+    renderCalendarMonth();
+  };
 
   renderCalendarMonth();
 }
 
-/* ===== RENDER MONTH (DƯƠNG LỊCH CHUẨN) ===== */
 async function renderCalendarMonth() {
   const box = document.getElementById("calendar");
-  if (!box) return;
   box.innerHTML = "";
 
-  const title = document.getElementById("calTitle");
-  if (title) {
-    title.textContent = `Tháng ${calMonth + 1}/${calYear}`;
-  }
+  document.getElementById("calTitle").textContent =
+    `Tháng ${calMonth + 1}/${calYear}`;
 
-  /* ===== TÍNH NGÀY BẮT ĐẦU (THỨ 2 ĐẦU TUẦN) ===== */
   const firstOfMonth = new Date(calYear, calMonth, 1);
-  const weekday = (firstOfMonth.getDay() + 6) % 7; // Thứ 2 = 0
+  const startOffset = (firstOfMonth.getDay() + 6) % 7;
   const startDate = new Date(firstOfMonth);
-  startDate.setDate(firstOfMonth.getDate() - weekday);
+  startDate.setDate(firstOfMonth.getDate() - startOffset);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const maCan = getMaCan();
 
-  /* ===== RENDER 42 Ô (6×7) ===== */
   for (let i = 0; i < 42; i++) {
     const d = new Date(startDate);
     d.setDate(startDate.getDate() + i);
@@ -223,18 +159,13 @@ async function renderCalendarMonth() {
     const cell = document.createElement("div");
     cell.className = "cal-day";
 
-    // khác tháng → mờ
-    if (d.getMonth() !== calMonth) {
-      cell.classList.add("other");
-    }
+    if (d.getMonth() !== calMonth) cell.classList.add("other");
 
-    /* ===== DƯƠNG LỊCH (SỐ TO) ===== */
     const solar = document.createElement("div");
     solar.className = "solar";
     solar.textContent = d.getDate();
 
-    /* ===== ÂM LỊCH (SỐ NHỎ) ===== */
-    const lunarArr = solar2lunar(
+    const [lunarDay] = solar2lunar(
       d.getDate(),
       d.getMonth() + 1,
       d.getFullYear(),
@@ -243,19 +174,17 @@ async function renderCalendarMonth() {
 
     const lunar = document.createElement("div");
     lunar.className = "lunar";
-    lunar.textContent = lunarArr[0]; // ngày âm
+    lunar.textContent = lunarDay;
 
     cell.appendChild(solar);
     cell.appendChild(lunar);
 
-    /* ===== TRẠNG THÁI MẶC ĐỊNH ===== */
     if (d > today) {
-      cell.classList.add("future"); // tương lai
+      cell.classList.add("future");
     } else {
-      cell.classList.add("no-pdf"); // quá khứ nhưng chưa biết có pdf
+      cell.classList.add("no-pdf");
     }
 
-    /* ===== KIỂM TRA PDF (SAU KHI RENDER XONG Ô) ===== */
     const monthKey = (d.getMonth() + 1) + "-" + d.getFullYear();
     const dayStr = String(d.getDate()).padStart(2, "0");
 
@@ -269,7 +198,6 @@ async function renderCalendarMonth() {
     try {
       const res = await fetch(pdfUrl);
       const text = await res.text();
-
       if (text.startsWith("{")) {
         const js = JSON.parse(text);
         if (js.url) {
@@ -278,15 +206,25 @@ async function renderCalendarMonth() {
           cell.onclick = () => window.open(js.url, "_blank");
         }
       }
-    } catch (e) {
-      // im lặng, coi như không có pdf
-    }
+    } catch (e) {}
 
     box.appendChild(cell);
   }
 }
 
-/* ===== GỌI 1 LẦN ===== */
-document.addEventListener("DOMContentLoaded", initCalendar);
+/* ========= QR ========= */
+function toggleQR() {
+  const box = document.getElementById("qrBox");
+  if (!box.classList.contains("hidden")) {
+    box.classList.add("hidden");
+    return;
+  }
+  const url = location.href;
+  box.innerHTML =
+    `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">`;
+  box.classList.remove("hidden");
+}
 
-document.addEventListener("DOMContentLoaded",loadCan);
+/* ========= INIT ========= */
+document.addEventListener("DOMContentLoaded", initCalendar);
+document.addEventListener("DOMContentLoaded", loadCan);
