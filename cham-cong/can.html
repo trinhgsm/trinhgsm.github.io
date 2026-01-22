@@ -56,10 +56,17 @@
     <h3>NHẬT KÝ GẦN NHẤT</h3>
     <ul id="logList"></ul>
   </section>
+<!-- ===== LỊCH NHẬT KÝ PDF ===== -->
 <section class="card">
-  <h3>LỊCH THI CÔNG</h3>
-  <div id="calendar"></div>
+  <div class="cal-header">
+    <button id="calPrev">‹</button>
+    <div id="calTitle">--/----</div>
+    <button id="calNext">›</button>
+  </div>
+
+  <div id="calendar" class="calendar-grid"></div>
 </section>
+
   <section class="actions">
     <button onclick="window.print()">In</button>
     <button onclick="toggleQR()">Mã QR</button>
