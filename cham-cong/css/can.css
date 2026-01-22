@@ -266,31 +266,50 @@ button:hover{
   }
 }
 /* ===== CALENDAR ===== */
-#calendar {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-  margin-top: 10px;
+.cal-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+.cal-header button{
+  background:#0f172a;
+  color:#e5e7eb;
+  border:1px solid rgba(148,163,184,.25);
+  padding:4px 10px;
+  border-radius:6px;
+  cursor:pointer;
 }
 
-.cal-day {
-  padding: 8px 0;
-  text-align: center;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  background: #334155;
-  color: #fff;
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
 }
 
-.cal-day.has-pdf {
-  background: #16a34a; /* xanh */
+.cal-day{
+  border-radius:6px;
+  padding:6px 0;
+  text-align:center;
+  font-size:13px;
+  cursor:pointer;
 }
 
-.cal-day.no-pdf {
-  background: #ca8a04; /* vàng */
+.cal-day .solar{
+  font-weight:600;
 }
 
-.cal-day:hover {
-  opacity: 0.85;
+.cal-day .lunar{
+  font-size:10px;
+  opacity:.6;
+}
+
+.cal-day.has-pdf{
+  background:#16a34a;
+  color:#fff;
+}
+
+.cal-day.no-pdf{
+  background:#eab308;
+  color:#000;
 }
