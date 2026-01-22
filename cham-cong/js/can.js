@@ -5,6 +5,7 @@ const m2e2 = document.getElementById("manager2");
 const p1   = document.getElementById("phone1");
 const p2   = document.getElementById("phone2");
 let chart = null;
+let calYear, calMonth;
 
 /* ========= UTIL ========= */
 function getMaCan(){
