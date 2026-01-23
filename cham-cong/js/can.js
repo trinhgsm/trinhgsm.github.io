@@ -148,15 +148,19 @@ function renderCalendarMonth() {
 
   const first = new Date(calYear, calMonth, 1);
   const offset = (first.getDay() + 6) % 7; // Thứ 2 = 0
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+  const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+
   const start = new Date(first);
   start.setDate(first.getDate() - offset);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // ===== render khung trước =====
   const cells = [];
-  for (let i = 0; i < 42; i++) {
+
+  for (let i = 0; i < totalCells; i++) {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
 
@@ -183,7 +187,7 @@ function renderCalendarMonth() {
     cells.push({ cell, date: d, lunar });
   }
 
-  // ===== gắn âm lịch =====
+  /* gắn âm lịch */
   cells.forEach(o => {
     const [ld] = solar2lunar(
       o.date.getDate(),
@@ -194,7 +198,7 @@ function renderCalendarMonth() {
     o.lunar.textContent = ld;
   });
 
-  // ===== gắn PDF (LOAD SAU) =====
+  /* gắn PDF sau */
   attachPdfLinks(cells);
 }
 
