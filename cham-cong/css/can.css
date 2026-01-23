@@ -265,76 +265,124 @@ button:hover{
     white-space:normal;
   }
 }
-/* ===== CALENDAR ===== */
-.calendar-card {
+/* ================= CALENDAR WRAP ================= */
+.calendar-wrap {
+  background: #020617;
+  border-radius: 14px;
   padding: 12px;
 }
 
-.calendar-header {
+/* ================= HEADER ================= */
+.cal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
-.calendar-header button {
-  background: none;
-  border: 1px solid var(--border);
+.cal-header button {
+  background: #0f172a;
+  border: 1px solid rgba(148,163,184,.25);
   color: #e5e7eb;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
   cursor: pointer;
+}
+
+.cal-header button:hover {
+  background: #1e293b;
 }
 
 #calTitle {
   font-weight: 600;
+  font-size: 16px;
 }
 
-.calendar-week,
-.calendar-grid {
+/* ================= GRID ================= */
+.calendar {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 8px;
 }
 
-.calendar-week span {
-  text-align: center;
-  font-size: 12px;
-  opacity: .6;
-}
-
+/* ================= DAY CELL ================= */
 .cal-day {
-  border-radius: 8px;
-  padding: 6px 4px;
-  min-height: 48px;
-  text-align: center;
-  cursor: pointer;
+  position: relative;
+  min-height: 64px;
+  border-radius: 10px;
+  padding: 6px;
   background: #0f172a;
+  border: 1px solid rgba(148,163,184,.15);
+  cursor: default;
+  transition: transform .12s ease, background .12s ease;
 }
 
+.cal-day:hover {
+  transform: translateY(-1px);
+}
+
+/* ================= OTHER MONTH ================= */
 .cal-day.other {
-  opacity: .3;
+  opacity: .35;
 }
 
-.cal-day.has-pdf {
-  background: #16a34a;
-}
-
-.cal-day.no-pdf {
-  background: #92400e;
-}
-
-.cal-day.future {
-  background: #1e293b;
-}
-
+/* ================= SOLAR ================= */
 .cal-day .solar {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
+  line-height: 1;
 }
 
+/* ================= LUNAR ================= */
 .cal-day .lunar {
-  font-size: 10px;
-  opacity: .6;
+  font-size: 11px;
+  opacity: .65;
+  margin-top: 4px;
+}
+
+/* ================= STATES ================= */
+
+/* ❌ quá khứ – không có pdf */
+.cal-day.no-pdf {
+  background: #7c2d12;            /* cam đậm */
+  border-color: #ea580c;
+  color: #fff;
+}
+
+/* ✅ có pdf */
+.cal-day.has-pdf {
+  background: #14532d;            /* xanh đậm */
+  border-color: #22c55e;
+  color: #ecfdf5;
+  cursor: pointer;
+}
+
+.cal-day.has-pdf:hover {
+  background: #166534;
+}
+
+/* ⏳ tương lai */
+.cal-day.future {
+  background: #020617;
+  border-style: dashed;
+  opacity: .45;
+}
+
+/* ================= TODAY ================= */
+.cal-day.today {
+  outline: 2px solid #38bdf8;
+  outline-offset: -2px;
+}
+
+/* chấm tròn hôm nay */
+.cal-day.today::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
 }
