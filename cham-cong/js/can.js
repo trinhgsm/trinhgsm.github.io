@@ -1,5 +1,9 @@
 /* =========================================================
-   CAN.JS – FULL (ỔN ĐỊNH BỐ CỤC, FIX PDF, FIX TODAY)
+   CAN.JS – FULL (DƯƠNG LỊCH TRƯỚC, ÂM + PDF SAU, FIX MATCH NGÀY)
+   Yêu cầu:
+   - Dương lịch render ngay (ổn định bố cục)
+   - Âm lịch render ngay sau (từ amlich.js)
+   - PDF load sau cùng, match CHUỖI NGÀY ĐẦY ĐỦ d.m.y
    ========================================================= */
 
 const API_URL = window.APP_CONFIG.api.dashboard();
@@ -60,6 +64,7 @@ async function loadCan() {
   document.getElementById("tickerText").textContent =
     `${unit.maCan}: ${unit.percent || 0}% – ${tickerStatus}`;
 
+  // chỉ huy
   const m1 = document.getElementById("manager1");
   const m2 = document.getElementById("manager2");
   const p1 = document.getElementById("manager1Phone");
@@ -113,17 +118,17 @@ function drawChart(byTeam) {
 
 /* ================= CALENDAR ================= */
 
+/* INIT */
 function initCalendar() {
-  const now = new Date();
-  calYear = now.getFullYear();
-  calMonth = now.getMonth();
+  const today = new Date();
+  calYear = today.getFullYear();
+  calMonth = today.getMonth();
 
   document.getElementById("prevMonth").onclick = () => {
     calMonth--;
     if (calMonth < 0) { calMonth = 11; calYear--; }
     renderCalendarMonth();
   };
-
   document.getElementById("nextMonth").onclick = () => {
     calMonth++;
     if (calMonth > 11) { calMonth = 0; calYear++; }
@@ -133,6 +138,7 @@ function initCalendar() {
   renderCalendarMonth();
 }
 
+/* RENDER 1 THÁNG – DƯƠNG LỊCH TRƯỚC */
 function renderCalendarMonth() {
   const box = document.getElementById("calendar");
   box.innerHTML = "";
@@ -141,26 +147,28 @@ function renderCalendarMonth() {
     `Tháng ${calMonth + 1}/${calYear}`;
 
   const first = new Date(calYear, calMonth, 1);
-  const offset = (first.getDay() + 6) % 7;
+  const offset = (first.getDay() + 6) % 7; // Thứ 2 = 0
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+  const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+
   const start = new Date(first);
   start.setDate(first.getDate() - offset);
 
   const today = new Date();
-  today.setHours(0,0,0,0);
+  today.setHours(0, 0, 0, 0);
 
   const cells = [];
 
-  for (let i = 0; i < 42; i++) {
+  for (let i = 0; i < totalCells; i++) {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
-    d.setHours(0,0,0,0);
 
     const cell = document.createElement("div");
     cell.className = "cal-day";
 
     if (d.getMonth() !== calMonth) cell.classList.add("other");
     if (d.getTime() === today.getTime()) cell.classList.add("today");
-
     if (d > today) cell.classList.add("future");
     else cell.classList.add("no-pdf");
 
@@ -170,15 +178,16 @@ function renderCalendarMonth() {
 
     const lunar = document.createElement("div");
     lunar.className = "lunar";
+    lunar.textContent = "";
 
     cell.appendChild(solar);
     cell.appendChild(lunar);
-    box.appendChild(cell);
 
+    box.appendChild(cell);
     cells.push({ cell, date: d, lunar });
   }
 
-  // Âm lịch
+  /* gắn âm lịch */
   cells.forEach(o => {
     const [ld] = solar2lunar(
       o.date.getDate(),
@@ -189,7 +198,7 @@ function renderCalendarMonth() {
     o.lunar.textContent = ld;
   });
 
-  // PDF
+  /* gắn PDF sau */
   attachPdfLinks(cells);
 }
 
@@ -197,11 +206,8 @@ function renderCalendarMonth() {
 async function attachPdfLinks(cells) {
   const maCan = getMaCan();
 
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
   for (const o of cells) {
-    if (o.date > today) continue;
+    if (o.date > new Date()) continue;
 
     const d = o.date;
     const day = d.getDate();
@@ -212,17 +218,20 @@ async function attachPdfLinks(cells) {
       "?action=pdf" +
       "&month=" + encodeURIComponent(monthKey) +
       "&unit=" + encodeURIComponent(maCan) +
-      "&day=" + day;
+      "&day=" + day; // 🔴 KHÔNG PAD – GAS MATCH d.m.y
 
     try {
       const res = await fetch(pdfUrl);
-      const js = await res.json();
-      if (js && js.url) {
-        o.cell.classList.remove("no-pdf","future");
-        o.cell.classList.add("has-pdf");
-        o.cell.onclick = () => window.open(js.url, "_blank");
+      const text = await res.text();
+      if (text.startsWith("{")) {
+        const js = JSON.parse(text);
+        if (js.url) {
+          o.cell.classList.remove("no-pdf");
+          o.cell.classList.add("has-pdf");
+          o.cell.onclick = () => window.open(js.url, "_blank");
+        }
       }
-    } catch(e){}
+    } catch (e) {}
   }
 }
 
