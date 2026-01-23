@@ -1,5 +1,5 @@
 /* =========================================================
-   CAN.JS – FULL (CALENDAR + PDF + TODAY FIX)
+   CAN.JS – FULL (DƯƠNG LỊCH TRƯỚC → ÂM LỊCH → PDF SAU)
    ========================================================= */
 
 const API_URL = window.APP_CONFIG.api.dashboard();
@@ -55,7 +55,6 @@ async function loadCan() {
     else if (site.diffDays === 1) siteStatusText = "Hôm qua có thi công";
     else siteStatusText = site.diffDays + " ngày chưa thi công";
   }
-
   document.getElementById("siteStatus").textContent = siteStatusText;
 
   let tickerStatus = siteStatusText;
@@ -115,7 +114,7 @@ function drawChart(byTeam) {
   });
 }
 
-/* ================= CALENDAR + PDF ================= */
+/* ================= CALENDAR ================= */
 
 function initCalendar() {
   const today = new Date();
@@ -154,6 +153,8 @@ async function renderCalendarMonth() {
 
   const maCan = getMaCan();
 
+  /* ===== RENDER DƯƠNG LỊCH TRƯỚC ===== */
+  const cells = [];
   for (let i = 0; i < 42; i++) {
     const d = new Date(startDate);
     d.setDate(startDate.getDate() + i);
@@ -162,42 +163,42 @@ async function renderCalendarMonth() {
     cell.className = "cal-day";
 
     if (d.getMonth() !== calMonth) cell.classList.add("other");
-
-    if (
-      d.getDate() === today.getDate() &&
-      d.getMonth() === today.getMonth() &&
-      d.getFullYear() === today.getFullYear()
-    ) {
-      cell.classList.add("today");
-    }
+    if (+d === +today) cell.classList.add("today");
+    if (d > today) cell.classList.add("future");
+    else cell.classList.add("no-pdf");
 
     const solar = document.createElement("div");
     solar.className = "solar";
     solar.textContent = d.getDate();
 
-    const [lunarDay] = solar2lunar(
-      d.getDate(),
-      d.getMonth() + 1,
-      d.getFullYear(),
-      7
-    );
-
     const lunar = document.createElement("div");
     lunar.className = "lunar";
-    lunar.textContent = lunarDay;
+    lunar.textContent = "";
 
     cell.appendChild(solar);
     cell.appendChild(lunar);
 
-    if (d > today) {
-      cell.classList.add("future");
-    } else {
-      cell.classList.add("no-pdf");
-    }
+    box.appendChild(cell);
+    cells.push({ cell, date: d });
+  }
 
-    /* ===== PDF CHECK – ĐÚNG ĐỊNH DẠNG FILE: d.m.y ===== */
-    const monthKey = (d.getMonth() + 1) + "-" + d.getFullYear();
-    const dayStr = String(d.getDate()); // ❗ KHÔNG padStart
+  /* ===== ÂM LỊCH (SAU) ===== */
+  cells.forEach(({ cell, date }) => {
+    const [lunarDay] = solar2lunar(
+      date.getDate(),
+      date.getMonth() + 1,
+      date.getFullYear(),
+      7
+    );
+    cell.querySelector(".lunar").textContent = lunarDay;
+  });
+
+  /* ===== PDF (CUỐI CÙNG) ===== */
+  for (const { cell, date } of cells) {
+    if (date > today) continue;
+
+    const monthKey = (date.getMonth() + 1) + "-" + date.getFullYear();
+    const dayStr = String(date.getDate()); // ❗ KHÔNG padStart
 
     const pdfUrl =
       window.APP_CONFIG.api.root() +
@@ -218,8 +219,6 @@ async function renderCalendarMonth() {
         }
       }
     } catch (e) {}
-
-    box.appendChild(cell);
   }
 }
 
