@@ -1,12 +1,12 @@
 /* =========================================================
-   CAN.JS – FULL (ỔN ĐỊNH LỊCH, LOAD PDF THEO THÁNG)
-   - Dương lịch render ngay
-   - Âm lịch render ngay sau
-   - PDF load 1 lần / tháng (map day → link Drive)
+   CAN.JS – FULL (DƯƠNG LỊCH TRƯỚC, ÂM + PDF SAU, FIX MATCH NGÀY)
+   Yêu cầu:
+   - Dương lịch render ngay (ổn định bố cục)
+   - Âm lịch render ngay sau (từ amlich.js)
+   - PDF load sau cùng, match CHUỖI NGÀY ĐẦY ĐỦ d.m.y
    ========================================================= */
 
-const API_ROOT = window.APP_CONFIG.api.root();
-const API_DASH = window.APP_CONFIG.api.dashboard();
+const API_URL = window.APP_CONFIG.api.dashboard();
 
 let chart = null;
 let calYear, calMonth;
@@ -30,7 +30,7 @@ async function loadCan() {
     return;
   }
 
-  const res = await fetch(API_DASH);
+  const res = await fetch(API_URL);
   const data = await res.json();
   const unit = data.units.find(u => u.maCan.toUpperCase() === maCan);
   if (!unit) {
@@ -64,6 +64,7 @@ async function loadCan() {
   document.getElementById("tickerText").textContent =
     `${unit.maCan}: ${unit.percent || 0}% – ${tickerStatus}`;
 
+  // chỉ huy
   const m1 = document.getElementById("manager1");
   const m2 = document.getElementById("manager2");
   const p1 = document.getElementById("manager1Phone");
@@ -117,6 +118,7 @@ function drawChart(byTeam) {
 
 /* ================= CALENDAR ================= */
 
+/* INIT */
 function initCalendar() {
   const today = new Date();
   calYear = today.getFullYear();
@@ -136,7 +138,8 @@ function initCalendar() {
   renderCalendarMonth();
 }
 
-async function renderCalendarMonth() {
+/* RENDER 1 THÁNG – DƯƠNG LỊCH TRƯỚC */
+function renderCalendarMonth() {
   const box = document.getElementById("calendar");
   box.innerHTML = "";
 
@@ -144,7 +147,11 @@ async function renderCalendarMonth() {
     `Tháng ${calMonth + 1}/${calYear}`;
 
   const first = new Date(calYear, calMonth, 1);
-  const offset = (first.getDay() + 6) % 7;
+  const offset = (first.getDay() + 6) % 7; // Thứ 2 = 0
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+  const totalCells = Math.ceil((offset + daysInMonth) / 7) * 7;
+
   const start = new Date(first);
   start.setDate(first.getDate() - offset);
 
@@ -153,7 +160,7 @@ async function renderCalendarMonth() {
 
   const cells = [];
 
-  for (let i = 0; i < 42; i++) {
+  for (let i = 0; i < totalCells; i++) {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
 
@@ -175,12 +182,12 @@ async function renderCalendarMonth() {
 
     cell.appendChild(solar);
     cell.appendChild(lunar);
-    box.appendChild(cell);
 
+    box.appendChild(cell);
     cells.push({ cell, date: d, lunar });
   }
 
-  // âm lịch
+  /* gắn âm lịch */
   cells.forEach(o => {
     const [ld] = solar2lunar(
       o.date.getDate(),
@@ -191,35 +198,41 @@ async function renderCalendarMonth() {
     o.lunar.textContent = ld;
   });
 
-  // pdf
-  await attachPdfLinks(cells);
+  /* gắn PDF sau */
+  attachPdfLinks(cells);
 }
 
 /* ================= PDF ================= */
 async function attachPdfLinks(cells) {
   const maCan = getMaCan();
-  const monthKey = (calMonth + 1) + "-" + calYear;
 
-  const res = await fetch(
-    API_ROOT +
-    "?action=pdfMonth" +
-    "&month=" + encodeURIComponent(monthKey) +
-    "&unit=" + encodeURIComponent(maCan)
-  );
+  for (const o of cells) {
+    if (o.date > new Date()) continue;
 
-  const js = await res.json();
-  const map = js.days || {};
+    const d = o.date;
+    const day = d.getDate();
+    const monthKey = (d.getMonth() + 1) + "-" + d.getFullYear();
 
-  cells.forEach(o => {
-    if (o.date > new Date()) return;
+    const pdfUrl =
+      window.APP_CONFIG.api.root() +
+      "?action=pdf" +
+      "&month=" + encodeURIComponent(monthKey) +
+      "&unit=" + encodeURIComponent(maCan) +
+      "&day=" + day; // 🔴 KHÔNG PAD – GAS MATCH d.m.y
 
-    const d = o.date.getDate();
-    if (map[d]) {
-      o.cell.classList.remove("no-pdf");
-      o.cell.classList.add("has-pdf");
-      o.cell.onclick = () => window.open(map[d], "_blank");
-    }
-  });
+    try {
+      const res = await fetch(pdfUrl);
+      const text = await res.text();
+      if (text.startsWith("{")) {
+        const js = JSON.parse(text);
+        if (js.url) {
+          o.cell.classList.remove("no-pdf");
+          o.cell.classList.add("has-pdf");
+          o.cell.onclick = () => window.open(js.url, "_blank");
+        }
+      }
+    } catch (e) {}
+  }
 }
 
 /* ================= QR ================= */
