@@ -1,12 +1,12 @@
 /* =========================================================
-   CAN.JS – FULL (ỔN ĐỊNH BỐ CỤC + LOAD PDF THEO THÁNG)
+   CAN.JS – FULL (ỔN ĐỊNH BỐ CỤC + PDF MỞ ĐÚNG DRIVE)
    - Dương lịch render ngay
-   - Âm lịch render ngay (amlich.js)
-   - PDF load 1 request / tháng (action=pdfMonth)
+   - Âm lịch gắn sau
+   - PDF: lấy danh sách theo tháng → click mới gọi link thật
    ========================================================= */
 
-const API_DASHBOARD = window.APP_CONFIG.api.dashboard();
-const API_ROOT      = window.APP_CONFIG.api.root();
+const API_URL = window.APP_CONFIG.api.dashboard();
+const API_ROOT = window.APP_CONFIG.api.root();
 
 let chart = null;
 let calYear, calMonth;
@@ -16,7 +16,6 @@ function getMaCan() {
   const p = new URLSearchParams(location.search).get("ma");
   return p ? p.toUpperCase() : null;
 }
-
 function fmtDate(d) {
   if (!d) return "--";
   const [y, m, dd] = d.split("-");
@@ -31,7 +30,7 @@ async function loadCan() {
     return;
   }
 
-  const res = await fetch(API_DASHBOARD);
+  const res = await fetch(API_URL);
   const data = await res.json();
   const unit = data.units.find(u => u.maCan.toUpperCase() === maCan);
   if (!unit) {
@@ -58,15 +57,14 @@ async function loadCan() {
     else if (site.diffDays === 1) siteStatusText = "Hôm qua có thi công";
     else siteStatusText = site.diffDays + " ngày chưa thi công";
   }
-
   document.getElementById("siteStatus").textContent = siteStatusText;
 
   let tickerStatus = siteStatusText;
   if (site && site.summary) tickerStatus += " – " + site.summary;
-
   document.getElementById("tickerText").textContent =
     `${unit.maCan}: ${unit.percent || 0}% – ${tickerStatus}`;
 
+  // chỉ huy
   const m1 = document.getElementById("manager1");
   const m2 = document.getElementById("manager2");
   const p1 = document.getElementById("manager1Phone");
@@ -119,6 +117,7 @@ function drawChart(byTeam) {
 }
 
 /* ================= CALENDAR ================= */
+
 function initCalendar() {
   const today = new Date();
   calYear = today.getFullYear();
@@ -129,7 +128,6 @@ function initCalendar() {
     if (calMonth < 0) { calMonth = 11; calYear--; }
     renderCalendarMonth();
   };
-
   document.getElementById("nextMonth").onclick = () => {
     calMonth++;
     if (calMonth > 11) { calMonth = 0; calYear++; }
@@ -139,20 +137,6 @@ function initCalendar() {
   renderCalendarMonth();
 }
 
-/* ================= FETCH PDF DAYS (1 REQUEST) ================= */
-async function fetchPdfDays(monthKey, maCan) {
-  const url =
-    API_ROOT +
-    "?action=pdfMonth" +
-    "&month=" + encodeURIComponent(monthKey) +
-    "&unit=" + encodeURIComponent(maCan);
-
-  const res = await fetch(url);
-  const js = await res.json();
-  return js.days || [];
-}
-
-/* ================= RENDER MONTH ================= */
 async function renderCalendarMonth() {
   const box = document.getElementById("calendar");
   box.innerHTML = "";
@@ -161,7 +145,7 @@ async function renderCalendarMonth() {
     `Tháng ${calMonth + 1}/${calYear}`;
 
   const first = new Date(calYear, calMonth, 1);
-  const offset = (first.getDay() + 6) % 7; // Thứ 2 = 0
+  const offset = (first.getDay() + 6) % 7;
   const start = new Date(first);
   start.setDate(first.getDate() - offset);
 
@@ -178,7 +162,6 @@ async function renderCalendarMonth() {
 
     if (d.getMonth() !== calMonth) cell.classList.add("other");
     if (d.getTime() === today.getTime()) cell.classList.add("today");
-
     if (d > today) cell.classList.add("future");
     else cell.classList.add("no-pdf");
 
@@ -188,7 +171,6 @@ async function renderCalendarMonth() {
 
     const lunar = document.createElement("div");
     lunar.className = "lunar";
-    lunar.textContent = "";
 
     cell.appendChild(solar);
     cell.appendChild(lunar);
@@ -197,7 +179,7 @@ async function renderCalendarMonth() {
     cells.push({ cell, date: d, lunar });
   }
 
-  /* gắn âm lịch */
+  // âm lịch
   cells.forEach(o => {
     const [ld] = solar2lunar(
       o.date.getDate(),
@@ -208,30 +190,39 @@ async function renderCalendarMonth() {
     o.lunar.textContent = ld;
   });
 
-  /* gắn PDF theo tháng */
-  const maCan = getMaCan();
-  const monthKey = (calMonth + 1) + "-" + calYear;
-  const pdfDays = await fetchPdfDays(monthKey, maCan);
+  // pdf
+  attachPdfLinks(cells);
+}
 
-  cells.forEach(o => {
-    if (o.date > today) return;
+/* ================= PDF ================= */
+async function attachPdfLinks(cells) {
+  const maCan = getMaCan();
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  for (const o of cells) {
+    if (o.date > today) continue;
 
     const d = o.date.getDate();
-    if (pdfDays.includes(d)) {
-      o.cell.classList.remove("no-pdf");
-      o.cell.classList.add("has-pdf");
-      o.cell.onclick = () => {
-        window.open(
-          API_ROOT +
-          "?action=pdf" +
-          "&month=" + monthKey +
-          "&unit=" + maCan +
-          "&day=" + d,
-          "_blank"
-        );
-      };
-    }
-  });
+    const monthKey = (o.date.getMonth() + 1) + "-" + o.date.getFullYear();
+
+    const url =
+      API_ROOT +
+      "?action=pdf" +
+      "&month=" + encodeURIComponent(monthKey) +
+      "&unit=" + encodeURIComponent(maCan) +
+      "&day=" + d;
+
+    try {
+      const res = await fetch(url);
+      const js = await res.json();
+      if (js.url) {
+        o.cell.classList.remove("no-pdf");
+        o.cell.classList.add("has-pdf");
+        o.cell.onclick = () => window.open(js.url, "_blank");
+      }
+    } catch (e) {}
+  }
 }
 
 /* ================= QR ================= */
