@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Phong Thủy Xây Dựng</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body{
+      font-family: system-ui, sans-serif;
+      background:#020617;
+      color:#e5e7eb;
+      padding:20px;
+    }
+    .card{
+      background:#0f172a;
+      border:1px solid rgba(148,163,184,.2);
+      border-radius:12px;
+      padding:16px;
+      max-width:420px;
+    }
+    h2{margin-top:0}
+    .good{color:#4ade80}
+    .bad{color:#f87171}
+    .tag{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      background:#1e293b;
+      margin-right:6px;
+      margin-bottom:6px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>Test phong thủy theo ngày</h2>
+
+<div class="card" id="out">Đang tải...</div>
+
+<!-- ===== ÂM LỊCH + PHONG THỦY ===== -->
+<script src="amlich.js"></script>
+
+<script>
+  // 👉 ngày test (dương lịch)
+  const dd = 2;
+  const mm = 1;
+  const yy = 2026;
+
+  const info = getConstructionFengShui(dd, mm, yy);
+
+  document.getElementById("out").innerHTML = `
+    <b>Dương lịch:</b> ${info.solar}<br>
+    <b>Âm lịch:</b> ${info.lunar}<br>
+    <b>Can chi ngày:</b> ${info.canChiDay}<br>
+    <b>Loại ngày:</b> <b class="${info.type === 'HOÀNG ĐẠO' ? 'good' : 'bad'}">
+      ${info.type}
+    </b>
+    <hr>
+
+    <b>Nên làm:</b>
+    <ul class="good">
+      ${info.nenLam.map(v => `<li>${v}</li>`).join("")}
+    </ul>
+
+    <b>Không nên:</b>
+    <ul class="bad">
+      ${info.khongNen.map(v => `<li>${v}</li>`).join("")}
+    </ul>
+
+    <b>Sao tốt:</b><br>
+    ${info.saoTot.map(v => `<span class="tag">${v}</span>`).join("")}
+  `;
+</script>
+
+</body>
+</html>
