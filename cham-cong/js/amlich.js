@@ -180,3 +180,96 @@ function getCanChi(year) {
   var CHI = ["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
   return CAN[(year + 6) % 10] + " " + CHI[(year + 8) % 12];
 }
+/* =========================================================
+   PHONG THỦY XÂY DỰNG – THEO NGÀY ÂM LỊCH
+   - Hoàng đạo / Hắc đạo
+   - Nên làm / Không nên làm
+   - Phục vụ xây dựng nhà ở
+   ========================================================= */
+
+/* ===== BẢNG NGÀY HOÀNG ĐẠO THEO CHI ===== */
+const HOANG_DAO_BY_CHI = {
+  "Tý":  ["Thanh Long", "Minh Đường"],
+  "Sửu": ["Kim Quỹ", "Thiên Đức"],
+  "Dần": ["Kim Đường", "Ngọc Đường"],
+  "Mão": ["Tư Mệnh", "Minh Đường"],
+  "Thìn":["Thanh Long", "Kim Quỹ"],
+  "Tỵ":  ["Thiên Đức", "Ngọc Đường"],
+  "Ngọ": ["Kim Đường", "Tư Mệnh"],
+  "Mùi": ["Minh Đường", "Thanh Long"],
+  "Thân":["Ngọc Đường", "Kim Quỹ"],
+  "Dậu": ["Tư Mệnh", "Thiên Đức"],
+  "Tuất":["Thanh Long", "Kim Đường"],
+  "Hợi": ["Minh Đường", "Ngọc Đường"]
+};
+
+/* ===== VIỆC TỐT THEO NGÀY ÂM ===== */
+function goodJobsByLunarDay(lunarDay) {
+  if (lunarDay === 1 || lunarDay === 15) {
+    return ["Cúng lễ", "Khởi sự nhẹ", "Dọn dẹp mặt bằng"];
+  }
+  if (lunarDay <= 6) {
+    return ["Động thổ", "Đào móng", "San nền"];
+  }
+  if (lunarDay <= 12) {
+    return ["Đổ móng", "Xây tường", "Dựng cột"];
+  }
+  if (lunarDay <= 18) {
+    return ["Đổ mái", "Lắp kết cấu", "Xây thô"];
+  }
+  if (lunarDay <= 24) {
+    return ["Hoàn thiện", "Lắp điện nước", "Sơn sửa"];
+  }
+  return ["Dọn dẹp", "Kiểm tra", "Không nên khởi công lớn"];
+}
+
+/* ===== VIỆC XẤU THEO NGÀY ÂM ===== */
+function badJobsByLunarDay(lunarDay) {
+  if (lunarDay === 5 || lunarDay === 14 || lunarDay === 23) {
+    return ["Động thổ", "Đổ mái", "Khai trương"];
+  }
+  if (lunarDay >= 27) {
+    return ["Khởi công", "Đổ móng", "Đổ mái"];
+  }
+  return ["Cãi vã", "Quyết định vội vàng"];
+}
+
+/* ===== CAN CHI NGÀY ===== */
+function getCanChiDay(dd, mm, yy) {
+  const jd = jdFromDate(dd, mm, yy);
+  const CAN = ["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"];
+  const CHI = ["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
+  return {
+    can: CAN[(jd + 9) % 10],
+    chi: CHI[(jd + 1) % 12]
+  };
+}
+
+/* ===== PHONG THỦY XÂY DỰNG NGÀY ===== */
+function getConstructionFengShui(dd, mm, yy) {
+  const lunar = solar2lunar(dd, mm, yy, 7);
+  const lunarDay = lunar[0];
+  const lunarMonth = lunar[1];
+  const lunarYear = lunar[2];
+
+  const canChi = getCanChiDay(dd, mm, yy);
+  const hoangDaoList = HOANG_DAO_BY_CHI[canChi.chi] || [];
+
+  const isHoangDao = hoangDaoList.length > 0;
+
+  return {
+    solar: `${dd}/${mm}/${yy}`,
+    lunar: `${lunarDay}/${lunarMonth}/${lunarYear}`,
+    canChiDay: `${canChi.can} ${canChi.chi}`,
+
+    type: isHoangDao ? "HOÀNG ĐẠO" : "HẮC ĐẠO",
+
+    nenLam: isHoangDao
+      ? goodJobsByLunarDay(lunarDay)
+      : ["Việc nhỏ", "Chuẩn bị", "Không khởi công"],
+
+    khongNen: badJobsByLunarDay(lunarDay),
+
+    saoTot: hoangDaoList
+  };
+}
